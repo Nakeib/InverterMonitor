@@ -1,0 +1,3 @@
+/cygdrive/e/Development/Ollama/esp8266-volt_sinus_pro_ultra_6000/simulator/build/CMakeFiles/inverter_monitor_simulator.dir
+/cygdrive/e/Development/Ollama/esp8266-volt_sinus_pro_ultra_6000/simulator/build/CMakeFiles/edit_cache.dir
+/cygdrive/e/Development/Ollama/esp8266-volt_sinus_pro_ultra_6000/simulator/build/CMakeFiles/rebuild_cache.dir

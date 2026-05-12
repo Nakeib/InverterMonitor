@@ -1,0 +1,1 @@
+/usr/bin/c++.exe -Wl,--enable-auto-import CMakeFiles/inverter_monitor_simulator.dir/main.cpp.o -o inverter_monitor_simulator.exe -Wl,--out-implib,libinverter_monitor_simulator.dll.a -Wl,--major-image-version,0,--minor-image-version,0  -lpthread

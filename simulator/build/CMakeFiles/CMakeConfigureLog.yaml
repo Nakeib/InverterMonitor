@@ -1,0 +1,2049 @@
+
+---
+events:
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2.1/Modules/CMakeDetermineSystem.cmake:12 (find_program)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_UNAME"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "uname"
+    candidate_directories:
+      - "/usr/local/bin/"
+      - "/usr/bin/"
+      - "/cygdrive/c/WINDOWS/system32/"
+      - "/cygdrive/c/WINDOWS/"
+      - "/cygdrive/c/WINDOWS/System32/Wbem/"
+      - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+      - "/cygdrive/c/WINDOWS/System32/OpenSSH/"
+      - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common/"
+      - "/cygdrive/c/Program Files/Git/cmd/"
+      - "/cygdrive/c/Program Files/CMake/bin/"
+      - "/usr/x86_64-w64-mingw32/bin/"
+      - "/cygdrive/c/Program Files/dotnet/"
+      - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR/"
+      - "/cygdrive/c/Program Files/nodejs/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps/"
+      - "/cygdrive/d/Software/Microsoft VS Code/bin/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib/"
+      - "/cygdrive/c/Users/Adam/.dotnet/tools/"
+      - "/cygdrive/c/Users/Adam/AppData/Roaming/npm/"
+      - "/cygdrive/c/Users/Adam/.aftman/bin/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama/"
+      - "/bin/"
+    searched_directories:
+      - "/usr/local/bin/uname.com"
+      - "/usr/local/bin/uname.exe"
+      - "/usr/local/bin/uname"
+      - "/usr/bin/uname.com"
+    found: "/usr/bin/uname.exe"
+    search_context:
+      ENV{PATH}:
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/cygdrive/c/WINDOWS/system32"
+        - "/cygdrive/c/WINDOWS"
+        - "/cygdrive/c/WINDOWS/System32/Wbem"
+        - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0"
+        - "/cygdrive/c/WINDOWS/System32/OpenSSH"
+        - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common"
+        - "/cygdrive/c/Program Files/Git/cmd"
+        - "/cygdrive/c/Program Files/CMake/bin"
+        - "/usr/x86_64-w64-mingw32/bin"
+        - "/cygdrive/c/Program Files/dotnet"
+        - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR"
+        - "/cygdrive/c/Program Files/nodejs"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps"
+        - "/cygdrive/d/Software/Microsoft VS Code/bin"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib"
+        - "/cygdrive/c/Users/Adam/.dotnet/tools"
+        - "/cygdrive/c/Users/Adam/AppData/Roaming/npm"
+        - "/cygdrive/c/Users/Adam/.aftman/bin"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama"
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2.1/Modules/CMakeDetermineSystem.cmake:212 (message)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      The system is: CYGWIN - 3.6.7-1.x86_64 - x86_64
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2.1/Modules/CMakeUnixFindMake.cmake:5 (find_program)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_MAKE_PROGRAM"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "gmake"
+      - "make"
+      - "smake"
+    candidate_directories:
+      - "/usr/local/bin/"
+      - "/usr/bin/"
+      - "/cygdrive/c/WINDOWS/system32/"
+      - "/cygdrive/c/WINDOWS/"
+      - "/cygdrive/c/WINDOWS/System32/Wbem/"
+      - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+      - "/cygdrive/c/WINDOWS/System32/OpenSSH/"
+      - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common/"
+      - "/cygdrive/c/Program Files/Git/cmd/"
+      - "/cygdrive/c/Program Files/CMake/bin/"
+      - "/usr/x86_64-w64-mingw32/bin/"
+      - "/cygdrive/c/Program Files/dotnet/"
+      - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR/"
+      - "/cygdrive/c/Program Files/nodejs/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps/"
+      - "/cygdrive/d/Software/Microsoft VS Code/bin/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib/"
+      - "/cygdrive/c/Users/Adam/.dotnet/tools/"
+      - "/cygdrive/c/Users/Adam/AppData/Roaming/npm/"
+      - "/cygdrive/c/Users/Adam/.aftman/bin/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama/"
+    searched_directories:
+      - "/usr/local/bin/gmake.com"
+      - "/usr/local/bin/gmake.exe"
+      - "/usr/local/bin/gmake"
+      - "/usr/bin/gmake.com"
+      - "/usr/bin/gmake.exe"
+      - "/usr/bin/gmake"
+      - "/cygdrive/c/WINDOWS/system32/gmake.com"
+      - "/cygdrive/c/WINDOWS/system32/gmake.exe"
+      - "/cygdrive/c/WINDOWS/system32/gmake"
+      - "/cygdrive/c/WINDOWS/gmake.com"
+      - "/cygdrive/c/WINDOWS/gmake.exe"
+      - "/cygdrive/c/WINDOWS/gmake"
+      - "/cygdrive/c/WINDOWS/System32/Wbem/gmake.com"
+      - "/cygdrive/c/WINDOWS/System32/Wbem/gmake.exe"
+      - "/cygdrive/c/WINDOWS/System32/Wbem/gmake"
+      - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0/gmake.com"
+      - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0/gmake.exe"
+      - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0/gmake"
+      - "/cygdrive/c/WINDOWS/System32/OpenSSH/gmake.com"
+      - "/cygdrive/c/WINDOWS/System32/OpenSSH/gmake.exe"
+      - "/cygdrive/c/WINDOWS/System32/OpenSSH/gmake"
+      - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common/gmake.com"
+      - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common/gmake.exe"
+      - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common/gmake"
+      - "/cygdrive/c/Program Files/Git/cmd/gmake.com"
+      - "/cygdrive/c/Program Files/Git/cmd/gmake.exe"
+      - "/cygdrive/c/Program Files/Git/cmd/gmake"
+      - "/cygdrive/c/Program Files/CMake/bin/gmake.com"
+      - "/cygdrive/c/Program Files/CMake/bin/gmake.exe"
+      - "/cygdrive/c/Program Files/CMake/bin/gmake"
+      - "/usr/x86_64-w64-mingw32/bin/gmake.com"
+      - "/usr/x86_64-w64-mingw32/bin/gmake.exe"
+      - "/usr/x86_64-w64-mingw32/bin/gmake"
+      - "/cygdrive/c/Program Files/dotnet/gmake.com"
+      - "/cygdrive/c/Program Files/dotnet/gmake.exe"
+      - "/cygdrive/c/Program Files/dotnet/gmake"
+      - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR/gmake.com"
+      - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR/gmake.exe"
+      - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR/gmake"
+      - "/cygdrive/c/Program Files/nodejs/gmake.com"
+      - "/cygdrive/c/Program Files/nodejs/gmake.exe"
+      - "/cygdrive/c/Program Files/nodejs/gmake"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps/gmake.com"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps/gmake.exe"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps/gmake"
+      - "/cygdrive/d/Software/Microsoft VS Code/bin/gmake.com"
+      - "/cygdrive/d/Software/Microsoft VS Code/bin/gmake.exe"
+      - "/cygdrive/d/Software/Microsoft VS Code/bin/gmake"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib/gmake.com"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib/gmake.exe"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib/gmake"
+      - "/cygdrive/c/Users/Adam/.dotnet/tools/gmake.com"
+      - "/cygdrive/c/Users/Adam/.dotnet/tools/gmake.exe"
+      - "/cygdrive/c/Users/Adam/.dotnet/tools/gmake"
+      - "/cygdrive/c/Users/Adam/AppData/Roaming/npm/gmake.com"
+      - "/cygdrive/c/Users/Adam/AppData/Roaming/npm/gmake.exe"
+      - "/cygdrive/c/Users/Adam/AppData/Roaming/npm/gmake"
+      - "/cygdrive/c/Users/Adam/.aftman/bin/gmake.com"
+      - "/cygdrive/c/Users/Adam/.aftman/bin/gmake.exe"
+      - "/cygdrive/c/Users/Adam/.aftman/bin/gmake"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama/gmake.com"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama/gmake.exe"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama/gmake"
+      - "/usr/local/bin/make.com"
+      - "/usr/local/bin/make.exe"
+      - "/usr/local/bin/make"
+      - "/usr/bin/make.com"
+    found: "/usr/bin/make.exe"
+    search_context:
+      ENV{PATH}:
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/cygdrive/c/WINDOWS/system32"
+        - "/cygdrive/c/WINDOWS"
+        - "/cygdrive/c/WINDOWS/System32/Wbem"
+        - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0"
+        - "/cygdrive/c/WINDOWS/System32/OpenSSH"
+        - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common"
+        - "/cygdrive/c/Program Files/Git/cmd"
+        - "/cygdrive/c/Program Files/CMake/bin"
+        - "/usr/x86_64-w64-mingw32/bin"
+        - "/cygdrive/c/Program Files/dotnet"
+        - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR"
+        - "/cygdrive/c/Program Files/nodejs"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps"
+        - "/cygdrive/d/Software/Microsoft VS Code/bin"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib"
+        - "/cygdrive/c/Users/Adam/.dotnet/tools"
+        - "/cygdrive/c/Users/Adam/AppData/Roaming/npm"
+        - "/cygdrive/c/Users/Adam/.aftman/bin"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2.1/Modules/CMakeDetermineCompiler.cmake:73 (find_program)"
+      - "/usr/share/cmake-4.2.1/Modules/CMakeDetermineCXXCompiler.cmake:69 (_cmake_find_compiler)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_CXX_COMPILER"
+    description: "CXX compiler"
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "c++"
+      - "g++"
+      - "cl"
+      - "bcc"
+      - "icpx"
+      - "icx"
+      - "clang++"
+    candidate_directories:
+      - "/usr/local/bin/"
+      - "/usr/bin/"
+      - "/cygdrive/c/WINDOWS/system32/"
+      - "/cygdrive/c/WINDOWS/"
+      - "/cygdrive/c/WINDOWS/System32/Wbem/"
+      - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+      - "/cygdrive/c/WINDOWS/System32/OpenSSH/"
+      - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common/"
+      - "/cygdrive/c/Program Files/Git/cmd/"
+      - "/cygdrive/c/Program Files/CMake/bin/"
+      - "/usr/x86_64-w64-mingw32/bin/"
+      - "/cygdrive/c/Program Files/dotnet/"
+      - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR/"
+      - "/cygdrive/c/Program Files/nodejs/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps/"
+      - "/cygdrive/d/Software/Microsoft VS Code/bin/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib/"
+      - "/cygdrive/c/Users/Adam/.dotnet/tools/"
+      - "/cygdrive/c/Users/Adam/AppData/Roaming/npm/"
+      - "/cygdrive/c/Users/Adam/.aftman/bin/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama/"
+    searched_directories:
+      - "/usr/local/bin/c++.com"
+      - "/usr/local/bin/c++.exe"
+      - "/usr/local/bin/c++"
+      - "/usr/bin/c++.com"
+    found: "/usr/bin/c++.exe"
+    search_context:
+      ENV{PATH}:
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/cygdrive/c/WINDOWS/system32"
+        - "/cygdrive/c/WINDOWS"
+        - "/cygdrive/c/WINDOWS/System32/Wbem"
+        - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0"
+        - "/cygdrive/c/WINDOWS/System32/OpenSSH"
+        - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common"
+        - "/cygdrive/c/Program Files/Git/cmd"
+        - "/cygdrive/c/Program Files/CMake/bin"
+        - "/usr/x86_64-w64-mingw32/bin"
+        - "/cygdrive/c/Program Files/dotnet"
+        - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR"
+        - "/cygdrive/c/Program Files/nodejs"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps"
+        - "/cygdrive/d/Software/Microsoft VS Code/bin"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib"
+        - "/cygdrive/c/Users/Adam/.dotnet/tools"
+        - "/cygdrive/c/Users/Adam/AppData/Roaming/npm"
+        - "/cygdrive/c/Users/Adam/.aftman/bin"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2.1/Modules/CMakeDetermineCompilerId.cmake:462 (find_file)"
+      - "/usr/share/cmake-4.2.1/Modules/CMakeDetermineCompilerId.cmake:500 (CMAKE_DETERMINE_COMPILER_ID_WRITE)"
+      - "/usr/share/cmake-4.2.1/Modules/CMakeDetermineCompilerId.cmake:8 (CMAKE_DETERMINE_COMPILER_ID_BUILD)"
+      - "/usr/share/cmake-4.2.1/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/usr/share/cmake-4.2.1/Modules/CMakeDetermineCXXCompiler.cmake:125 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "file"
+    variable: "src_in"
+    description: "Path to a file."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "CMakeCXXCompilerId.cpp.in"
+    candidate_directories:
+      - "/usr/share/cmake-4.2.1/Modules/"
+    found: "/usr/share/cmake-4.2.1/Modules/CMakeCXXCompilerId.cpp.in"
+    search_context:
+      ENV{PATH}:
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/cygdrive/c/WINDOWS/system32"
+        - "/cygdrive/c/WINDOWS"
+        - "/cygdrive/c/WINDOWS/System32/Wbem"
+        - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0"
+        - "/cygdrive/c/WINDOWS/System32/OpenSSH"
+        - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common"
+        - "/cygdrive/c/Program Files/Git/cmd"
+        - "/cygdrive/c/Program Files/CMake/bin"
+        - "/usr/x86_64-w64-mingw32/bin"
+        - "/cygdrive/c/Program Files/dotnet"
+        - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR"
+        - "/cygdrive/c/Program Files/nodejs"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps"
+        - "/cygdrive/d/Software/Microsoft VS Code/bin"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib"
+        - "/cygdrive/c/Users/Adam/.dotnet/tools"
+        - "/cygdrive/c/Users/Adam/AppData/Roaming/npm"
+        - "/cygdrive/c/Users/Adam/.aftman/bin"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama"
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2.1/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "/usr/share/cmake-4.2.1/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/usr/share/cmake-4.2.1/Modules/CMakeDetermineCXXCompiler.cmake:125 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+      Compiler: /usr/bin/c++.exe 
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      0
+      
+      
+      Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "a.exe"
+      
+      The CXX compiler identification is GNU, found in:
+        /cygdrive/e/Development/Ollama/esp8266-volt_sinus_pro_ultra_6000/simulator/build/CMakeFiles/4.2.1/CompilerIdCXX/a.exe
+      
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2.1/Modules/CMakeFindBinUtils.cmake:243 (find_program)"
+      - "/usr/share/cmake-4.2.1/Modules/CMakeDetermineCXXCompiler.cmake:206 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_AR"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "ar"
+    candidate_directories:
+      - "/usr/bin/"
+      - "/usr/local/bin/"
+      - "/cygdrive/c/WINDOWS/system32/"
+      - "/cygdrive/c/WINDOWS/"
+      - "/cygdrive/c/WINDOWS/System32/Wbem/"
+      - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+      - "/cygdrive/c/WINDOWS/System32/OpenSSH/"
+      - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common/"
+      - "/cygdrive/c/Program Files/Git/cmd/"
+      - "/cygdrive/c/Program Files/CMake/bin/"
+      - "/usr/x86_64-w64-mingw32/bin/"
+      - "/cygdrive/c/Program Files/dotnet/"
+      - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR/"
+      - "/cygdrive/c/Program Files/nodejs/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps/"
+      - "/cygdrive/d/Software/Microsoft VS Code/bin/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib/"
+      - "/cygdrive/c/Users/Adam/.dotnet/tools/"
+      - "/cygdrive/c/Users/Adam/AppData/Roaming/npm/"
+      - "/cygdrive/c/Users/Adam/.aftman/bin/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama/"
+    searched_directories:
+      - "/usr/bin/ar.com"
+    found: "/usr/bin/ar.exe"
+    search_context:
+      ENV{PATH}:
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/cygdrive/c/WINDOWS/system32"
+        - "/cygdrive/c/WINDOWS"
+        - "/cygdrive/c/WINDOWS/System32/Wbem"
+        - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0"
+        - "/cygdrive/c/WINDOWS/System32/OpenSSH"
+        - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common"
+        - "/cygdrive/c/Program Files/Git/cmd"
+        - "/cygdrive/c/Program Files/CMake/bin"
+        - "/usr/x86_64-w64-mingw32/bin"
+        - "/cygdrive/c/Program Files/dotnet"
+        - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR"
+        - "/cygdrive/c/Program Files/nodejs"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps"
+        - "/cygdrive/d/Software/Microsoft VS Code/bin"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib"
+        - "/cygdrive/c/Users/Adam/.dotnet/tools"
+        - "/cygdrive/c/Users/Adam/AppData/Roaming/npm"
+        - "/cygdrive/c/Users/Adam/.aftman/bin"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2.1/Modules/CMakeFindBinUtils.cmake:243 (find_program)"
+      - "/usr/share/cmake-4.2.1/Modules/CMakeDetermineCXXCompiler.cmake:206 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_RANLIB"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "ranlib"
+    candidate_directories:
+      - "/usr/bin/"
+      - "/usr/local/bin/"
+      - "/cygdrive/c/WINDOWS/system32/"
+      - "/cygdrive/c/WINDOWS/"
+      - "/cygdrive/c/WINDOWS/System32/Wbem/"
+      - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+      - "/cygdrive/c/WINDOWS/System32/OpenSSH/"
+      - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common/"
+      - "/cygdrive/c/Program Files/Git/cmd/"
+      - "/cygdrive/c/Program Files/CMake/bin/"
+      - "/usr/x86_64-w64-mingw32/bin/"
+      - "/cygdrive/c/Program Files/dotnet/"
+      - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR/"
+      - "/cygdrive/c/Program Files/nodejs/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps/"
+      - "/cygdrive/d/Software/Microsoft VS Code/bin/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib/"
+      - "/cygdrive/c/Users/Adam/.dotnet/tools/"
+      - "/cygdrive/c/Users/Adam/AppData/Roaming/npm/"
+      - "/cygdrive/c/Users/Adam/.aftman/bin/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama/"
+    searched_directories:
+      - "/usr/bin/ranlib.com"
+    found: "/usr/bin/ranlib.exe"
+    search_context:
+      ENV{PATH}:
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/cygdrive/c/WINDOWS/system32"
+        - "/cygdrive/c/WINDOWS"
+        - "/cygdrive/c/WINDOWS/System32/Wbem"
+        - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0"
+        - "/cygdrive/c/WINDOWS/System32/OpenSSH"
+        - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common"
+        - "/cygdrive/c/Program Files/Git/cmd"
+        - "/cygdrive/c/Program Files/CMake/bin"
+        - "/usr/x86_64-w64-mingw32/bin"
+        - "/cygdrive/c/Program Files/dotnet"
+        - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR"
+        - "/cygdrive/c/Program Files/nodejs"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps"
+        - "/cygdrive/d/Software/Microsoft VS Code/bin"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib"
+        - "/cygdrive/c/Users/Adam/.dotnet/tools"
+        - "/cygdrive/c/Users/Adam/AppData/Roaming/npm"
+        - "/cygdrive/c/Users/Adam/.aftman/bin"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2.1/Modules/CMakeFindBinUtils.cmake:243 (find_program)"
+      - "/usr/share/cmake-4.2.1/Modules/CMakeDetermineCXXCompiler.cmake:206 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_STRIP"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "strip"
+    candidate_directories:
+      - "/usr/bin/"
+      - "/usr/local/bin/"
+      - "/cygdrive/c/WINDOWS/system32/"
+      - "/cygdrive/c/WINDOWS/"
+      - "/cygdrive/c/WINDOWS/System32/Wbem/"
+      - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+      - "/cygdrive/c/WINDOWS/System32/OpenSSH/"
+      - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common/"
+      - "/cygdrive/c/Program Files/Git/cmd/"
+      - "/cygdrive/c/Program Files/CMake/bin/"
+      - "/usr/x86_64-w64-mingw32/bin/"
+      - "/cygdrive/c/Program Files/dotnet/"
+      - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR/"
+      - "/cygdrive/c/Program Files/nodejs/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps/"
+      - "/cygdrive/d/Software/Microsoft VS Code/bin/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib/"
+      - "/cygdrive/c/Users/Adam/.dotnet/tools/"
+      - "/cygdrive/c/Users/Adam/AppData/Roaming/npm/"
+      - "/cygdrive/c/Users/Adam/.aftman/bin/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama/"
+    searched_directories:
+      - "/usr/bin/strip.com"
+    found: "/usr/bin/strip.exe"
+    search_context:
+      ENV{PATH}:
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/cygdrive/c/WINDOWS/system32"
+        - "/cygdrive/c/WINDOWS"
+        - "/cygdrive/c/WINDOWS/System32/Wbem"
+        - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0"
+        - "/cygdrive/c/WINDOWS/System32/OpenSSH"
+        - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common"
+        - "/cygdrive/c/Program Files/Git/cmd"
+        - "/cygdrive/c/Program Files/CMake/bin"
+        - "/usr/x86_64-w64-mingw32/bin"
+        - "/cygdrive/c/Program Files/dotnet"
+        - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR"
+        - "/cygdrive/c/Program Files/nodejs"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps"
+        - "/cygdrive/d/Software/Microsoft VS Code/bin"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib"
+        - "/cygdrive/c/Users/Adam/.dotnet/tools"
+        - "/cygdrive/c/Users/Adam/AppData/Roaming/npm"
+        - "/cygdrive/c/Users/Adam/.aftman/bin"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2.1/Modules/CMakeFindBinUtils.cmake:243 (find_program)"
+      - "/usr/share/cmake-4.2.1/Modules/CMakeDetermineCXXCompiler.cmake:206 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_LINKER"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "ld"
+    candidate_directories:
+      - "/usr/bin/"
+      - "/usr/local/bin/"
+      - "/cygdrive/c/WINDOWS/system32/"
+      - "/cygdrive/c/WINDOWS/"
+      - "/cygdrive/c/WINDOWS/System32/Wbem/"
+      - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+      - "/cygdrive/c/WINDOWS/System32/OpenSSH/"
+      - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common/"
+      - "/cygdrive/c/Program Files/Git/cmd/"
+      - "/cygdrive/c/Program Files/CMake/bin/"
+      - "/usr/x86_64-w64-mingw32/bin/"
+      - "/cygdrive/c/Program Files/dotnet/"
+      - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR/"
+      - "/cygdrive/c/Program Files/nodejs/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps/"
+      - "/cygdrive/d/Software/Microsoft VS Code/bin/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib/"
+      - "/cygdrive/c/Users/Adam/.dotnet/tools/"
+      - "/cygdrive/c/Users/Adam/AppData/Roaming/npm/"
+      - "/cygdrive/c/Users/Adam/.aftman/bin/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama/"
+    searched_directories:
+      - "/usr/bin/ld.com"
+    found: "/usr/bin/ld.exe"
+    search_context:
+      ENV{PATH}:
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/cygdrive/c/WINDOWS/system32"
+        - "/cygdrive/c/WINDOWS"
+        - "/cygdrive/c/WINDOWS/System32/Wbem"
+        - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0"
+        - "/cygdrive/c/WINDOWS/System32/OpenSSH"
+        - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common"
+        - "/cygdrive/c/Program Files/Git/cmd"
+        - "/cygdrive/c/Program Files/CMake/bin"
+        - "/usr/x86_64-w64-mingw32/bin"
+        - "/cygdrive/c/Program Files/dotnet"
+        - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR"
+        - "/cygdrive/c/Program Files/nodejs"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps"
+        - "/cygdrive/d/Software/Microsoft VS Code/bin"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib"
+        - "/cygdrive/c/Users/Adam/.dotnet/tools"
+        - "/cygdrive/c/Users/Adam/AppData/Roaming/npm"
+        - "/cygdrive/c/Users/Adam/.aftman/bin"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2.1/Modules/CMakeFindBinUtils.cmake:243 (find_program)"
+      - "/usr/share/cmake-4.2.1/Modules/CMakeDetermineCXXCompiler.cmake:206 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_NM"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "nm"
+    candidate_directories:
+      - "/usr/bin/"
+      - "/usr/local/bin/"
+      - "/cygdrive/c/WINDOWS/system32/"
+      - "/cygdrive/c/WINDOWS/"
+      - "/cygdrive/c/WINDOWS/System32/Wbem/"
+      - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+      - "/cygdrive/c/WINDOWS/System32/OpenSSH/"
+      - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common/"
+      - "/cygdrive/c/Program Files/Git/cmd/"
+      - "/cygdrive/c/Program Files/CMake/bin/"
+      - "/usr/x86_64-w64-mingw32/bin/"
+      - "/cygdrive/c/Program Files/dotnet/"
+      - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR/"
+      - "/cygdrive/c/Program Files/nodejs/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps/"
+      - "/cygdrive/d/Software/Microsoft VS Code/bin/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib/"
+      - "/cygdrive/c/Users/Adam/.dotnet/tools/"
+      - "/cygdrive/c/Users/Adam/AppData/Roaming/npm/"
+      - "/cygdrive/c/Users/Adam/.aftman/bin/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama/"
+    searched_directories:
+      - "/usr/bin/nm.com"
+    found: "/usr/bin/nm.exe"
+    search_context:
+      ENV{PATH}:
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/cygdrive/c/WINDOWS/system32"
+        - "/cygdrive/c/WINDOWS"
+        - "/cygdrive/c/WINDOWS/System32/Wbem"
+        - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0"
+        - "/cygdrive/c/WINDOWS/System32/OpenSSH"
+        - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common"
+        - "/cygdrive/c/Program Files/Git/cmd"
+        - "/cygdrive/c/Program Files/CMake/bin"
+        - "/usr/x86_64-w64-mingw32/bin"
+        - "/cygdrive/c/Program Files/dotnet"
+        - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR"
+        - "/cygdrive/c/Program Files/nodejs"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps"
+        - "/cygdrive/d/Software/Microsoft VS Code/bin"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib"
+        - "/cygdrive/c/Users/Adam/.dotnet/tools"
+        - "/cygdrive/c/Users/Adam/AppData/Roaming/npm"
+        - "/cygdrive/c/Users/Adam/.aftman/bin"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2.1/Modules/CMakeFindBinUtils.cmake:243 (find_program)"
+      - "/usr/share/cmake-4.2.1/Modules/CMakeDetermineCXXCompiler.cmake:206 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_OBJDUMP"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "objdump"
+    candidate_directories:
+      - "/usr/bin/"
+      - "/usr/local/bin/"
+      - "/cygdrive/c/WINDOWS/system32/"
+      - "/cygdrive/c/WINDOWS/"
+      - "/cygdrive/c/WINDOWS/System32/Wbem/"
+      - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+      - "/cygdrive/c/WINDOWS/System32/OpenSSH/"
+      - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common/"
+      - "/cygdrive/c/Program Files/Git/cmd/"
+      - "/cygdrive/c/Program Files/CMake/bin/"
+      - "/usr/x86_64-w64-mingw32/bin/"
+      - "/cygdrive/c/Program Files/dotnet/"
+      - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR/"
+      - "/cygdrive/c/Program Files/nodejs/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps/"
+      - "/cygdrive/d/Software/Microsoft VS Code/bin/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib/"
+      - "/cygdrive/c/Users/Adam/.dotnet/tools/"
+      - "/cygdrive/c/Users/Adam/AppData/Roaming/npm/"
+      - "/cygdrive/c/Users/Adam/.aftman/bin/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama/"
+    searched_directories:
+      - "/usr/bin/objdump.com"
+    found: "/usr/bin/objdump.exe"
+    search_context:
+      ENV{PATH}:
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/cygdrive/c/WINDOWS/system32"
+        - "/cygdrive/c/WINDOWS"
+        - "/cygdrive/c/WINDOWS/System32/Wbem"
+        - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0"
+        - "/cygdrive/c/WINDOWS/System32/OpenSSH"
+        - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common"
+        - "/cygdrive/c/Program Files/Git/cmd"
+        - "/cygdrive/c/Program Files/CMake/bin"
+        - "/usr/x86_64-w64-mingw32/bin"
+        - "/cygdrive/c/Program Files/dotnet"
+        - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR"
+        - "/cygdrive/c/Program Files/nodejs"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps"
+        - "/cygdrive/d/Software/Microsoft VS Code/bin"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib"
+        - "/cygdrive/c/Users/Adam/.dotnet/tools"
+        - "/cygdrive/c/Users/Adam/AppData/Roaming/npm"
+        - "/cygdrive/c/Users/Adam/.aftman/bin"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2.1/Modules/CMakeFindBinUtils.cmake:243 (find_program)"
+      - "/usr/share/cmake-4.2.1/Modules/CMakeDetermineCXXCompiler.cmake:206 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_OBJCOPY"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "objcopy"
+    candidate_directories:
+      - "/usr/bin/"
+      - "/usr/local/bin/"
+      - "/cygdrive/c/WINDOWS/system32/"
+      - "/cygdrive/c/WINDOWS/"
+      - "/cygdrive/c/WINDOWS/System32/Wbem/"
+      - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+      - "/cygdrive/c/WINDOWS/System32/OpenSSH/"
+      - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common/"
+      - "/cygdrive/c/Program Files/Git/cmd/"
+      - "/cygdrive/c/Program Files/CMake/bin/"
+      - "/usr/x86_64-w64-mingw32/bin/"
+      - "/cygdrive/c/Program Files/dotnet/"
+      - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR/"
+      - "/cygdrive/c/Program Files/nodejs/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps/"
+      - "/cygdrive/d/Software/Microsoft VS Code/bin/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib/"
+      - "/cygdrive/c/Users/Adam/.dotnet/tools/"
+      - "/cygdrive/c/Users/Adam/AppData/Roaming/npm/"
+      - "/cygdrive/c/Users/Adam/.aftman/bin/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama/"
+    searched_directories:
+      - "/usr/bin/objcopy.com"
+    found: "/usr/bin/objcopy.exe"
+    search_context:
+      ENV{PATH}:
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/cygdrive/c/WINDOWS/system32"
+        - "/cygdrive/c/WINDOWS"
+        - "/cygdrive/c/WINDOWS/System32/Wbem"
+        - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0"
+        - "/cygdrive/c/WINDOWS/System32/OpenSSH"
+        - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common"
+        - "/cygdrive/c/Program Files/Git/cmd"
+        - "/cygdrive/c/Program Files/CMake/bin"
+        - "/usr/x86_64-w64-mingw32/bin"
+        - "/cygdrive/c/Program Files/dotnet"
+        - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR"
+        - "/cygdrive/c/Program Files/nodejs"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps"
+        - "/cygdrive/d/Software/Microsoft VS Code/bin"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib"
+        - "/cygdrive/c/Users/Adam/.dotnet/tools"
+        - "/cygdrive/c/Users/Adam/AppData/Roaming/npm"
+        - "/cygdrive/c/Users/Adam/.aftman/bin"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2.1/Modules/CMakeFindBinUtils.cmake:243 (find_program)"
+      - "/usr/share/cmake-4.2.1/Modules/CMakeDetermineCXXCompiler.cmake:206 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_READELF"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "readelf"
+    candidate_directories:
+      - "/usr/bin/"
+      - "/usr/local/bin/"
+      - "/cygdrive/c/WINDOWS/system32/"
+      - "/cygdrive/c/WINDOWS/"
+      - "/cygdrive/c/WINDOWS/System32/Wbem/"
+      - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+      - "/cygdrive/c/WINDOWS/System32/OpenSSH/"
+      - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common/"
+      - "/cygdrive/c/Program Files/Git/cmd/"
+      - "/cygdrive/c/Program Files/CMake/bin/"
+      - "/usr/x86_64-w64-mingw32/bin/"
+      - "/cygdrive/c/Program Files/dotnet/"
+      - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR/"
+      - "/cygdrive/c/Program Files/nodejs/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps/"
+      - "/cygdrive/d/Software/Microsoft VS Code/bin/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib/"
+      - "/cygdrive/c/Users/Adam/.dotnet/tools/"
+      - "/cygdrive/c/Users/Adam/AppData/Roaming/npm/"
+      - "/cygdrive/c/Users/Adam/.aftman/bin/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama/"
+    searched_directories:
+      - "/usr/bin/readelf.com"
+    found: "/usr/bin/readelf.exe"
+    search_context:
+      ENV{PATH}:
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/cygdrive/c/WINDOWS/system32"
+        - "/cygdrive/c/WINDOWS"
+        - "/cygdrive/c/WINDOWS/System32/Wbem"
+        - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0"
+        - "/cygdrive/c/WINDOWS/System32/OpenSSH"
+        - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common"
+        - "/cygdrive/c/Program Files/Git/cmd"
+        - "/cygdrive/c/Program Files/CMake/bin"
+        - "/usr/x86_64-w64-mingw32/bin"
+        - "/cygdrive/c/Program Files/dotnet"
+        - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR"
+        - "/cygdrive/c/Program Files/nodejs"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps"
+        - "/cygdrive/d/Software/Microsoft VS Code/bin"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib"
+        - "/cygdrive/c/Users/Adam/.dotnet/tools"
+        - "/cygdrive/c/Users/Adam/AppData/Roaming/npm"
+        - "/cygdrive/c/Users/Adam/.aftman/bin"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2.1/Modules/CMakeFindBinUtils.cmake:243 (find_program)"
+      - "/usr/share/cmake-4.2.1/Modules/CMakeDetermineCXXCompiler.cmake:206 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_DLLTOOL"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "dlltool"
+    candidate_directories:
+      - "/usr/bin/"
+      - "/usr/local/bin/"
+      - "/cygdrive/c/WINDOWS/system32/"
+      - "/cygdrive/c/WINDOWS/"
+      - "/cygdrive/c/WINDOWS/System32/Wbem/"
+      - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+      - "/cygdrive/c/WINDOWS/System32/OpenSSH/"
+      - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common/"
+      - "/cygdrive/c/Program Files/Git/cmd/"
+      - "/cygdrive/c/Program Files/CMake/bin/"
+      - "/usr/x86_64-w64-mingw32/bin/"
+      - "/cygdrive/c/Program Files/dotnet/"
+      - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR/"
+      - "/cygdrive/c/Program Files/nodejs/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps/"
+      - "/cygdrive/d/Software/Microsoft VS Code/bin/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib/"
+      - "/cygdrive/c/Users/Adam/.dotnet/tools/"
+      - "/cygdrive/c/Users/Adam/AppData/Roaming/npm/"
+      - "/cygdrive/c/Users/Adam/.aftman/bin/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama/"
+    searched_directories:
+      - "/usr/bin/dlltool.com"
+    found: "/usr/bin/dlltool.exe"
+    search_context:
+      ENV{PATH}:
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/cygdrive/c/WINDOWS/system32"
+        - "/cygdrive/c/WINDOWS"
+        - "/cygdrive/c/WINDOWS/System32/Wbem"
+        - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0"
+        - "/cygdrive/c/WINDOWS/System32/OpenSSH"
+        - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common"
+        - "/cygdrive/c/Program Files/Git/cmd"
+        - "/cygdrive/c/Program Files/CMake/bin"
+        - "/usr/x86_64-w64-mingw32/bin"
+        - "/cygdrive/c/Program Files/dotnet"
+        - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR"
+        - "/cygdrive/c/Program Files/nodejs"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps"
+        - "/cygdrive/d/Software/Microsoft VS Code/bin"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib"
+        - "/cygdrive/c/Users/Adam/.dotnet/tools"
+        - "/cygdrive/c/Users/Adam/AppData/Roaming/npm"
+        - "/cygdrive/c/Users/Adam/.aftman/bin"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2.1/Modules/CMakeFindBinUtils.cmake:243 (find_program)"
+      - "/usr/share/cmake-4.2.1/Modules/CMakeDetermineCXXCompiler.cmake:206 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_ADDR2LINE"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "addr2line"
+    candidate_directories:
+      - "/usr/bin/"
+      - "/usr/local/bin/"
+      - "/cygdrive/c/WINDOWS/system32/"
+      - "/cygdrive/c/WINDOWS/"
+      - "/cygdrive/c/WINDOWS/System32/Wbem/"
+      - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+      - "/cygdrive/c/WINDOWS/System32/OpenSSH/"
+      - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common/"
+      - "/cygdrive/c/Program Files/Git/cmd/"
+      - "/cygdrive/c/Program Files/CMake/bin/"
+      - "/usr/x86_64-w64-mingw32/bin/"
+      - "/cygdrive/c/Program Files/dotnet/"
+      - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR/"
+      - "/cygdrive/c/Program Files/nodejs/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps/"
+      - "/cygdrive/d/Software/Microsoft VS Code/bin/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib/"
+      - "/cygdrive/c/Users/Adam/.dotnet/tools/"
+      - "/cygdrive/c/Users/Adam/AppData/Roaming/npm/"
+      - "/cygdrive/c/Users/Adam/.aftman/bin/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama/"
+    searched_directories:
+      - "/usr/bin/addr2line.com"
+    found: "/usr/bin/addr2line.exe"
+    search_context:
+      ENV{PATH}:
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/cygdrive/c/WINDOWS/system32"
+        - "/cygdrive/c/WINDOWS"
+        - "/cygdrive/c/WINDOWS/System32/Wbem"
+        - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0"
+        - "/cygdrive/c/WINDOWS/System32/OpenSSH"
+        - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common"
+        - "/cygdrive/c/Program Files/Git/cmd"
+        - "/cygdrive/c/Program Files/CMake/bin"
+        - "/usr/x86_64-w64-mingw32/bin"
+        - "/cygdrive/c/Program Files/dotnet"
+        - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR"
+        - "/cygdrive/c/Program Files/nodejs"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps"
+        - "/cygdrive/d/Software/Microsoft VS Code/bin"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib"
+        - "/cygdrive/c/Users/Adam/.dotnet/tools"
+        - "/cygdrive/c/Users/Adam/AppData/Roaming/npm"
+        - "/cygdrive/c/Users/Adam/.aftman/bin"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2.1/Modules/CMakeFindBinUtils.cmake:243 (find_program)"
+      - "/usr/share/cmake-4.2.1/Modules/CMakeDetermineCXXCompiler.cmake:206 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_TAPI"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "tapi"
+    candidate_directories:
+      - "/usr/bin/"
+      - "/usr/local/bin/"
+      - "/cygdrive/c/WINDOWS/system32/"
+      - "/cygdrive/c/WINDOWS/"
+      - "/cygdrive/c/WINDOWS/System32/Wbem/"
+      - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+      - "/cygdrive/c/WINDOWS/System32/OpenSSH/"
+      - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common/"
+      - "/cygdrive/c/Program Files/Git/cmd/"
+      - "/cygdrive/c/Program Files/CMake/bin/"
+      - "/usr/x86_64-w64-mingw32/bin/"
+      - "/cygdrive/c/Program Files/dotnet/"
+      - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR/"
+      - "/cygdrive/c/Program Files/nodejs/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps/"
+      - "/cygdrive/d/Software/Microsoft VS Code/bin/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib/"
+      - "/cygdrive/c/Users/Adam/.dotnet/tools/"
+      - "/cygdrive/c/Users/Adam/AppData/Roaming/npm/"
+      - "/cygdrive/c/Users/Adam/.aftman/bin/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama/"
+    searched_directories:
+      - "/usr/bin/tapi.com"
+      - "/usr/bin/tapi.exe"
+      - "/usr/bin/tapi"
+      - "/usr/local/bin/tapi.com"
+      - "/usr/local/bin/tapi.exe"
+      - "/usr/local/bin/tapi"
+      - "/cygdrive/c/WINDOWS/system32/tapi.com"
+      - "/cygdrive/c/WINDOWS/system32/tapi.exe"
+      - "/cygdrive/c/WINDOWS/system32/tapi"
+      - "/cygdrive/c/WINDOWS/tapi.com"
+      - "/cygdrive/c/WINDOWS/tapi.exe"
+      - "/cygdrive/c/WINDOWS/tapi"
+      - "/cygdrive/c/WINDOWS/System32/Wbem/tapi.com"
+      - "/cygdrive/c/WINDOWS/System32/Wbem/tapi.exe"
+      - "/cygdrive/c/WINDOWS/System32/Wbem/tapi"
+      - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0/tapi.com"
+      - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0/tapi.exe"
+      - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0/tapi"
+      - "/cygdrive/c/WINDOWS/System32/OpenSSH/tapi.com"
+      - "/cygdrive/c/WINDOWS/System32/OpenSSH/tapi.exe"
+      - "/cygdrive/c/WINDOWS/System32/OpenSSH/tapi"
+      - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common/tapi.com"
+      - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common/tapi.exe"
+      - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common/tapi"
+      - "/cygdrive/c/Program Files/Git/cmd/tapi.com"
+      - "/cygdrive/c/Program Files/Git/cmd/tapi.exe"
+      - "/cygdrive/c/Program Files/Git/cmd/tapi"
+      - "/cygdrive/c/Program Files/CMake/bin/tapi.com"
+      - "/cygdrive/c/Program Files/CMake/bin/tapi.exe"
+      - "/cygdrive/c/Program Files/CMake/bin/tapi"
+      - "/usr/x86_64-w64-mingw32/bin/tapi.com"
+      - "/usr/x86_64-w64-mingw32/bin/tapi.exe"
+      - "/usr/x86_64-w64-mingw32/bin/tapi"
+      - "/cygdrive/c/Program Files/dotnet/tapi.com"
+      - "/cygdrive/c/Program Files/dotnet/tapi.exe"
+      - "/cygdrive/c/Program Files/dotnet/tapi"
+      - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR/tapi.com"
+      - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR/tapi.exe"
+      - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR/tapi"
+      - "/cygdrive/c/Program Files/nodejs/tapi.com"
+      - "/cygdrive/c/Program Files/nodejs/tapi.exe"
+      - "/cygdrive/c/Program Files/nodejs/tapi"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps/tapi.com"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps/tapi.exe"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps/tapi"
+      - "/cygdrive/d/Software/Microsoft VS Code/bin/tapi.com"
+      - "/cygdrive/d/Software/Microsoft VS Code/bin/tapi.exe"
+      - "/cygdrive/d/Software/Microsoft VS Code/bin/tapi"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib/tapi.com"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib/tapi.exe"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib/tapi"
+      - "/cygdrive/c/Users/Adam/.dotnet/tools/tapi.com"
+      - "/cygdrive/c/Users/Adam/.dotnet/tools/tapi.exe"
+      - "/cygdrive/c/Users/Adam/.dotnet/tools/tapi"
+      - "/cygdrive/c/Users/Adam/AppData/Roaming/npm/tapi.com"
+      - "/cygdrive/c/Users/Adam/AppData/Roaming/npm/tapi.exe"
+      - "/cygdrive/c/Users/Adam/AppData/Roaming/npm/tapi"
+      - "/cygdrive/c/Users/Adam/.aftman/bin/tapi.com"
+      - "/cygdrive/c/Users/Adam/.aftman/bin/tapi.exe"
+      - "/cygdrive/c/Users/Adam/.aftman/bin/tapi"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama/tapi.com"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama/tapi.exe"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama/tapi"
+    found: false
+    search_context:
+      ENV{PATH}:
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/cygdrive/c/WINDOWS/system32"
+        - "/cygdrive/c/WINDOWS"
+        - "/cygdrive/c/WINDOWS/System32/Wbem"
+        - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0"
+        - "/cygdrive/c/WINDOWS/System32/OpenSSH"
+        - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common"
+        - "/cygdrive/c/Program Files/Git/cmd"
+        - "/cygdrive/c/Program Files/CMake/bin"
+        - "/usr/x86_64-w64-mingw32/bin"
+        - "/cygdrive/c/Program Files/dotnet"
+        - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR"
+        - "/cygdrive/c/Program Files/nodejs"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps"
+        - "/cygdrive/d/Software/Microsoft VS Code/bin"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib"
+        - "/cygdrive/c/Users/Adam/.dotnet/tools"
+        - "/cygdrive/c/Users/Adam/AppData/Roaming/npm"
+        - "/cygdrive/c/Users/Adam/.aftman/bin"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2.1/Modules/Compiler/GNU-FindBinUtils.cmake:18 (find_program)"
+      - "/usr/share/cmake-4.2.1/Modules/CMakeDetermineCXXCompiler.cmake:207 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_CXX_COMPILER_AR"
+    description: "A wrapper around 'ar' adding the appropriate '--plugin' option for the GCC compiler"
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "gcc-ar-16.0"
+      - "gcc-ar-16"
+      - "gcc-ar16"
+      - "gcc-ar"
+    candidate_directories:
+      - "/usr/bin/"
+      - "/usr/local/bin/"
+      - "/cygdrive/c/WINDOWS/system32/"
+      - "/cygdrive/c/WINDOWS/"
+      - "/cygdrive/c/WINDOWS/System32/Wbem/"
+      - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+      - "/cygdrive/c/WINDOWS/System32/OpenSSH/"
+      - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common/"
+      - "/cygdrive/c/Program Files/Git/cmd/"
+      - "/cygdrive/c/Program Files/CMake/bin/"
+      - "/usr/x86_64-w64-mingw32/bin/"
+      - "/cygdrive/c/Program Files/dotnet/"
+      - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR/"
+      - "/cygdrive/c/Program Files/nodejs/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps/"
+      - "/cygdrive/d/Software/Microsoft VS Code/bin/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib/"
+      - "/cygdrive/c/Users/Adam/.dotnet/tools/"
+      - "/cygdrive/c/Users/Adam/AppData/Roaming/npm/"
+      - "/cygdrive/c/Users/Adam/.aftman/bin/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama/"
+    searched_directories:
+      - "/usr/bin/gcc-ar-16.0.com"
+      - "/usr/bin/gcc-ar-16.0.exe"
+      - "/usr/bin/gcc-ar-16.0"
+      - "/usr/local/bin/gcc-ar-16.0.com"
+      - "/usr/local/bin/gcc-ar-16.0.exe"
+      - "/usr/local/bin/gcc-ar-16.0"
+      - "/cygdrive/c/WINDOWS/system32/gcc-ar-16.0.com"
+      - "/cygdrive/c/WINDOWS/system32/gcc-ar-16.0.exe"
+      - "/cygdrive/c/WINDOWS/system32/gcc-ar-16.0"
+      - "/cygdrive/c/WINDOWS/gcc-ar-16.0.com"
+      - "/cygdrive/c/WINDOWS/gcc-ar-16.0.exe"
+      - "/cygdrive/c/WINDOWS/gcc-ar-16.0"
+      - "/cygdrive/c/WINDOWS/System32/Wbem/gcc-ar-16.0.com"
+      - "/cygdrive/c/WINDOWS/System32/Wbem/gcc-ar-16.0.exe"
+      - "/cygdrive/c/WINDOWS/System32/Wbem/gcc-ar-16.0"
+      - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0/gcc-ar-16.0.com"
+      - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0/gcc-ar-16.0.exe"
+      - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0/gcc-ar-16.0"
+      - "/cygdrive/c/WINDOWS/System32/OpenSSH/gcc-ar-16.0.com"
+      - "/cygdrive/c/WINDOWS/System32/OpenSSH/gcc-ar-16.0.exe"
+      - "/cygdrive/c/WINDOWS/System32/OpenSSH/gcc-ar-16.0"
+      - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common/gcc-ar-16.0.com"
+      - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common/gcc-ar-16.0.exe"
+      - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common/gcc-ar-16.0"
+      - "/cygdrive/c/Program Files/Git/cmd/gcc-ar-16.0.com"
+      - "/cygdrive/c/Program Files/Git/cmd/gcc-ar-16.0.exe"
+      - "/cygdrive/c/Program Files/Git/cmd/gcc-ar-16.0"
+      - "/cygdrive/c/Program Files/CMake/bin/gcc-ar-16.0.com"
+      - "/cygdrive/c/Program Files/CMake/bin/gcc-ar-16.0.exe"
+      - "/cygdrive/c/Program Files/CMake/bin/gcc-ar-16.0"
+      - "/usr/x86_64-w64-mingw32/bin/gcc-ar-16.0.com"
+      - "/usr/x86_64-w64-mingw32/bin/gcc-ar-16.0.exe"
+      - "/usr/x86_64-w64-mingw32/bin/gcc-ar-16.0"
+      - "/cygdrive/c/Program Files/dotnet/gcc-ar-16.0.com"
+      - "/cygdrive/c/Program Files/dotnet/gcc-ar-16.0.exe"
+      - "/cygdrive/c/Program Files/dotnet/gcc-ar-16.0"
+      - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR/gcc-ar-16.0.com"
+      - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR/gcc-ar-16.0.exe"
+      - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR/gcc-ar-16.0"
+      - "/cygdrive/c/Program Files/nodejs/gcc-ar-16.0.com"
+      - "/cygdrive/c/Program Files/nodejs/gcc-ar-16.0.exe"
+      - "/cygdrive/c/Program Files/nodejs/gcc-ar-16.0"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps/gcc-ar-16.0.com"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps/gcc-ar-16.0.exe"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps/gcc-ar-16.0"
+      - "/cygdrive/d/Software/Microsoft VS Code/bin/gcc-ar-16.0.com"
+      - "/cygdrive/d/Software/Microsoft VS Code/bin/gcc-ar-16.0.exe"
+      - "/cygdrive/d/Software/Microsoft VS Code/bin/gcc-ar-16.0"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib/gcc-ar-16.0.com"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib/gcc-ar-16.0.exe"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib/gcc-ar-16.0"
+      - "/cygdrive/c/Users/Adam/.dotnet/tools/gcc-ar-16.0.com"
+      - "/cygdrive/c/Users/Adam/.dotnet/tools/gcc-ar-16.0.exe"
+      - "/cygdrive/c/Users/Adam/.dotnet/tools/gcc-ar-16.0"
+      - "/cygdrive/c/Users/Adam/AppData/Roaming/npm/gcc-ar-16.0.com"
+      - "/cygdrive/c/Users/Adam/AppData/Roaming/npm/gcc-ar-16.0.exe"
+      - "/cygdrive/c/Users/Adam/AppData/Roaming/npm/gcc-ar-16.0"
+      - "/cygdrive/c/Users/Adam/.aftman/bin/gcc-ar-16.0.com"
+      - "/cygdrive/c/Users/Adam/.aftman/bin/gcc-ar-16.0.exe"
+      - "/cygdrive/c/Users/Adam/.aftman/bin/gcc-ar-16.0"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama/gcc-ar-16.0.com"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama/gcc-ar-16.0.exe"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama/gcc-ar-16.0"
+      - "/usr/bin/gcc-ar-16.com"
+      - "/usr/bin/gcc-ar-16.exe"
+      - "/usr/bin/gcc-ar-16"
+      - "/usr/local/bin/gcc-ar-16.com"
+      - "/usr/local/bin/gcc-ar-16.exe"
+      - "/usr/local/bin/gcc-ar-16"
+      - "/cygdrive/c/WINDOWS/system32/gcc-ar-16.com"
+      - "/cygdrive/c/WINDOWS/system32/gcc-ar-16.exe"
+      - "/cygdrive/c/WINDOWS/system32/gcc-ar-16"
+      - "/cygdrive/c/WINDOWS/gcc-ar-16.com"
+      - "/cygdrive/c/WINDOWS/gcc-ar-16.exe"
+      - "/cygdrive/c/WINDOWS/gcc-ar-16"
+      - "/cygdrive/c/WINDOWS/System32/Wbem/gcc-ar-16.com"
+      - "/cygdrive/c/WINDOWS/System32/Wbem/gcc-ar-16.exe"
+      - "/cygdrive/c/WINDOWS/System32/Wbem/gcc-ar-16"
+      - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0/gcc-ar-16.com"
+      - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0/gcc-ar-16.exe"
+      - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0/gcc-ar-16"
+      - "/cygdrive/c/WINDOWS/System32/OpenSSH/gcc-ar-16.com"
+      - "/cygdrive/c/WINDOWS/System32/OpenSSH/gcc-ar-16.exe"
+      - "/cygdrive/c/WINDOWS/System32/OpenSSH/gcc-ar-16"
+      - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common/gcc-ar-16.com"
+      - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common/gcc-ar-16.exe"
+      - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common/gcc-ar-16"
+      - "/cygdrive/c/Program Files/Git/cmd/gcc-ar-16.com"
+      - "/cygdrive/c/Program Files/Git/cmd/gcc-ar-16.exe"
+      - "/cygdrive/c/Program Files/Git/cmd/gcc-ar-16"
+      - "/cygdrive/c/Program Files/CMake/bin/gcc-ar-16.com"
+      - "/cygdrive/c/Program Files/CMake/bin/gcc-ar-16.exe"
+      - "/cygdrive/c/Program Files/CMake/bin/gcc-ar-16"
+      - "/usr/x86_64-w64-mingw32/bin/gcc-ar-16.com"
+      - "/usr/x86_64-w64-mingw32/bin/gcc-ar-16.exe"
+      - "/usr/x86_64-w64-mingw32/bin/gcc-ar-16"
+      - "/cygdrive/c/Program Files/dotnet/gcc-ar-16.com"
+      - "/cygdrive/c/Program Files/dotnet/gcc-ar-16.exe"
+      - "/cygdrive/c/Program Files/dotnet/gcc-ar-16"
+      - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR/gcc-ar-16.com"
+      - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR/gcc-ar-16.exe"
+      - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR/gcc-ar-16"
+      - "/cygdrive/c/Program Files/nodejs/gcc-ar-16.com"
+      - "/cygdrive/c/Program Files/nodejs/gcc-ar-16.exe"
+      - "/cygdrive/c/Program Files/nodejs/gcc-ar-16"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps/gcc-ar-16.com"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps/gcc-ar-16.exe"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps/gcc-ar-16"
+      - "/cygdrive/d/Software/Microsoft VS Code/bin/gcc-ar-16.com"
+      - "/cygdrive/d/Software/Microsoft VS Code/bin/gcc-ar-16.exe"
+      - "/cygdrive/d/Software/Microsoft VS Code/bin/gcc-ar-16"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib/gcc-ar-16.com"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib/gcc-ar-16.exe"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib/gcc-ar-16"
+      - "/cygdrive/c/Users/Adam/.dotnet/tools/gcc-ar-16.com"
+      - "/cygdrive/c/Users/Adam/.dotnet/tools/gcc-ar-16.exe"
+      - "/cygdrive/c/Users/Adam/.dotnet/tools/gcc-ar-16"
+      - "/cygdrive/c/Users/Adam/AppData/Roaming/npm/gcc-ar-16.com"
+      - "/cygdrive/c/Users/Adam/AppData/Roaming/npm/gcc-ar-16.exe"
+      - "/cygdrive/c/Users/Adam/AppData/Roaming/npm/gcc-ar-16"
+      - "/cygdrive/c/Users/Adam/.aftman/bin/gcc-ar-16.com"
+      - "/cygdrive/c/Users/Adam/.aftman/bin/gcc-ar-16.exe"
+      - "/cygdrive/c/Users/Adam/.aftman/bin/gcc-ar-16"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama/gcc-ar-16.com"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama/gcc-ar-16.exe"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama/gcc-ar-16"
+      - "/usr/bin/gcc-ar16.com"
+      - "/usr/bin/gcc-ar16.exe"
+      - "/usr/bin/gcc-ar16"
+      - "/usr/local/bin/gcc-ar16.com"
+      - "/usr/local/bin/gcc-ar16.exe"
+      - "/usr/local/bin/gcc-ar16"
+      - "/cygdrive/c/WINDOWS/system32/gcc-ar16.com"
+      - "/cygdrive/c/WINDOWS/system32/gcc-ar16.exe"
+      - "/cygdrive/c/WINDOWS/system32/gcc-ar16"
+      - "/cygdrive/c/WINDOWS/gcc-ar16.com"
+      - "/cygdrive/c/WINDOWS/gcc-ar16.exe"
+      - "/cygdrive/c/WINDOWS/gcc-ar16"
+      - "/cygdrive/c/WINDOWS/System32/Wbem/gcc-ar16.com"
+      - "/cygdrive/c/WINDOWS/System32/Wbem/gcc-ar16.exe"
+      - "/cygdrive/c/WINDOWS/System32/Wbem/gcc-ar16"
+      - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0/gcc-ar16.com"
+      - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0/gcc-ar16.exe"
+      - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0/gcc-ar16"
+      - "/cygdrive/c/WINDOWS/System32/OpenSSH/gcc-ar16.com"
+      - "/cygdrive/c/WINDOWS/System32/OpenSSH/gcc-ar16.exe"
+      - "/cygdrive/c/WINDOWS/System32/OpenSSH/gcc-ar16"
+      - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common/gcc-ar16.com"
+      - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common/gcc-ar16.exe"
+      - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common/gcc-ar16"
+      - "/cygdrive/c/Program Files/Git/cmd/gcc-ar16.com"
+      - "/cygdrive/c/Program Files/Git/cmd/gcc-ar16.exe"
+      - "/cygdrive/c/Program Files/Git/cmd/gcc-ar16"
+      - "/cygdrive/c/Program Files/CMake/bin/gcc-ar16.com"
+      - "/cygdrive/c/Program Files/CMake/bin/gcc-ar16.exe"
+      - "/cygdrive/c/Program Files/CMake/bin/gcc-ar16"
+      - "/usr/x86_64-w64-mingw32/bin/gcc-ar16.com"
+      - "/usr/x86_64-w64-mingw32/bin/gcc-ar16.exe"
+      - "/usr/x86_64-w64-mingw32/bin/gcc-ar16"
+      - "/cygdrive/c/Program Files/dotnet/gcc-ar16.com"
+      - "/cygdrive/c/Program Files/dotnet/gcc-ar16.exe"
+      - "/cygdrive/c/Program Files/dotnet/gcc-ar16"
+      - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR/gcc-ar16.com"
+      - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR/gcc-ar16.exe"
+      - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR/gcc-ar16"
+      - "/cygdrive/c/Program Files/nodejs/gcc-ar16.com"
+      - "/cygdrive/c/Program Files/nodejs/gcc-ar16.exe"
+      - "/cygdrive/c/Program Files/nodejs/gcc-ar16"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps/gcc-ar16.com"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps/gcc-ar16.exe"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps/gcc-ar16"
+      - "/cygdrive/d/Software/Microsoft VS Code/bin/gcc-ar16.com"
+      - "/cygdrive/d/Software/Microsoft VS Code/bin/gcc-ar16.exe"
+      - "/cygdrive/d/Software/Microsoft VS Code/bin/gcc-ar16"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib/gcc-ar16.com"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib/gcc-ar16.exe"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib/gcc-ar16"
+      - "/cygdrive/c/Users/Adam/.dotnet/tools/gcc-ar16.com"
+      - "/cygdrive/c/Users/Adam/.dotnet/tools/gcc-ar16.exe"
+      - "/cygdrive/c/Users/Adam/.dotnet/tools/gcc-ar16"
+      - "/cygdrive/c/Users/Adam/AppData/Roaming/npm/gcc-ar16.com"
+      - "/cygdrive/c/Users/Adam/AppData/Roaming/npm/gcc-ar16.exe"
+      - "/cygdrive/c/Users/Adam/AppData/Roaming/npm/gcc-ar16"
+      - "/cygdrive/c/Users/Adam/.aftman/bin/gcc-ar16.com"
+      - "/cygdrive/c/Users/Adam/.aftman/bin/gcc-ar16.exe"
+      - "/cygdrive/c/Users/Adam/.aftman/bin/gcc-ar16"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama/gcc-ar16.com"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama/gcc-ar16.exe"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama/gcc-ar16"
+      - "/usr/bin/gcc-ar.com"
+    found: "/usr/bin/gcc-ar.exe"
+    search_context:
+      ENV{PATH}:
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/cygdrive/c/WINDOWS/system32"
+        - "/cygdrive/c/WINDOWS"
+        - "/cygdrive/c/WINDOWS/System32/Wbem"
+        - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0"
+        - "/cygdrive/c/WINDOWS/System32/OpenSSH"
+        - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common"
+        - "/cygdrive/c/Program Files/Git/cmd"
+        - "/cygdrive/c/Program Files/CMake/bin"
+        - "/usr/x86_64-w64-mingw32/bin"
+        - "/cygdrive/c/Program Files/dotnet"
+        - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR"
+        - "/cygdrive/c/Program Files/nodejs"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps"
+        - "/cygdrive/d/Software/Microsoft VS Code/bin"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib"
+        - "/cygdrive/c/Users/Adam/.dotnet/tools"
+        - "/cygdrive/c/Users/Adam/AppData/Roaming/npm"
+        - "/cygdrive/c/Users/Adam/.aftman/bin"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2.1/Modules/Compiler/GNU-FindBinUtils.cmake:30 (find_program)"
+      - "/usr/share/cmake-4.2.1/Modules/CMakeDetermineCXXCompiler.cmake:207 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_CXX_COMPILER_RANLIB"
+    description: "A wrapper around 'ranlib' adding the appropriate '--plugin' option for the GCC compiler"
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "gcc-ranlib-16.0"
+      - "gcc-ranlib-16"
+      - "gcc-ranlib16"
+      - "gcc-ranlib"
+    candidate_directories:
+      - "/usr/bin/"
+      - "/usr/local/bin/"
+      - "/cygdrive/c/WINDOWS/system32/"
+      - "/cygdrive/c/WINDOWS/"
+      - "/cygdrive/c/WINDOWS/System32/Wbem/"
+      - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+      - "/cygdrive/c/WINDOWS/System32/OpenSSH/"
+      - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common/"
+      - "/cygdrive/c/Program Files/Git/cmd/"
+      - "/cygdrive/c/Program Files/CMake/bin/"
+      - "/usr/x86_64-w64-mingw32/bin/"
+      - "/cygdrive/c/Program Files/dotnet/"
+      - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR/"
+      - "/cygdrive/c/Program Files/nodejs/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps/"
+      - "/cygdrive/d/Software/Microsoft VS Code/bin/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib/"
+      - "/cygdrive/c/Users/Adam/.dotnet/tools/"
+      - "/cygdrive/c/Users/Adam/AppData/Roaming/npm/"
+      - "/cygdrive/c/Users/Adam/.aftman/bin/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama/"
+    searched_directories:
+      - "/usr/bin/gcc-ranlib-16.0.com"
+      - "/usr/bin/gcc-ranlib-16.0.exe"
+      - "/usr/bin/gcc-ranlib-16.0"
+      - "/usr/local/bin/gcc-ranlib-16.0.com"
+      - "/usr/local/bin/gcc-ranlib-16.0.exe"
+      - "/usr/local/bin/gcc-ranlib-16.0"
+      - "/cygdrive/c/WINDOWS/system32/gcc-ranlib-16.0.com"
+      - "/cygdrive/c/WINDOWS/system32/gcc-ranlib-16.0.exe"
+      - "/cygdrive/c/WINDOWS/system32/gcc-ranlib-16.0"
+      - "/cygdrive/c/WINDOWS/gcc-ranlib-16.0.com"
+      - "/cygdrive/c/WINDOWS/gcc-ranlib-16.0.exe"
+      - "/cygdrive/c/WINDOWS/gcc-ranlib-16.0"
+      - "/cygdrive/c/WINDOWS/System32/Wbem/gcc-ranlib-16.0.com"
+      - "/cygdrive/c/WINDOWS/System32/Wbem/gcc-ranlib-16.0.exe"
+      - "/cygdrive/c/WINDOWS/System32/Wbem/gcc-ranlib-16.0"
+      - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0/gcc-ranlib-16.0.com"
+      - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0/gcc-ranlib-16.0.exe"
+      - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0/gcc-ranlib-16.0"
+      - "/cygdrive/c/WINDOWS/System32/OpenSSH/gcc-ranlib-16.0.com"
+      - "/cygdrive/c/WINDOWS/System32/OpenSSH/gcc-ranlib-16.0.exe"
+      - "/cygdrive/c/WINDOWS/System32/OpenSSH/gcc-ranlib-16.0"
+      - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common/gcc-ranlib-16.0.com"
+      - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common/gcc-ranlib-16.0.exe"
+      - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common/gcc-ranlib-16.0"
+      - "/cygdrive/c/Program Files/Git/cmd/gcc-ranlib-16.0.com"
+      - "/cygdrive/c/Program Files/Git/cmd/gcc-ranlib-16.0.exe"
+      - "/cygdrive/c/Program Files/Git/cmd/gcc-ranlib-16.0"
+      - "/cygdrive/c/Program Files/CMake/bin/gcc-ranlib-16.0.com"
+      - "/cygdrive/c/Program Files/CMake/bin/gcc-ranlib-16.0.exe"
+      - "/cygdrive/c/Program Files/CMake/bin/gcc-ranlib-16.0"
+      - "/usr/x86_64-w64-mingw32/bin/gcc-ranlib-16.0.com"
+      - "/usr/x86_64-w64-mingw32/bin/gcc-ranlib-16.0.exe"
+      - "/usr/x86_64-w64-mingw32/bin/gcc-ranlib-16.0"
+      - "/cygdrive/c/Program Files/dotnet/gcc-ranlib-16.0.com"
+      - "/cygdrive/c/Program Files/dotnet/gcc-ranlib-16.0.exe"
+      - "/cygdrive/c/Program Files/dotnet/gcc-ranlib-16.0"
+      - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR/gcc-ranlib-16.0.com"
+      - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR/gcc-ranlib-16.0.exe"
+      - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR/gcc-ranlib-16.0"
+      - "/cygdrive/c/Program Files/nodejs/gcc-ranlib-16.0.com"
+      - "/cygdrive/c/Program Files/nodejs/gcc-ranlib-16.0.exe"
+      - "/cygdrive/c/Program Files/nodejs/gcc-ranlib-16.0"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps/gcc-ranlib-16.0.com"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps/gcc-ranlib-16.0.exe"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps/gcc-ranlib-16.0"
+      - "/cygdrive/d/Software/Microsoft VS Code/bin/gcc-ranlib-16.0.com"
+      - "/cygdrive/d/Software/Microsoft VS Code/bin/gcc-ranlib-16.0.exe"
+      - "/cygdrive/d/Software/Microsoft VS Code/bin/gcc-ranlib-16.0"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib/gcc-ranlib-16.0.com"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib/gcc-ranlib-16.0.exe"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib/gcc-ranlib-16.0"
+      - "/cygdrive/c/Users/Adam/.dotnet/tools/gcc-ranlib-16.0.com"
+      - "/cygdrive/c/Users/Adam/.dotnet/tools/gcc-ranlib-16.0.exe"
+      - "/cygdrive/c/Users/Adam/.dotnet/tools/gcc-ranlib-16.0"
+      - "/cygdrive/c/Users/Adam/AppData/Roaming/npm/gcc-ranlib-16.0.com"
+      - "/cygdrive/c/Users/Adam/AppData/Roaming/npm/gcc-ranlib-16.0.exe"
+      - "/cygdrive/c/Users/Adam/AppData/Roaming/npm/gcc-ranlib-16.0"
+      - "/cygdrive/c/Users/Adam/.aftman/bin/gcc-ranlib-16.0.com"
+      - "/cygdrive/c/Users/Adam/.aftman/bin/gcc-ranlib-16.0.exe"
+      - "/cygdrive/c/Users/Adam/.aftman/bin/gcc-ranlib-16.0"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama/gcc-ranlib-16.0.com"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama/gcc-ranlib-16.0.exe"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama/gcc-ranlib-16.0"
+      - "/usr/bin/gcc-ranlib-16.com"
+      - "/usr/bin/gcc-ranlib-16.exe"
+      - "/usr/bin/gcc-ranlib-16"
+      - "/usr/local/bin/gcc-ranlib-16.com"
+      - "/usr/local/bin/gcc-ranlib-16.exe"
+      - "/usr/local/bin/gcc-ranlib-16"
+      - "/cygdrive/c/WINDOWS/system32/gcc-ranlib-16.com"
+      - "/cygdrive/c/WINDOWS/system32/gcc-ranlib-16.exe"
+      - "/cygdrive/c/WINDOWS/system32/gcc-ranlib-16"
+      - "/cygdrive/c/WINDOWS/gcc-ranlib-16.com"
+      - "/cygdrive/c/WINDOWS/gcc-ranlib-16.exe"
+      - "/cygdrive/c/WINDOWS/gcc-ranlib-16"
+      - "/cygdrive/c/WINDOWS/System32/Wbem/gcc-ranlib-16.com"
+      - "/cygdrive/c/WINDOWS/System32/Wbem/gcc-ranlib-16.exe"
+      - "/cygdrive/c/WINDOWS/System32/Wbem/gcc-ranlib-16"
+      - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0/gcc-ranlib-16.com"
+      - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0/gcc-ranlib-16.exe"
+      - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0/gcc-ranlib-16"
+      - "/cygdrive/c/WINDOWS/System32/OpenSSH/gcc-ranlib-16.com"
+      - "/cygdrive/c/WINDOWS/System32/OpenSSH/gcc-ranlib-16.exe"
+      - "/cygdrive/c/WINDOWS/System32/OpenSSH/gcc-ranlib-16"
+      - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common/gcc-ranlib-16.com"
+      - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common/gcc-ranlib-16.exe"
+      - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common/gcc-ranlib-16"
+      - "/cygdrive/c/Program Files/Git/cmd/gcc-ranlib-16.com"
+      - "/cygdrive/c/Program Files/Git/cmd/gcc-ranlib-16.exe"
+      - "/cygdrive/c/Program Files/Git/cmd/gcc-ranlib-16"
+      - "/cygdrive/c/Program Files/CMake/bin/gcc-ranlib-16.com"
+      - "/cygdrive/c/Program Files/CMake/bin/gcc-ranlib-16.exe"
+      - "/cygdrive/c/Program Files/CMake/bin/gcc-ranlib-16"
+      - "/usr/x86_64-w64-mingw32/bin/gcc-ranlib-16.com"
+      - "/usr/x86_64-w64-mingw32/bin/gcc-ranlib-16.exe"
+      - "/usr/x86_64-w64-mingw32/bin/gcc-ranlib-16"
+      - "/cygdrive/c/Program Files/dotnet/gcc-ranlib-16.com"
+      - "/cygdrive/c/Program Files/dotnet/gcc-ranlib-16.exe"
+      - "/cygdrive/c/Program Files/dotnet/gcc-ranlib-16"
+      - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR/gcc-ranlib-16.com"
+      - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR/gcc-ranlib-16.exe"
+      - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR/gcc-ranlib-16"
+      - "/cygdrive/c/Program Files/nodejs/gcc-ranlib-16.com"
+      - "/cygdrive/c/Program Files/nodejs/gcc-ranlib-16.exe"
+      - "/cygdrive/c/Program Files/nodejs/gcc-ranlib-16"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps/gcc-ranlib-16.com"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps/gcc-ranlib-16.exe"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps/gcc-ranlib-16"
+      - "/cygdrive/d/Software/Microsoft VS Code/bin/gcc-ranlib-16.com"
+      - "/cygdrive/d/Software/Microsoft VS Code/bin/gcc-ranlib-16.exe"
+      - "/cygdrive/d/Software/Microsoft VS Code/bin/gcc-ranlib-16"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib/gcc-ranlib-16.com"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib/gcc-ranlib-16.exe"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib/gcc-ranlib-16"
+      - "/cygdrive/c/Users/Adam/.dotnet/tools/gcc-ranlib-16.com"
+      - "/cygdrive/c/Users/Adam/.dotnet/tools/gcc-ranlib-16.exe"
+      - "/cygdrive/c/Users/Adam/.dotnet/tools/gcc-ranlib-16"
+      - "/cygdrive/c/Users/Adam/AppData/Roaming/npm/gcc-ranlib-16.com"
+      - "/cygdrive/c/Users/Adam/AppData/Roaming/npm/gcc-ranlib-16.exe"
+      - "/cygdrive/c/Users/Adam/AppData/Roaming/npm/gcc-ranlib-16"
+      - "/cygdrive/c/Users/Adam/.aftman/bin/gcc-ranlib-16.com"
+      - "/cygdrive/c/Users/Adam/.aftman/bin/gcc-ranlib-16.exe"
+      - "/cygdrive/c/Users/Adam/.aftman/bin/gcc-ranlib-16"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama/gcc-ranlib-16.com"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama/gcc-ranlib-16.exe"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama/gcc-ranlib-16"
+      - "/usr/bin/gcc-ranlib16.com"
+      - "/usr/bin/gcc-ranlib16.exe"
+      - "/usr/bin/gcc-ranlib16"
+      - "/usr/local/bin/gcc-ranlib16.com"
+      - "/usr/local/bin/gcc-ranlib16.exe"
+      - "/usr/local/bin/gcc-ranlib16"
+      - "/cygdrive/c/WINDOWS/system32/gcc-ranlib16.com"
+      - "/cygdrive/c/WINDOWS/system32/gcc-ranlib16.exe"
+      - "/cygdrive/c/WINDOWS/system32/gcc-ranlib16"
+      - "/cygdrive/c/WINDOWS/gcc-ranlib16.com"
+      - "/cygdrive/c/WINDOWS/gcc-ranlib16.exe"
+      - "/cygdrive/c/WINDOWS/gcc-ranlib16"
+      - "/cygdrive/c/WINDOWS/System32/Wbem/gcc-ranlib16.com"
+      - "/cygdrive/c/WINDOWS/System32/Wbem/gcc-ranlib16.exe"
+      - "/cygdrive/c/WINDOWS/System32/Wbem/gcc-ranlib16"
+      - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0/gcc-ranlib16.com"
+      - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0/gcc-ranlib16.exe"
+      - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0/gcc-ranlib16"
+      - "/cygdrive/c/WINDOWS/System32/OpenSSH/gcc-ranlib16.com"
+      - "/cygdrive/c/WINDOWS/System32/OpenSSH/gcc-ranlib16.exe"
+      - "/cygdrive/c/WINDOWS/System32/OpenSSH/gcc-ranlib16"
+      - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common/gcc-ranlib16.com"
+      - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common/gcc-ranlib16.exe"
+      - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common/gcc-ranlib16"
+      - "/cygdrive/c/Program Files/Git/cmd/gcc-ranlib16.com"
+      - "/cygdrive/c/Program Files/Git/cmd/gcc-ranlib16.exe"
+      - "/cygdrive/c/Program Files/Git/cmd/gcc-ranlib16"
+      - "/cygdrive/c/Program Files/CMake/bin/gcc-ranlib16.com"
+      - "/cygdrive/c/Program Files/CMake/bin/gcc-ranlib16.exe"
+      - "/cygdrive/c/Program Files/CMake/bin/gcc-ranlib16"
+      - "/usr/x86_64-w64-mingw32/bin/gcc-ranlib16.com"
+      - "/usr/x86_64-w64-mingw32/bin/gcc-ranlib16.exe"
+      - "/usr/x86_64-w64-mingw32/bin/gcc-ranlib16"
+      - "/cygdrive/c/Program Files/dotnet/gcc-ranlib16.com"
+      - "/cygdrive/c/Program Files/dotnet/gcc-ranlib16.exe"
+      - "/cygdrive/c/Program Files/dotnet/gcc-ranlib16"
+      - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR/gcc-ranlib16.com"
+      - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR/gcc-ranlib16.exe"
+      - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR/gcc-ranlib16"
+      - "/cygdrive/c/Program Files/nodejs/gcc-ranlib16.com"
+      - "/cygdrive/c/Program Files/nodejs/gcc-ranlib16.exe"
+      - "/cygdrive/c/Program Files/nodejs/gcc-ranlib16"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps/gcc-ranlib16.com"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps/gcc-ranlib16.exe"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps/gcc-ranlib16"
+      - "/cygdrive/d/Software/Microsoft VS Code/bin/gcc-ranlib16.com"
+      - "/cygdrive/d/Software/Microsoft VS Code/bin/gcc-ranlib16.exe"
+      - "/cygdrive/d/Software/Microsoft VS Code/bin/gcc-ranlib16"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib/gcc-ranlib16.com"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib/gcc-ranlib16.exe"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib/gcc-ranlib16"
+      - "/cygdrive/c/Users/Adam/.dotnet/tools/gcc-ranlib16.com"
+      - "/cygdrive/c/Users/Adam/.dotnet/tools/gcc-ranlib16.exe"
+      - "/cygdrive/c/Users/Adam/.dotnet/tools/gcc-ranlib16"
+      - "/cygdrive/c/Users/Adam/AppData/Roaming/npm/gcc-ranlib16.com"
+      - "/cygdrive/c/Users/Adam/AppData/Roaming/npm/gcc-ranlib16.exe"
+      - "/cygdrive/c/Users/Adam/AppData/Roaming/npm/gcc-ranlib16"
+      - "/cygdrive/c/Users/Adam/.aftman/bin/gcc-ranlib16.com"
+      - "/cygdrive/c/Users/Adam/.aftman/bin/gcc-ranlib16.exe"
+      - "/cygdrive/c/Users/Adam/.aftman/bin/gcc-ranlib16"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama/gcc-ranlib16.com"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama/gcc-ranlib16.exe"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama/gcc-ranlib16"
+      - "/usr/bin/gcc-ranlib.com"
+    found: "/usr/bin/gcc-ranlib.exe"
+    search_context:
+      ENV{PATH}:
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/cygdrive/c/WINDOWS/system32"
+        - "/cygdrive/c/WINDOWS"
+        - "/cygdrive/c/WINDOWS/System32/Wbem"
+        - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0"
+        - "/cygdrive/c/WINDOWS/System32/OpenSSH"
+        - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common"
+        - "/cygdrive/c/Program Files/Git/cmd"
+        - "/cygdrive/c/Program Files/CMake/bin"
+        - "/usr/x86_64-w64-mingw32/bin"
+        - "/cygdrive/c/Program Files/dotnet"
+        - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR"
+        - "/cygdrive/c/Program Files/nodejs"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps"
+        - "/cygdrive/d/Software/Microsoft VS Code/bin"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib"
+        - "/cygdrive/c/Users/Adam/.dotnet/tools"
+        - "/cygdrive/c/Users/Adam/AppData/Roaming/npm"
+        - "/cygdrive/c/Users/Adam/.aftman/bin"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2.1/Modules/CMakeDetermineRCCompiler.cmake:40 (find_program)"
+      - "/usr/share/cmake-4.2.1/Modules/Platform/CYGWIN-GNU.cmake:57 (enable_language)"
+      - "/usr/share/cmake-4.2.1/Modules/Platform/CYGWIN-GNU-CXX.cmake:2 (__cygwin_compiler_gnu)"
+      - "/usr/share/cmake-4.2.1/Modules/CMakeCXXInformation.cmake:48 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_RC_COMPILER"
+    description: "RC compiler"
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "windres"
+    candidate_directories:
+      - "/usr/local/bin/"
+      - "/usr/bin/"
+      - "/cygdrive/c/WINDOWS/system32/"
+      - "/cygdrive/c/WINDOWS/"
+      - "/cygdrive/c/WINDOWS/System32/Wbem/"
+      - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0/"
+      - "/cygdrive/c/WINDOWS/System32/OpenSSH/"
+      - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common/"
+      - "/cygdrive/c/Program Files/Git/cmd/"
+      - "/cygdrive/c/Program Files/CMake/bin/"
+      - "/usr/x86_64-w64-mingw32/bin/"
+      - "/cygdrive/c/Program Files/dotnet/"
+      - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR/"
+      - "/cygdrive/c/Program Files/nodejs/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps/"
+      - "/cygdrive/d/Software/Microsoft VS Code/bin/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib/"
+      - "/cygdrive/c/Users/Adam/.dotnet/tools/"
+      - "/cygdrive/c/Users/Adam/AppData/Roaming/npm/"
+      - "/cygdrive/c/Users/Adam/.aftman/bin/"
+      - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama/"
+      - "/usr/local/bin/"
+      - "/usr/local/sbin/"
+      - "/usr/local/"
+      - "/usr/bin/"
+      - "/usr/sbin/"
+      - "/usr/"
+      - "/bin/"
+      - "/sbin/"
+      - "/usr/X11R6/bin/"
+      - "/usr/X11R6/sbin/"
+      - "/usr/X11R6/"
+      - "/usr/pkg/bin/"
+      - "/usr/pkg/sbin/"
+      - "/usr/pkg/"
+      - "/opt/bin/"
+      - "/opt/sbin/"
+      - "/opt/"
+    searched_directories:
+      - "/usr/local/bin/windres.com"
+      - "/usr/local/bin/windres.exe"
+      - "/usr/local/bin/windres"
+      - "/usr/bin/windres.com"
+    found: "/usr/bin/windres.exe"
+    search_context:
+      ENV{PATH}:
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/cygdrive/c/WINDOWS/system32"
+        - "/cygdrive/c/WINDOWS"
+        - "/cygdrive/c/WINDOWS/System32/Wbem"
+        - "/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0"
+        - "/cygdrive/c/WINDOWS/System32/OpenSSH"
+        - "/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common"
+        - "/cygdrive/c/Program Files/Git/cmd"
+        - "/cygdrive/c/Program Files/CMake/bin"
+        - "/usr/x86_64-w64-mingw32/bin"
+        - "/cygdrive/c/Program Files/dotnet"
+        - "/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR"
+        - "/cygdrive/c/Program Files/nodejs"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Microsoft/WindowsApps"
+        - "/cygdrive/d/Software/Microsoft VS Code/bin"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Muse Hub/lib"
+        - "/cygdrive/c/Users/Adam/.dotnet/tools"
+        - "/cygdrive/c/Users/Adam/AppData/Roaming/npm"
+        - "/cygdrive/c/Users/Adam/.aftman/bin"
+        - "/cygdrive/c/Users/Adam/AppData/Local/Programs/Ollama"
+      CMAKE_INSTALL_PREFIX: "/usr/local"
+      CMAKE_SYSTEM_PREFIX_PATH:
+        - "/usr/local"
+        - "/usr"
+        - "/"
+        - "/usr"
+        - "/usr/local"
+        - "/usr/X11R6"
+        - "/usr/pkg"
+        - "/opt"
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2.1/Modules/CMakeDetermineCompilerABI.cmake:83 (try_compile)"
+      - "/usr/share/cmake-4.2.1/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:2 (project)"
+    checks:
+      - "Detecting CXX compiler ABI info"
+    directories:
+      source: "/cygdrive/e/Development/Ollama/esp8266-volt_sinus_pro_ultra_6000/simulator/build/CMakeFiles/CMakeScratch/TryCompile-Xp4n2g"
+      binary: "/cygdrive/e/Development/Ollama/esp8266-volt_sinus_pro_ultra_6000/simulator/build/CMakeFiles/CMakeScratch/TryCompile-Xp4n2g"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_CXX_FLAGS_DEBUG: "-g"
+      CMAKE_CXX_SCAN_FOR_MODULES: "OFF"
+      CMAKE_EXE_LINKER_FLAGS: "-Wl,--enable-auto-import"
+    buildResult:
+      variable: "CMAKE_CXX_ABI_COMPILED"
+      cached: true
+      stdout: |
+        Change Dir: '/cygdrive/e/Development/Ollama/esp8266-volt_sinus_pro_ultra_6000/simulator/build/CMakeFiles/CMakeScratch/TryCompile-Xp4n2g'
+        
+        Run Build Command(s): /usr/bin/cmake.exe -E env VERBOSE=1 /usr/bin/make.exe -f Makefile cmTC_07033/fast
+        /usr/bin/make  -f CMakeFiles/cmTC_07033.dir/build.make CMakeFiles/cmTC_07033.dir/build
+        make[1]: Entering directory '/cygdrive/e/Development/Ollama/esp8266-volt_sinus_pro_ultra_6000/simulator/build/CMakeFiles/CMakeScratch/TryCompile-Xp4n2g'
+        Building CXX object CMakeFiles/cmTC_07033.dir/CMakeCXXCompilerABI.cpp.o
+        /usr/bin/c++.exe   -v -o CMakeFiles/cmTC_07033.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake-4.2.1/Modules/CMakeCXXCompilerABI.cpp
+        Using built-in specs.
+        COLLECT_GCC=/usr/bin/c++
+        Target: x86_64-pc-cygwin
+        Configured with: /mnt/share/packages/gccmake/gcc-16/gcc/gcc.x86_64/src/gcc-16-20260322/configure --srcdir=/mnt/share/packages/gccmake/gcc-16/gcc/gcc.x86_64/src/gcc-16-20260322 --prefix=/usr --exec-prefix=/usr --localstatedir=/var --sysconfdir=/etc --docdir=/usr/share/doc/gcc --htmldir=/usr/share/doc/gcc/html -C --build=x86_64-pc-cygwin --host=x86_64-pc-cygwin --target=x86_64-pc-cygwin --without-libiconv-prefix --without-libintl-prefix --libexecdir=/usr/lib --with-gcc-major-version-only --enable-shared --enable-shared-libgcc --enable-static --enable-version-specific-runtime-libs --enable-bootstrap --enable-__cxa_atexit --enable-clocale=newlib --with-dwarf2 --with-tune=generic --enable-languages=ada,c,c++,fortran,lto,objc,obj-c++,jit --enable-graphite --enable-threads=posix --enable-libatomic --enable-libgomp --enable-libquadmath --enable-libquadmath-support --disable-libssp --enable-libada --disable-symvers --disable-multilib --with-gnu-ld --with-gnu-as --with-cloog-include=/usr/include/cloog-isl --without-libiconv-prefix --without-libintl-prefix --with-system-zlib --enable-linker-build-id --with-default-libstdcxx-abi=gcc4-compatible --enable-libstdcxx-filesystem-ts
+        Thread model: posix
+        Supported LTO compression algorithms: zlib zstd
+        gcc version 16.0.1 20260322 (experimental) (GCC) 
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_07033.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_07033.dir/'
+         /usr/lib/gcc/x86_64-pc-cygwin/16/cc1plus.exe -quiet -v -idirafter /usr/lib/gcc/x86_64-pc-cygwin/16/../../../../include/w32api -idirafter /usr/lib/gcc/x86_64-pc-cygwin/16/../../../../x86_64-pc-cygwin/lib/../../include/w32api /usr/share/cmake-4.2.1/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_07033.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -mtune=generic -march=x86-64 -version -o /tmp/ccNgO05j.s
+        GNU C++20 (GCC) version 16.0.1 20260322 (experimental) (x86_64-pc-cygwin)
+        	compiled by GNU C version 16.0.1 20260322 (experimental), GMP version 6.3.0, MPFR version 4.2.2, MPC version 1.3.1, isl version isl-0.27-GMP
+        
+        warning: MPC header version 1.3.1 differs from library version 1.4.0.
+        GGC heuristics: --param ggc-min-expand=30 --param ggc-min-heapsize=4096
+        ignoring nonexistent directory "/usr/lib/gcc/x86_64-pc-cygwin/16/include-fixed"
+        ignoring nonexistent directory "/usr/lib/gcc/x86_64-pc-cygwin/16/../../../../x86_64-pc-cygwin/include"
+        ignoring duplicate directory "/usr/lib/gcc/x86_64-pc-cygwin/16/../../../../x86_64-pc-cygwin/lib/../../include/w32api"
+        #include "..." search starts here:
+        #include <...> search starts here:
+         /usr/lib/gcc/x86_64-pc-cygwin/16/include/c++
+         /usr/lib/gcc/x86_64-pc-cygwin/16/include/c++/x86_64-pc-cygwin
+         /usr/lib/gcc/x86_64-pc-cygwin/16/include/c++/backward
+         /usr/lib/gcc/x86_64-pc-cygwin/16/include
+         /usr/local/include
+         /usr/include
+         /usr/lib/gcc/x86_64-pc-cygwin/16/../../../../include/w32api
+        End of search list.
+        Compiler executable checksum: 6935554c5067732db652444b8914dde3
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_07033.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_07033.dir/'
+         /usr/lib/gcc/x86_64-pc-cygwin/16/../../../../x86_64-pc-cygwin/bin/as.exe -v -o CMakeFiles/cmTC_07033.dir/CMakeCXXCompilerABI.cpp.o /tmp/ccNgO05j.s
+        GNU assembler version 2.46 (x86_64-pc-cygwin) using BFD version (GNU Binutils) 2.46
+        COMPILER_PATH=/usr/lib/gcc/x86_64-pc-cygwin/16/:/usr/lib/gcc/x86_64-pc-cygwin/16/:/usr/lib/gcc/x86_64-pc-cygwin/:/usr/lib/gcc/x86_64-pc-cygwin/16/:/usr/lib/gcc/x86_64-pc-cygwin/:/usr/lib/gcc/x86_64-pc-cygwin/16/../../../../x86_64-pc-cygwin/bin/
+        LIBRARY_PATH=/usr/lib/gcc/x86_64-pc-cygwin/16/:/usr/lib/gcc/x86_64-pc-cygwin/16/../../../../x86_64-pc-cygwin/lib/:/usr/lib/gcc/x86_64-pc-cygwin/16/../../../:/lib/:/usr/lib/
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_07033.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_07033.dir/CMakeCXXCompilerABI.cpp.'
+        Linking CXX executable cmTC_07033.exe
+        /usr/bin/cmake.exe -E cmake_link_script CMakeFiles/cmTC_07033.dir/link.txt --verbose=1
+        Using built-in specs.
+        COLLECT_GCC=/usr/bin/c++
+        COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-pc-cygwin/16/lto-wrapper.exe
+        Target: x86_64-pc-cygwin
+        Configured with: /mnt/share/packages/gccmake/gcc-16/gcc/gcc.x86_64/src/gcc-16-20260322/configure --srcdir=/mnt/share/packages/gccmake/gcc-16/gcc/gcc.x86_64/src/gcc-16-20260322 --prefix=/usr --exec-prefix=/usr --localstatedir=/var --sysconfdir=/etc --docdir=/usr/share/doc/gcc --htmldir=/usr/share/doc/gcc/html -C --build=x86_64-pc-cygwin --host=x86_64-pc-cygwin --target=x86_64-pc-cygwin --without-libiconv-prefix --without-libintl-prefix --libexecdir=/usr/lib --with-gcc-major-version-only --enable-shared --enable-shared-libgcc --enable-static --enable-version-specific-runtime-libs --enable-bootstrap --enable-__cxa_atexit --enable-clocale=newlib --with-dwarf2 --with-tune=generic --enable-languages=ada,c,c++,fortran,lto,objc,obj-c++,jit --enable-graphite --enable-threads=posix --enable-libatomic --enable-libgomp --enable-libquadmath --enable-libquadmath-support --disable-libssp --enable-libada --disable-symvers --disable-multilib --with-gnu-ld --with-gnu-as --with-cloog-include=/usr/include/cloog-isl --without-libiconv-prefix --without-libintl-prefix --with-system-zlib --enable-linker-build-id --with-default-libstdcxx-abi=gcc4-compatible --enable-libstdcxx-filesystem-ts
+        Thread model: posix
+        Supported LTO compression algorithms: zlib zstd
+        gcc version 16.0.1 20260322 (experimental) (GCC) 
+        COMPILER_PATH=/usr/lib/gcc/x86_64-pc-cygwin/16/:/usr/lib/gcc/x86_64-pc-cygwin/16/:/usr/lib/gcc/x86_64-pc-cygwin/:/usr/lib/gcc/x86_64-pc-cygwin/16/:/usr/lib/gcc/x86_64-pc-cygwin/:/usr/lib/gcc/x86_64-pc-cygwin/16/../../../../x86_64-pc-cygwin/bin/
+        LIBRARY_PATH=/usr/lib/gcc/x86_64-pc-cygwin/16/:/usr/lib/gcc/x86_64-pc-cygwin/16/../../../../x86_64-pc-cygwin/lib/:/usr/lib/gcc/x86_64-pc-cygwin/16/../../../:/lib/:/usr/lib/
+        COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_07033.exe' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_07033.'
+         /usr/lib/gcc/x86_64-pc-cygwin/16/collect2.exe -plugin /usr/lib/gcc/x86_64-pc-cygwin/16/cyglto_plugin.dll -plugin-opt=/usr/lib/gcc/x86_64-pc-cygwin/16/lto-wrapper.exe -plugin-opt=-fresolution=/tmp/ccN8DuSg.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lintl -plugin-opt=-pass-through=-liconv -plugin-opt=-pass-through=-lcygwin -plugin-opt=-pass-through=-ladvapi32 -plugin-opt=-pass-through=-lshell32 -plugin-opt=-pass-through=-luser32 -plugin-opt=-pass-through=-lkernel32 -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id -m i386pep --wrap _Znwm --wrap _Znam --wrap _ZdlPv --wrap _ZdaPv --wrap _ZnwmRKSt9nothrow_t --wrap _ZnamRKSt9nothrow_t --wrap _ZdlPvRKSt9nothrow_t --wrap _ZdaPvRKSt9nothrow_t -Bdynamic --dll-search-prefix=cyg --tsaware -o cmTC_07033.exe /usr/lib/gcc/x86_64-pc-cygwin/16/../../../crt0.o /usr/lib/gcc/x86_64-pc-cygwin/16/crtbegin.o -L/usr/lib/gcc/x86_64-pc-cygwin/16 -L/usr/lib/gcc/x86_64-pc-cygwin/16/../../../../x86_64-pc-cygwin/lib -L/usr/lib/gcc/x86_64-pc-cygwin/16/../../.. -L/lib -L/usr/lib --enable-auto-import -v CMakeFiles/cmTC_07033.dir/CMakeCXXCompilerABI.cpp.o --out-implib libcmTC_07033.dll.a --major-image-version 0 --minor-image-version 0 -lstdc++ -lgcc_s -lgcc -lintl -liconv -lcygwin -ladvapi32 -lshell32 -luser32 -lkernel32 -lgcc_s -lgcc /usr/lib/gcc/x86_64-pc-cygwin/16/../../../default-manifest.o /usr/lib/gcc/x86_64-pc-cygwin/16/crtend.o
+        collect2 version 16.0.1 20260322 (experimental)
+        /usr/lib/gcc/x86_64-pc-cygwin/16/../../../../x86_64-pc-cygwin/bin/ld -plugin /usr/lib/gcc/x86_64-pc-cygwin/16/cyglto_plugin.dll -plugin-opt=/usr/lib/gcc/x86_64-pc-cygwin/16/lto-wrapper.exe -plugin-opt=-fresolution=/tmp/ccN8DuSg.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lintl -plugin-opt=-pass-through=-liconv -plugin-opt=-pass-through=-lcygwin -plugin-opt=-pass-through=-ladvapi32 -plugin-opt=-pass-through=-lshell32 -plugin-opt=-pass-through=-luser32 -plugin-opt=-pass-through=-lkernel32 -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id -m i386pep --wrap _Znwm --wrap _Znam --wrap _ZdlPv --wrap _ZdaPv --wrap _ZnwmRKSt9nothrow_t --wrap _ZnamRKSt9nothrow_t --wrap _ZdlPvRKSt9nothrow_t --wrap _ZdaPvRKSt9nothrow_t -Bdynamic --dll-search-prefix=cyg --tsaware -o cmTC_07033.exe /usr/lib/gcc/x86_64-pc-cygwin/16/../../../crt0.o /usr/lib/gcc/x86_64-pc-cygwin/16/crtbegin.o -L/usr/lib/gcc/x86_64-pc-cygwin/16 -L/usr/lib/gcc/x86_64-pc-cygwin/16/../../../../x86_64-pc-cygwin/lib -L/usr/lib/gcc/x86_64-pc-cygwin/16/../../.. -L/lib -L/usr/lib --enable-auto-import -v CMakeFiles/cmTC_07033.dir/CMakeCXXCompilerABI.cpp.o --out-implib libcmTC_07033.dll.a --major-image-version 0 --minor-image-version 0 -lstdc++ -lgcc_s -lgcc -lintl -liconv -lcygwin -ladvapi32 -lshell32 -luser32 -lkernel32 -lgcc_s -lgcc /usr/lib/gcc/x86_64-pc-cygwin/16/../../../default-manifest.o /usr/lib/gcc/x86_64-pc-cygwin/16/crtend.o
+        GNU ld (GNU Binutils) 2.46
+        COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_07033.exe' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_07033.'
+        /usr/bin/c++.exe -Wl,--enable-auto-import -v -Wl,-v CMakeFiles/cmTC_07033.dir/CMakeCXXCompilerABI.cpp.o -o cmTC_07033.exe -Wl,--out-implib,libcmTC_07033.dll.a -Wl,--major-image-version,0,--minor-image-version,0
+        make[1]: Leaving directory '/cygdrive/e/Development/Ollama/esp8266-volt_sinus_pro_ultra_6000/simulator/build/CMakeFiles/CMakeScratch/TryCompile-Xp4n2g'
+        
+      exitCode: 0
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2.1/Modules/CMakeDetermineCompilerABI.cmake:217 (message)"
+      - "/usr/share/cmake-4.2.1/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Parsed CXX implicit include dir info: rv=done
+        found start of include info
+        found start of implicit include info
+          add: [/usr/lib/gcc/x86_64-pc-cygwin/16/include/c++]
+          add: [/usr/lib/gcc/x86_64-pc-cygwin/16/include/c++/x86_64-pc-cygwin]
+          add: [/usr/lib/gcc/x86_64-pc-cygwin/16/include/c++/backward]
+          add: [/usr/lib/gcc/x86_64-pc-cygwin/16/include]
+          add: [/usr/local/include]
+          add: [/usr/include]
+          add: [/usr/lib/gcc/x86_64-pc-cygwin/16/../../../../include/w32api]
+        end of search list found
+        collapse include dir [/usr/lib/gcc/x86_64-pc-cygwin/16/include/c++] ==> [/usr/lib/gcc/x86_64-pc-cygwin/16/include/c++]
+        collapse include dir [/usr/lib/gcc/x86_64-pc-cygwin/16/include/c++/x86_64-pc-cygwin] ==> [/usr/lib/gcc/x86_64-pc-cygwin/16/include/c++/x86_64-pc-cygwin]
+        collapse include dir [/usr/lib/gcc/x86_64-pc-cygwin/16/include/c++/backward] ==> [/usr/lib/gcc/x86_64-pc-cygwin/16/include/c++/backward]
+        collapse include dir [/usr/lib/gcc/x86_64-pc-cygwin/16/include] ==> [/usr/lib/gcc/x86_64-pc-cygwin/16/include]
+        collapse include dir [/usr/local/include] ==> [/usr/local/include]
+        collapse include dir [/usr/include] ==> [/usr/include]
+        collapse include dir [/usr/lib/gcc/x86_64-pc-cygwin/16/../../../../include/w32api] ==> [/usr/include/w32api]
+        implicit include dirs: [/usr/lib/gcc/x86_64-pc-cygwin/16/include/c++;/usr/lib/gcc/x86_64-pc-cygwin/16/include/c++/x86_64-pc-cygwin;/usr/lib/gcc/x86_64-pc-cygwin/16/include/c++/backward;/usr/lib/gcc/x86_64-pc-cygwin/16/include;/usr/local/include;/usr/include;/usr/include/w32api]
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2.1/Modules/CMakeDetermineCompilerABI.cmake:253 (message)"
+      - "/usr/share/cmake-4.2.1/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Parsed CXX implicit link information:
+        link line regex: [^( *|.*[/\\])(ld[0-9]*(|\\.[a-rt-z][a-z]*|\\.s[a-np-z][a-z]*|\\.so[a-z]+)|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
+        linker tool regex: [^[ 	]*(->|"|[0-9]+>[ 	-]*Build:[ 	0-9]+ ms[ 	]*)?[ 	]*(([^"]*[/\\])?(ld[0-9]*(|\\.[a-rt-z][a-z]*|\\.s[a-np-z][a-z]*|\\.so[a-z]+)))("|,| |$)]
+        ignore line: [Change Dir: '/cygdrive/e/Development/Ollama/esp8266-volt_sinus_pro_ultra_6000/simulator/build/CMakeFiles/CMakeScratch/TryCompile-Xp4n2g']
+        ignore line: []
+        ignore line: [Run Build Command(s): /usr/bin/cmake.exe -E env VERBOSE=1 /usr/bin/make.exe -f Makefile cmTC_07033/fast]
+        ignore line: [/usr/bin/make  -f CMakeFiles/cmTC_07033.dir/build.make CMakeFiles/cmTC_07033.dir/build]
+        ignore line: [make[1]: Entering directory '/cygdrive/e/Development/Ollama/esp8266-volt_sinus_pro_ultra_6000/simulator/build/CMakeFiles/CMakeScratch/TryCompile-Xp4n2g']
+        ignore line: [Building CXX object CMakeFiles/cmTC_07033.dir/CMakeCXXCompilerABI.cpp.o]
+        ignore line: [/usr/bin/c++.exe   -v -o CMakeFiles/cmTC_07033.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake-4.2.1/Modules/CMakeCXXCompilerABI.cpp]
+        ignore line: [Using built-in specs.]
+        ignore line: [COLLECT_GCC=/usr/bin/c++]
+        ignore line: [Target: x86_64-pc-cygwin]
+        ignore line: [Configured with: /mnt/share/packages/gccmake/gcc-16/gcc/gcc.x86_64/src/gcc-16-20260322/configure --srcdir=/mnt/share/packages/gccmake/gcc-16/gcc/gcc.x86_64/src/gcc-16-20260322 --prefix=/usr --exec-prefix=/usr --localstatedir=/var --sysconfdir=/etc --docdir=/usr/share/doc/gcc --htmldir=/usr/share/doc/gcc/html -C --build=x86_64-pc-cygwin --host=x86_64-pc-cygwin --target=x86_64-pc-cygwin --without-libiconv-prefix --without-libintl-prefix --libexecdir=/usr/lib --with-gcc-major-version-only --enable-shared --enable-shared-libgcc --enable-static --enable-version-specific-runtime-libs --enable-bootstrap --enable-__cxa_atexit --enable-clocale=newlib --with-dwarf2 --with-tune=generic --enable-languages=ada,c,c++,fortran,lto,objc,obj-c++,jit --enable-graphite --enable-threads=posix --enable-libatomic --enable-libgomp --enable-libquadmath --enable-libquadmath-support --disable-libssp --enable-libada --disable-symvers --disable-multilib --with-gnu-ld --with-gnu-as --with-cloog-include=/usr/include/cloog-isl --without-libiconv-prefix --without-libintl-prefix --with-system-zlib --enable-linker-build-id --with-default-libstdcxx-abi=gcc4-compatible --enable-libstdcxx-filesystem-ts]
+        ignore line: [Thread model: posix]
+        ignore line: [Supported LTO compression algorithms: zlib zstd]
+        ignore line: [gcc version 16.0.1 20260322 (experimental) (GCC) ]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_07033.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_07033.dir/']
+        ignore line: [ /usr/lib/gcc/x86_64-pc-cygwin/16/cc1plus.exe -quiet -v -idirafter /usr/lib/gcc/x86_64-pc-cygwin/16/../../../../include/w32api -idirafter /usr/lib/gcc/x86_64-pc-cygwin/16/../../../../x86_64-pc-cygwin/lib/../../include/w32api /usr/share/cmake-4.2.1/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_07033.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -mtune=generic -march=x86-64 -version -o /tmp/ccNgO05j.s]
+        ignore line: [GNU C++20 (GCC) version 16.0.1 20260322 (experimental) (x86_64-pc-cygwin)]
+        ignore line: [	compiled by GNU C version 16.0.1 20260322 (experimental)  GMP version 6.3.0  MPFR version 4.2.2  MPC version 1.3.1  isl version isl-0.27-GMP]
+        ignore line: []
+        ignore line: [warning: MPC header version 1.3.1 differs from library version 1.4.0.]
+        ignore line: [GGC heuristics: --param ggc-min-expand=30 --param ggc-min-heapsize=4096]
+        ignore line: [ignoring nonexistent directory "/usr/lib/gcc/x86_64-pc-cygwin/16/include-fixed"]
+        ignore line: [ignoring nonexistent directory "/usr/lib/gcc/x86_64-pc-cygwin/16/../../../../x86_64-pc-cygwin/include"]
+        ignore line: [ignoring duplicate directory "/usr/lib/gcc/x86_64-pc-cygwin/16/../../../../x86_64-pc-cygwin/lib/../../include/w32api"]
+        ignore line: [#include "..." search starts here:]
+        ignore line: [#include <...> search starts here:]
+        ignore line: [ /usr/lib/gcc/x86_64-pc-cygwin/16/include/c++]
+        ignore line: [ /usr/lib/gcc/x86_64-pc-cygwin/16/include/c++/x86_64-pc-cygwin]
+        ignore line: [ /usr/lib/gcc/x86_64-pc-cygwin/16/include/c++/backward]
+        ignore line: [ /usr/lib/gcc/x86_64-pc-cygwin/16/include]
+        ignore line: [ /usr/local/include]
+        ignore line: [ /usr/include]
+        ignore line: [ /usr/lib/gcc/x86_64-pc-cygwin/16/../../../../include/w32api]
+        ignore line: [End of search list.]
+        ignore line: [Compiler executable checksum: 6935554c5067732db652444b8914dde3]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_07033.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_07033.dir/']
+        ignore line: [ /usr/lib/gcc/x86_64-pc-cygwin/16/../../../../x86_64-pc-cygwin/bin/as.exe -v -o CMakeFiles/cmTC_07033.dir/CMakeCXXCompilerABI.cpp.o /tmp/ccNgO05j.s]
+        ignore line: [GNU assembler version 2.46 (x86_64-pc-cygwin) using BFD version (GNU Binutils) 2.46]
+        ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-pc-cygwin/16/:/usr/lib/gcc/x86_64-pc-cygwin/16/:/usr/lib/gcc/x86_64-pc-cygwin/:/usr/lib/gcc/x86_64-pc-cygwin/16/:/usr/lib/gcc/x86_64-pc-cygwin/:/usr/lib/gcc/x86_64-pc-cygwin/16/../../../../x86_64-pc-cygwin/bin/]
+        ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-pc-cygwin/16/:/usr/lib/gcc/x86_64-pc-cygwin/16/../../../../x86_64-pc-cygwin/lib/:/usr/lib/gcc/x86_64-pc-cygwin/16/../../../:/lib/:/usr/lib/]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_07033.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_07033.dir/CMakeCXXCompilerABI.cpp.']
+        ignore line: [Linking CXX executable cmTC_07033.exe]
+        ignore line: [/usr/bin/cmake.exe -E cmake_link_script CMakeFiles/cmTC_07033.dir/link.txt --verbose=1]
+        ignore line: [Using built-in specs.]
+        ignore line: [COLLECT_GCC=/usr/bin/c++]
+        ignore line: [COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-pc-cygwin/16/lto-wrapper.exe]
+        ignore line: [Target: x86_64-pc-cygwin]
+        ignore line: [Configured with: /mnt/share/packages/gccmake/gcc-16/gcc/gcc.x86_64/src/gcc-16-20260322/configure --srcdir=/mnt/share/packages/gccmake/gcc-16/gcc/gcc.x86_64/src/gcc-16-20260322 --prefix=/usr --exec-prefix=/usr --localstatedir=/var --sysconfdir=/etc --docdir=/usr/share/doc/gcc --htmldir=/usr/share/doc/gcc/html -C --build=x86_64-pc-cygwin --host=x86_64-pc-cygwin --target=x86_64-pc-cygwin --without-libiconv-prefix --without-libintl-prefix --libexecdir=/usr/lib --with-gcc-major-version-only --enable-shared --enable-shared-libgcc --enable-static --enable-version-specific-runtime-libs --enable-bootstrap --enable-__cxa_atexit --enable-clocale=newlib --with-dwarf2 --with-tune=generic --enable-languages=ada,c,c++,fortran,lto,objc,obj-c++,jit --enable-graphite --enable-threads=posix --enable-libatomic --enable-libgomp --enable-libquadmath --enable-libquadmath-support --disable-libssp --enable-libada --disable-symvers --disable-multilib --with-gnu-ld --with-gnu-as --with-cloog-include=/usr/include/cloog-isl --without-libiconv-prefix --without-libintl-prefix --with-system-zlib --enable-linker-build-id --with-default-libstdcxx-abi=gcc4-compatible --enable-libstdcxx-filesystem-ts]
+        ignore line: [Thread model: posix]
+        ignore line: [Supported LTO compression algorithms: zlib zstd]
+        ignore line: [gcc version 16.0.1 20260322 (experimental) (GCC) ]
+        ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-pc-cygwin/16/:/usr/lib/gcc/x86_64-pc-cygwin/16/:/usr/lib/gcc/x86_64-pc-cygwin/:/usr/lib/gcc/x86_64-pc-cygwin/16/:/usr/lib/gcc/x86_64-pc-cygwin/:/usr/lib/gcc/x86_64-pc-cygwin/16/../../../../x86_64-pc-cygwin/bin/]
+        ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-pc-cygwin/16/:/usr/lib/gcc/x86_64-pc-cygwin/16/../../../../x86_64-pc-cygwin/lib/:/usr/lib/gcc/x86_64-pc-cygwin/16/../../../:/lib/:/usr/lib/]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_07033.exe' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_07033.']
+        link line: [ /usr/lib/gcc/x86_64-pc-cygwin/16/collect2.exe -plugin /usr/lib/gcc/x86_64-pc-cygwin/16/cyglto_plugin.dll -plugin-opt=/usr/lib/gcc/x86_64-pc-cygwin/16/lto-wrapper.exe -plugin-opt=-fresolution=/tmp/ccN8DuSg.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lintl -plugin-opt=-pass-through=-liconv -plugin-opt=-pass-through=-lcygwin -plugin-opt=-pass-through=-ladvapi32 -plugin-opt=-pass-through=-lshell32 -plugin-opt=-pass-through=-luser32 -plugin-opt=-pass-through=-lkernel32 -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id -m i386pep --wrap _Znwm --wrap _Znam --wrap _ZdlPv --wrap _ZdaPv --wrap _ZnwmRKSt9nothrow_t --wrap _ZnamRKSt9nothrow_t --wrap _ZdlPvRKSt9nothrow_t --wrap _ZdaPvRKSt9nothrow_t -Bdynamic --dll-search-prefix=cyg --tsaware -o cmTC_07033.exe /usr/lib/gcc/x86_64-pc-cygwin/16/../../../crt0.o /usr/lib/gcc/x86_64-pc-cygwin/16/crtbegin.o -L/usr/lib/gcc/x86_64-pc-cygwin/16 -L/usr/lib/gcc/x86_64-pc-cygwin/16/../../../../x86_64-pc-cygwin/lib -L/usr/lib/gcc/x86_64-pc-cygwin/16/../../.. -L/lib -L/usr/lib --enable-auto-import -v CMakeFiles/cmTC_07033.dir/CMakeCXXCompilerABI.cpp.o --out-implib libcmTC_07033.dll.a --major-image-version 0 --minor-image-version 0 -lstdc++ -lgcc_s -lgcc -lintl -liconv -lcygwin -ladvapi32 -lshell32 -luser32 -lkernel32 -lgcc_s -lgcc /usr/lib/gcc/x86_64-pc-cygwin/16/../../../default-manifest.o /usr/lib/gcc/x86_64-pc-cygwin/16/crtend.o]
+          arg [/usr/lib/gcc/x86_64-pc-cygwin/16/collect2.exe] ==> ignore
+          arg [-plugin] ==> ignore
+          arg [/usr/lib/gcc/x86_64-pc-cygwin/16/cyglto_plugin.dll] ==> ignore
+          arg [-plugin-opt=/usr/lib/gcc/x86_64-pc-cygwin/16/lto-wrapper.exe] ==> ignore
+          arg [-plugin-opt=-fresolution=/tmp/ccN8DuSg.res] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+          arg [-plugin-opt=-pass-through=-lintl] ==> ignore
+          arg [-plugin-opt=-pass-through=-liconv] ==> ignore
+          arg [-plugin-opt=-pass-through=-lcygwin] ==> ignore
+          arg [-plugin-opt=-pass-through=-ladvapi32] ==> ignore
+          arg [-plugin-opt=-pass-through=-lshell32] ==> ignore
+          arg [-plugin-opt=-pass-through=-luser32] ==> ignore
+          arg [-plugin-opt=-pass-through=-lkernel32] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+          arg [--build-id] ==> ignore
+          arg [-m] ==> ignore
+          arg [i386pep] ==> ignore
+          arg [--wrap] ==> ignore
+          arg [_Znwm] ==> ignore
+          arg [--wrap] ==> ignore
+          arg [_Znam] ==> ignore
+          arg [--wrap] ==> ignore
+          arg [_ZdlPv] ==> ignore
+          arg [--wrap] ==> ignore
+          arg [_ZdaPv] ==> ignore
+          arg [--wrap] ==> ignore
+          arg [_ZnwmRKSt9nothrow_t] ==> ignore
+          arg [--wrap] ==> ignore
+          arg [_ZnamRKSt9nothrow_t] ==> ignore
+          arg [--wrap] ==> ignore
+          arg [_ZdlPvRKSt9nothrow_t] ==> ignore
+          arg [--wrap] ==> ignore
+          arg [_ZdaPvRKSt9nothrow_t] ==> ignore
+          arg [-Bdynamic] ==> search dynamic
+          arg [--dll-search-prefix=cyg] ==> ignore
+          arg [--tsaware] ==> ignore
+          arg [-o] ==> ignore
+          arg [cmTC_07033.exe] ==> ignore
+          arg [/usr/lib/gcc/x86_64-pc-cygwin/16/../../../crt0.o] ==> obj [/usr/lib/gcc/x86_64-pc-cygwin/16/../../../crt0.o]
+          arg [/usr/lib/gcc/x86_64-pc-cygwin/16/crtbegin.o] ==> obj [/usr/lib/gcc/x86_64-pc-cygwin/16/crtbegin.o]
+          arg [-L/usr/lib/gcc/x86_64-pc-cygwin/16] ==> dir [/usr/lib/gcc/x86_64-pc-cygwin/16]
+          arg [-L/usr/lib/gcc/x86_64-pc-cygwin/16/../../../../x86_64-pc-cygwin/lib] ==> dir [/usr/lib/gcc/x86_64-pc-cygwin/16/../../../../x86_64-pc-cygwin/lib]
+          arg [-L/usr/lib/gcc/x86_64-pc-cygwin/16/../../..] ==> dir [/usr/lib/gcc/x86_64-pc-cygwin/16/../../..]
+          arg [-L/lib] ==> dir [/lib]
+          arg [-L/usr/lib] ==> dir [/usr/lib]
+          arg [--enable-auto-import] ==> ignore
+          arg [-v] ==> ignore
+          arg [CMakeFiles/cmTC_07033.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
+          arg [--out-implib] ==> ignore
+          arg [libcmTC_07033.dll.a] ==> ignore
+          arg [--major-image-version] ==> ignore
+          arg [0] ==> ignore
+          arg [--minor-image-version] ==> ignore
+          arg [0] ==> ignore
+          arg [-lstdc++] ==> lib [stdc++]
+          arg [-lgcc_s] ==> lib [gcc_s]
+          arg [-lgcc] ==> lib [gcc]
+          arg [-lintl] ==> lib [intl]
+          arg [-liconv] ==> lib [iconv]
+          arg [-lcygwin] ==> lib [cygwin]
+          arg [-ladvapi32] ==> lib [advapi32]
+          arg [-lshell32] ==> lib [shell32]
+          arg [-luser32] ==> lib [user32]
+          arg [-lkernel32] ==> lib [kernel32]
+          arg [-lgcc_s] ==> lib [gcc_s]
+          arg [-lgcc] ==> lib [gcc]
+          arg [/usr/lib/gcc/x86_64-pc-cygwin/16/../../../default-manifest.o] ==> obj [/usr/lib/gcc/x86_64-pc-cygwin/16/../../../default-manifest.o]
+          arg [/usr/lib/gcc/x86_64-pc-cygwin/16/crtend.o] ==> obj [/usr/lib/gcc/x86_64-pc-cygwin/16/crtend.o]
+        ignore line: [collect2 version 16.0.1 20260322 (experimental)]
+        ignore line: [/usr/lib/gcc/x86_64-pc-cygwin/16/../../../../x86_64-pc-cygwin/bin/ld -plugin /usr/lib/gcc/x86_64-pc-cygwin/16/cyglto_plugin.dll -plugin-opt=/usr/lib/gcc/x86_64-pc-cygwin/16/lto-wrapper.exe -plugin-opt=-fresolution=/tmp/ccN8DuSg.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lintl -plugin-opt=-pass-through=-liconv -plugin-opt=-pass-through=-lcygwin -plugin-opt=-pass-through=-ladvapi32 -plugin-opt=-pass-through=-lshell32 -plugin-opt=-pass-through=-luser32 -plugin-opt=-pass-through=-lkernel32 -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id -m i386pep --wrap _Znwm --wrap _Znam --wrap _ZdlPv --wrap _ZdaPv --wrap _ZnwmRKSt9nothrow_t --wrap _ZnamRKSt9nothrow_t --wrap _ZdlPvRKSt9nothrow_t --wrap _ZdaPvRKSt9nothrow_t -Bdynamic --dll-search-prefix=cyg --tsaware -o cmTC_07033.exe /usr/lib/gcc/x86_64-pc-cygwin/16/../../../crt0.o /usr/lib/gcc/x86_64-pc-cygwin/16/crtbegin.o -L/usr/lib/gcc/x86_64-pc-cygwin/16 -L/usr/lib/gcc/x86_64-pc-cygwin/16/../../../../x86_64-pc-cygwin/lib -L/usr/lib/gcc/x86_64-pc-cygwin/16/../../.. -L/lib -L/usr/lib --enable-auto-import -v CMakeFiles/cmTC_07033.dir/CMakeCXXCompilerABI.cpp.o --out-implib libcmTC_07033.dll.a --major-image-version 0 --minor-image-version 0 -lstdc++ -lgcc_s -lgcc -lintl -liconv -lcygwin -ladvapi32 -lshell32 -luser32 -lkernel32 -lgcc_s -lgcc /usr/lib/gcc/x86_64-pc-cygwin/16/../../../default-manifest.o /usr/lib/gcc/x86_64-pc-cygwin/16/crtend.o]
+        linker tool for 'CXX': /usr/lib/gcc/x86_64-pc-cygwin/16/../../../../x86_64-pc-cygwin/bin/ld
+        collapse obj [/usr/lib/gcc/x86_64-pc-cygwin/16/../../../crt0.o] ==> [/usr/lib/crt0.o]
+        collapse obj [/usr/lib/gcc/x86_64-pc-cygwin/16/../../../default-manifest.o] ==> [/usr/lib/default-manifest.o]
+        collapse library dir [/usr/lib/gcc/x86_64-pc-cygwin/16] ==> [/usr/lib/gcc/x86_64-pc-cygwin/16]
+        collapse library dir [/usr/lib/gcc/x86_64-pc-cygwin/16/../../../../x86_64-pc-cygwin/lib] ==> [/usr/x86_64-pc-cygwin/lib]
+        collapse library dir [/usr/lib/gcc/x86_64-pc-cygwin/16/../../..] ==> [/usr/lib]
+        collapse library dir [/lib] ==> [/lib]
+        collapse library dir [/usr/lib] ==> [/usr/lib]
+        implicit libs: [stdc++;gcc_s;gcc;intl;iconv;cygwin;advapi32;shell32;user32;kernel32;gcc_s;gcc]
+        implicit objs: [/usr/lib/crt0.o;/usr/lib/gcc/x86_64-pc-cygwin/16/crtbegin.o;/usr/lib/default-manifest.o;/usr/lib/gcc/x86_64-pc-cygwin/16/crtend.o]
+        implicit dirs: [/usr/lib/gcc/x86_64-pc-cygwin/16;/usr/x86_64-pc-cygwin/lib;/usr/lib;/lib]
+        implicit fwks: []
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake-4.2.1/Modules/Internal/CMakeDetermineLinkerId.cmake:38 (message)"
+      - "/usr/share/cmake-4.2.1/Modules/CMakeDetermineCompilerABI.cmake:299 (cmake_determine_linker_id)"
+      - "/usr/share/cmake-4.2.1/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Running the CXX compiler's linker: "/usr/lib/gcc/x86_64-pc-cygwin/16/../../../../x86_64-pc-cygwin/bin/ld" "-v"
+      GNU ld (GNU Binutils) 2.46
+...
