@@ -5,8 +5,7 @@
 #include <SoftwareSerial.h>
 #include <ModbusMaster.h>
 
-#define SIMULATION_MODE
-
+// EEPROM layout constants
 const int WIFI_SSID_MAX_LEN = 32;
 const int WIFI_PASSWORD_MAX_LEN = 64;
 const int WIFI_SSID_EEPROM_OFFSET = 0;
@@ -15,30 +14,34 @@ const int MONITOR_HOST_MAX_LEN = 64;
 const int MONITOR_PORT_MAX_LEN = 6;
 const int MONITOR_HOST_EEPROM_OFFSET = WIFI_PASSWORD_EEPROM_OFFSET + WIFI_PASSWORD_MAX_LEN + 1;
 const int MONITOR_PORT_EEPROM_OFFSET = MONITOR_HOST_EEPROM_OFFSET + MONITOR_HOST_MAX_LEN + 1;
-const int EEPROM_SIZE = MONITOR_PORT_EEPROM_OFFSET + MONITOR_PORT_MAX_LEN + 1;
+const int SIMULATION_MODE_EEPROM_OFFSET = MONITOR_PORT_EEPROM_OFFSET + MONITOR_PORT_MAX_LEN + 1;
+const int EEPROM_SIZE = SIMULATION_MODE_EEPROM_OFFSET + 1;
 
 char wifiSSID[WIFI_SSID_MAX_LEN + 1];
 char wifiPassword[WIFI_PASSWORD_MAX_LEN + 1];
 char monitorHost[MONITOR_HOST_MAX_LEN + 1];
 char monitorPortString[MONITOR_PORT_MAX_LEN + 1];
-uint16_t monitorPort = 0;
+uint16_t monitorPort = 16670;
+bool simulationMode = true;
 
+// Relay configuration
 const uint8_t RELAY_PIN_COUNT = 4;
 const uint8_t relayPins[RELAY_PIN_COUNT] = {D1, D2, D3, D4};
+
 bool relayStates[RELAY_PIN_COUNT] = {false, false, false, false};
 
-const int MAX_WIFI_ATTEMPTS = 20;
+// Command line buffers for TCP and serial input.
+const uint16_t MAX_COMMAND_LINE_LENGTH = 64;
 
-const uint16_t MAX_TCP_LINE_LENGTH = 64;
 String logCommandLine;
 String monitorCommandLine;
 String serialCommandLine;
 
+// Scanning intervals and state for control and monitor registers.
 const unsigned long CONTROL_SCAN_INTERVAL_MS = 60000UL;
 const unsigned long MONITOR_SCAN_INTERVAL_MS = 5000UL;
 const unsigned long REGISTER_READ_SPACING_MS = 120UL;
 const unsigned long MONITOR_CONNECTION_CHECK_INTERVAL_MS = 60000UL;
-
 unsigned long nextControlScanTime = 0;
 unsigned long nextMonitorScanTime = 0;
 unsigned long nextMonitorConnectionCheckTime = 0;
@@ -50,7 +53,9 @@ size_t monitorRegisterCount = 0;
 
 // WiFi log server settings.
 // Connect a TCP client to this port to receive console messages over WiFi.
+const int MAX_WIFI_ATTEMPTS = 20;
 const uint16_t LOG_SERVER_PORT = 12345;
+
 WiFiServer logServer(LOG_SERVER_PORT);
 WiFiClient logClient;
 WiFiClient monitorClient;
@@ -60,6 +65,8 @@ WiFiClient monitorClient;
 // This converter does not use a DE/RE direction pin.
 const uint8_t RS485_RX_PIN = D5; // GPIO14: receive from RS485 converter
 const uint8_t RS485_TX_PIN = D6; // GPIO12: transmit to RS485 converter
+
+const uint8_t MODBUS_SLAVE_ID = 4;
 
 SoftwareSerial rs485Serial(RS485_RX_PIN, RS485_TX_PIN);
 ModbusMaster modbus;
@@ -116,6 +123,7 @@ RegItem monitorRegisters[] = {
   {25274, "Battery current", "A", ACCESS_RO}     // raw amps
 };
 
+// ===== Modbus transport callbacks =====
 void preTransmission() {
   // No DE pin is available on this converter.
   // The adapter must manage direction automatically.
@@ -125,6 +133,7 @@ void postTransmission() {
   // No DE pin is available on this converter.
 }
 
+// ===== Logging helpers =====
 void printMessage(const String& message) {
   // Print to the local serial console.
   Serial.println(message);
@@ -166,6 +175,7 @@ String formatValue(uint16_t raw, const char* unit) {
   return String(raw);
 }
 
+// ===== EEPROM helpers =====
 void readEEPROMString(int start, int maxLen, char* dest) {
   for (int i = 0; i < maxLen; ++i) {
     uint8_t c = EEPROM.read(start + i);
@@ -202,6 +212,16 @@ bool loadMonitorServerFromEEPROM() {
   return true;
 }
 
+bool loadSimulationModeFromEEPROM() {
+  uint8_t storedValue = EEPROM.read(SIMULATION_MODE_EEPROM_OFFSET);
+  if (storedValue == 0xFF) {
+    simulationMode = true;
+    return false;
+  }
+  simulationMode = (storedValue != 0);
+  return true;
+}
+
 void writeEEPROMString(int start, int maxLen, const char* src) {
   int i = 0;
   while (i < maxLen && src[i] != '\0') {
@@ -234,6 +254,12 @@ bool saveMonitorServerToEEPROM(const char* host, const char* portString) {
   return EEPROM.commit();
 }
 
+bool saveSimulationModeToEEPROM(bool enabled) {
+  EEPROM.write(SIMULATION_MODE_EEPROM_OFFSET, enabled ? 1 : 0);
+  return EEPROM.commit();
+}
+
+// ===== Connection helpers =====
 void resetScanTime() {
   nextControlScanTime = 0;
   nextMonitorScanTime = 0;
@@ -303,66 +329,67 @@ bool connectToWiFi() {
   return false;
 }
 
+// ===== Modbus register access =====
 void readControlRegisters(size_t index) {
   const RegItem& reg = controlRegisters[index];
-#ifdef SIMULATION_MODE
-  printRegisterResult(reg, 0);
-#else
-  uint8_t result = modbus.readHoldingRegisters(reg.address, 1);
-  if (result == modbus.ku8MBSuccess) {
-    uint16_t value = modbus.getResponseBuffer(0);
-    printRegisterResult(reg, value);
+  if (simulationMode) {
+    printRegisterResult(reg, 0);
   } else {
-    printMessage("%5u %-36s => READ ERROR 0x%02X", reg.address, reg.name, result);
+    uint8_t result = modbus.readHoldingRegisters(reg.address, 1);
+    if (result == modbus.ku8MBSuccess) {
+      uint16_t value = modbus.getResponseBuffer(0);
+      printRegisterResult(reg, value);
+    } else {
+      printMessage("%5u %-36s => READ ERROR 0x%02X", reg.address, reg.name, result);
+    }
   }
-#endif
 }
 
 void readMonitorRegisters(size_t index) {
   const RegItem& reg = monitorRegisters[index];
   uint8_t result = modbus.ku8MBSuccess;
   uint16_t value = 0;
-#ifdef SIMULATION_MODE
-  unsigned long now = millis();
-  long rawValue = 0;
-  switch (reg.address) {
-    case 15205:
-      rawValue = static_cast<long>(2200 + std::sin(now / 5000.0) * 50);
-      rawValue += random(-8, 9);
-      break;
-    case 15206:
-      rawValue = static_cast<long>(265 + std::sin(now / 100000.0) * 20);
-      rawValue += random(-2, 2);
-      break;
-    case 15207:
-      rawValue = static_cast<long>(150 + std::sin(now / 3000.0) * 40);
-      rawValue += random(-6, 7);
-      break;
-    case 15208:
-      rawValue = static_cast<long>(500 + std::sin(6.28 * now / 86400000.0) * 120);
-      rawValue += random(-20, 21);
-      break;
-    case 25210:
-      rawValue = static_cast<long>(800 + std::sin(now / 6000.0) * 100);
-      rawValue += random(-10, 11);
-      break;
-    case 25274:
-      rawValue = static_cast<long>(15 + std::sin(now / 10000.0) * 5);
-      rawValue += random(-2, 3);
-      break;
-    default:
-      rawValue = 0;
-      break;
-  }
-  value = rawValue > 0 ? static_cast<uint16_t>(rawValue) : 0;
-#else
-  result = modbus.readHoldingRegisters(reg.address, 1);
-  if (result == modbus.ku8MBSuccess) {
-    value = modbus.getResponseBuffer(0);
+  if (simulationMode) {
+    unsigned long now = millis();
+    long rawValue = 0;
+    switch (reg.address) {
+      case 15205:
+        rawValue = static_cast<long>(2200 + std::sin(now / 5000.0) * 50);
+        rawValue += random(-8, 9);
+        break;
+      case 15206:
+        rawValue = static_cast<long>(265 + std::sin(now / 100000.0) * 20);
+        rawValue += random(-2, 2);
+        break;
+      case 15207:
+        rawValue = static_cast<long>(150 + std::sin(now / 3000.0) * 40);
+        rawValue += random(-6, 7);
+        break;
+      case 15208:
+        rawValue = static_cast<long>(500 + std::sin(6.28 * now / 86400000.0) * 120);
+        rawValue += random(-20, 21);
+        break;
+      case 25210:
+        rawValue = static_cast<long>(800 + std::sin(now / 6000.0) * 100);
+        rawValue += random(-10, 11);
+        break;
+      case 25274:
+        rawValue = static_cast<long>(15 + std::sin(now / 10000.0) * 5);
+        rawValue += random(-2, 3);
+        break;
+      default:
+        rawValue = 0;
+        break;
+    }
+    value = rawValue > 0 ? static_cast<uint16_t>(rawValue) : 0;
   } else {
-    printMessage("%5u %-36s => READ ERROR 0x%02X", reg.address, reg.name, result);
+    result = modbus.readHoldingRegisters(reg.address, 1);
+    if (result == modbus.ku8MBSuccess) {
+      value = modbus.getResponseBuffer(0);
+    } else {
+      printMessage("%5u %-36s => READ ERROR 0x%02X", reg.address, reg.name, result);
+    }
   }
-#endif
   printRegisterResult(reg, value);
 }
 
@@ -375,6 +402,7 @@ const RegItem* findRegister(uint16_t address) {
   return nullptr;
 }
 
+// ===== Relay helpers =====
 bool setRelayState(uint8_t relayIndex, bool active) {
   if (relayIndex >= RELAY_PIN_COUNT) {
     return false;
@@ -402,6 +430,7 @@ void printRelaysState() {
   }
 }
 
+// ===== Command parsing =====
 void handleCommand(const String& rawLine) {
   String line = rawLine;
   line.trim();
@@ -485,6 +514,34 @@ void handleCommand(const String& rawLine) {
 
     printMessage("TCP CMD: monitor host updated to %s:%s", monitorHost, monitorPortString);
     connectToMonitorServer();
+    return;
+  }
+
+  if (line.startsWith("SIM ")) {
+    String valueText = line.substring(4);
+    valueText.trim();
+    if (valueText.length() == 0) {
+      printMessage("TCP CMD: invalid SIM format, expected 'SIM [ON|OFF|1|0]'");
+      return;
+    }
+
+    bool enabled;
+    if (valueText.equalsIgnoreCase("ON") || valueText == "1") {
+      enabled = true;
+    } else if (valueText.equalsIgnoreCase("OFF") || valueText == "0") {
+      enabled = false;
+    } else {
+      printMessage("TCP CMD: invalid SIM value, expected ON/OFF/1/0");
+      return;
+    }
+
+    simulationMode = enabled;
+    if (!saveSimulationModeToEEPROM(simulationMode)) {
+      printMessage("TCP CMD: failed to save simulation mode to EEPROM");
+      return;
+    }
+
+    printMessage("TCP CMD: SIM %s", simulationMode ? "ON" : "OFF");
     return;
   }
 
@@ -608,7 +665,7 @@ void processTcpCommands(WiFiClient& client, String& commandLine) {
       commandLine = "";
       continue;
     }
-    if (commandLine.length() < MAX_TCP_LINE_LENGTH) {
+    if (commandLine.length() < MAX_COMMAND_LINE_LENGTH) {
       commandLine += c;
     }
   }
@@ -625,7 +682,7 @@ void processSerialCommands() {
       serialCommandLine = "";
       continue;
     }
-    if (serialCommandLine.length() < MAX_TCP_LINE_LENGTH) {
+    if (serialCommandLine.length() < MAX_COMMAND_LINE_LENGTH) {
       serialCommandLine += c;
     }
   }
@@ -647,6 +704,7 @@ void printRegisterResult(const RegItem& reg, uint16_t value) {
   }
 }
 
+// ===== Arduino lifecycle =====
 void setup() {
   Serial.begin(115200);
   delay(1000);
@@ -666,11 +724,17 @@ void setup() {
     Serial.println("No monitor server configured in EEPROM.");
   }
 
+  if (loadSimulationModeFromEEPROM()) {
+    Serial.printf("Loaded simulation mode %s from EEPROM.\n", simulationMode ? "ON" : "OFF");
+  } else {
+    Serial.printf("No simulation mode configured in EEPROM, defaulting to %s.\n", simulationMode ? "ON" : "OFF");
+  }
+
   connectToWiFi();
 
-#ifdef SIMULATION_MODE
-  randomSeed(micros());
-#endif
+  if (simulationMode) {
+    randomSeed(micros());
+  }
 
   // Start the TCP log server for clients that want console output over WiFi.
   logServer.begin();
@@ -686,8 +750,8 @@ void setup() {
   // Start TTL serial for the RS485 converter at 19200 baud.
   rs485Serial.begin(19200);
 
-  // Modbus slave ID 4 as specified by the inverter sheet.
-  modbus.begin(4, rs485Serial);
+  // Modbus slave ID as specified by the inverter sheet.
+  modbus.begin(MODBUS_SLAVE_ID, rs485Serial);
   modbus.preTransmission(preTransmission);
   modbus.postTransmission(postTransmission);
 
