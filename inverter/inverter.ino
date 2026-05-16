@@ -277,6 +277,10 @@ void writeEEPROMUint32(int start, uint32_t value) {
   EEPROM.write(start + 3, static_cast<uint8_t>((value >> 24) & 0xFF));
 }
 
+bool timeHasElapsed(unsigned long now, unsigned long targetTime) {
+  return static_cast<long>(now - targetTime) >= 0;
+}
+
 bool loadTimingConfigFromEEPROM() {
   if (EEPROM.read(TIMING_CONFIG_VALID_OFFSET) != 0xAA) {
     controlScanIntervalMs = DEFAULT_CONTROL_SCAN_INTERVAL_MS;
@@ -910,7 +914,7 @@ void loop() {
   }
   processTcpCommands(logClient, logCommandLine);
 
-  if (WiFi.getMode() == WIFI_STA && WiFi.status() == WL_CONNECTED && now >= nextMonitorConnectionCheckTime) {
+  if (WiFi.getMode() == WIFI_STA && WiFi.status() == WL_CONNECTED && timeHasElapsed(now, nextMonitorConnectionCheckTime)) {
     nextMonitorConnectionCheckTime = now + MONITOR_CONNECTION_CHECK_INTERVAL_MS;
     if (!monitorClient.connected()) {
       connectToMonitorServer();
@@ -918,35 +922,43 @@ void loop() {
   }
   processTcpCommands(monitorClient, monitorCommandLine);
 
-  if (controlScanIndex >= controlRegisterCount && (nextControlScanTime == 0 || now >= nextControlScanTime)) {
-    printMessage("Reading control registers...");
-    controlScanIndex = 0;
-    nextControlScanTime = now;
-  }
-
-  if (monitorScanIndex >= monitorRegisterCount && (nextMonitorScanTime == 0 || now >= nextMonitorScanTime)) {
+  if (monitorScanIndex >= monitorRegisterCount && (nextMonitorScanTime == 0 || timeHasElapsed(now, nextMonitorScanTime))) {
     printMessage("Reading monitor registers...");
     monitorScanIndex = 0;
     nextMonitorScanTime = now;
   }
 
+  if (controlScanIndex >= controlRegisterCount && (nextControlScanTime == 0 || timeHasElapsed(now, nextControlScanTime))) {
+    printMessage("Reading control registers...");
+    controlScanIndex = 0;
+    nextControlScanTime = now;
+  }
+
   // Prioritize monitor register reads over control register reads since they are more time-sensitive for real-time monitoring.
-  if (monitorScanIndex < monitorRegisterCount && now >= nextMonitorScanTime) {
-    readMonitorRegisters(monitorScanIndex);
-    monitorScanIndex++;
-    if (monitorScanIndex < monitorRegisterCount) {
-      nextMonitorScanTime = now + registerReadSpacingMs;
-    } else {
-      nextMonitorScanTime = now + monitorScanIntervalMs;
+  if (monitorScanIndex < monitorRegisterCount) {
+    if (timeHasElapsed(now, nextMonitorScanTime)) {
+      readMonitorRegisters(monitorScanIndex);
+      monitorScanIndex++;
+      if (monitorScanIndex < monitorRegisterCount) {
+        nextMonitorScanTime = now + registerReadSpacingMs;
+      } else {
+        nextMonitorScanTime = now + monitorScanIntervalMs;
+        // Prevent from starting a control scan immediately after a monitor scan by spacing them out.
+        if (controlScanIndex < controlRegisterCount) {
+          nextControlScanTime = now + registerReadSpacingMs;
+        }
+      }
     }
-  } else if (controlScanIndex < controlRegisterCount && now >= nextControlScanTime) {
-    readControlRegisters(controlScanIndex);
-    controlScanIndex++;
-    if (controlScanIndex < controlRegisterCount) {
-      nextControlScanTime = now + registerReadSpacingMs;
-    } else {
-      nextControlScanTime = now + controlScanIntervalMs;
-      printRelaysState();
+  } else if (controlScanIndex < controlRegisterCount) {
+    if (timeHasElapsed(now, nextControlScanTime)) {
+      readControlRegisters(controlScanIndex);
+      controlScanIndex++;
+      if (controlScanIndex < controlRegisterCount) {
+        nextControlScanTime = now + registerReadSpacingMs;
+      } else {
+        nextControlScanTime = now + controlScanIntervalMs;
+        printRelaysState();
+      }
     }
   }
 }
