@@ -1,7 +1,0 @@
-{
-	"InstallScripts" : 
-	[
-		"/cygdrive/e/Development/Ollama/esp8266-volt_sinus_pro_ultra_6000/simulator/build/cmake_install.cmake"
-	],
-	"Parallel" : false
-}
