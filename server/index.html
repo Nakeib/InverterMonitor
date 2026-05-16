@@ -7,12 +7,17 @@
   <style>
     body { font-family: Arial, sans-serif; margin: 24px; }
     table { width: 100%; border-collapse: collapse; }
-    th, td { padding: 10px; border: 1px solid #ccc; text-align: left; }
-    th { background: #f0f0f0; }
+    .register-table { table-layout: fixed; width: 100%; }
+    .register-table th, .register-table td { padding: 10px; border: 1px solid #ccc; text-align: left; }
+    .register-table th { background: #f0f0f0; }
+    .register-table th:nth-child(1) { width: 16%; }
+    .register-table th:nth-child(2) { width: 54%; }
+    .register-table th:nth-child(3) { width: 30%; }
+    .register-table td { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     tbody tr:nth-child(odd) { background: #fafafa; }
     .missing { color: #888; }
     .chart-container { position: relative; width: 100%; max-width: 100%; height: 360px; margin-bottom: 24px; }
-    #power-chart { width: 100% !important; height: 100% !important; }
+    #power-chart, #pvvoltage-chart { width: 100% !important; height: 100% !important; }
   </style>
 </head>
 <body>
@@ -41,7 +46,8 @@
       </tbody>
     </table>
   </div>
-  <table>
+  <h2>Control Registers</h2>
+  <table class="register-table">
     <thead>
       <tr>
         <th>Address</th>
@@ -49,8 +55,54 @@
         <th>Value</th>
       </tr>
     </thead>
-    <tbody id="register-table"></tbody>
+    <tbody id="control-register-table"></tbody>
   </table>
+
+  <h2>Monitor Registers</h2>
+  <table class="register-table">
+    <thead>
+      <tr>
+        <th>Address</th>
+        <th>Name</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+    <tbody id="monitor-register-table"></tbody>
+  </table>
+
+  <h2>Relay Registers</h2>
+  <table class="register-table">
+    <thead>
+      <tr>
+        <th>Address</th>
+        <th>Name</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+    <tbody id="relay-register-table"></tbody>
+  </table>
+
+  <div id="send-command" style="margin-bottom: 24px;">
+    <h2>Send Command</h2>
+    <div style="margin-bottom: 12px;">
+      <strong>Available commands:</strong>
+      <ul style="margin: 8px 0 0 18px; padding: 0; list-style: disc;">
+        <li><code>WIFI [ssid] [password]</code></li>
+        <li><code>HOST [address] [port]</code></li>
+        <li><code>SIM [ON|OFF|1|0]</code></li>
+        <li><code>CTRL_SCAN_MS [value]</code></li>
+        <li><code>MON_SCAN_MS [value]</code></li>
+        <li><code>REG_SPACING_MS [value]</code></li>
+        <li><code>RELAY [number] [state]</code></li>
+        <li><code>[regAddr] [uintValue]</code> (write a writable register)</li>
+      </ul>
+    </div>
+    <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
+      <input id="command-input" type="text" placeholder="RELAY 1 ON" style="flex: 1 1 360px; padding: 8px;" />
+      <button id="command-submit" style="padding: 8px 16px;">Submit</button>
+      <span id="command-status" style="color: #333; min-width: 220px; display: inline-block;"></span>
+    </div>
+  </div>
 
   <h2>Common Settings</h2>
   <div style="margin-bottom: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px;">
@@ -60,6 +112,17 @@
     <label for="timezone-offset" style="margin-left: 16px;">Timezone</label>
     <input id="timezone-offset" type="number" min="-12" max="14" step="0.5" value="2" style="width: 70px;" />
     <span>GMT</span>
+  </div>
+
+  <h2>PV Voltage History</h2>
+  <div style="margin-bottom: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px;">
+    <label for="pvvoltage-from-day" style="margin-left: 16px;">From day</label>
+    <input id="pvvoltage-from-day" type="date" style="width: 160px;" />
+    <label for="pvvoltage-to-day">To day</label>
+    <input id="pvvoltage-to-day" type="date" style="width: 160px;" />
+  </div>
+  <div class="chart-container">
+    <canvas id="pvvoltage-chart"></canvas>
   </div>
 
   <h2>PV Power History</h2>
@@ -83,17 +146,55 @@
     <canvas id="battery-chart"></canvas>
   </div>
 
-  <div id="send-command" style="margin-bottom: 24px;">
-    <h2>Send Command</h2>
-    <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
-      <input id="command-input" type="text" placeholder="RELAY 1 ON" style="flex: 1 1 360px; padding: 8px;" />
-      <button id="command-submit" style="padding: 8px 16px;">Submit</button>
-      <span id="command-status" style="color: #333; min-width: 220px; display: inline-block;"></span>
-    </div>
-  </div>
-
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
+    const controlRegisterOrder = [
+      20101, 20102, 20103, 20104, 20108, 20109, 20111, 20112, 20113, 20118,
+      20119, 10103, 10104, 10105, 10107, 20125, 20127, 20128, 20132, 20142,
+      20143, 20144
+    ];
+
+    const monitorRegisterOrder = [15205, 15206, 15207, 15208, 25210, 25274];
+
+    function createRegisterRow(reg, address) {
+      const row = document.createElement('tr');
+      const addressCell = document.createElement('td');
+      const nameCell = document.createElement('td');
+      const valueCell = document.createElement('td');
+
+      addressCell.textContent = address;
+      nameCell.textContent = reg?.name || 'Unknown';
+      if (!reg?.name) {
+        nameCell.classList.add('missing');
+      }
+      valueCell.textContent = reg?.value ?? 'N/A';
+
+      row.appendChild(addressCell);
+      row.appendChild(nameCell);
+      row.appendChild(valueCell);
+      return row;
+    }
+
+    function renderRegisterTable(registers, order, tbodyId) {
+      const tbody = document.getElementById(tbodyId);
+      tbody.innerHTML = '';
+      const registerMap = new Map(registers.map(reg => [reg.address, reg]));
+
+      order.forEach(address => {
+        const reg = registerMap.get(address);
+        tbody.appendChild(createRegisterRow(reg, address));
+      });
+    }
+
+    function renderRelayRegisters(registers) {
+      const tbody = document.getElementById('relay-register-table');
+      tbody.innerHTML = '';
+      const knownAddresses = new Set([...controlRegisterOrder, ...monitorRegisterOrder]);
+      registers
+        .filter(reg => !knownAddresses.has(reg.address))
+        .forEach(reg => tbody.appendChild(createRegisterRow(reg, reg.address)));
+    }
+
     async function loadRegisters() {
       try {
         const response = await fetch('registers.json');
@@ -101,31 +202,22 @@
           throw new Error('Failed to load registers.json');
         }
         const registers = await response.json();
-        const tbody = document.getElementById('register-table');
-        tbody.innerHTML = '';
-        registers.forEach(reg => {
-          const row = document.createElement('tr');
-          const addressCell = document.createElement('td');
-          const nameCell = document.createElement('td');
-          const valueCell = document.createElement('td');
-          addressCell.textContent = reg.address;
-          nameCell.textContent = reg.name || 'Unknown';
-          if (!reg.name) {
-            nameCell.classList.add('missing');
-          }
-          valueCell.textContent = reg.value;
-          row.appendChild(addressCell);
-          row.appendChild(nameCell);
-          row.appendChild(valueCell);
-          tbody.appendChild(row);
-        });
+        renderRegisterTable(registers, controlRegisterOrder, 'control-register-table');
+        renderRegisterTable(registers, monitorRegisterOrder, 'monitor-register-table');
+        renderRelayRegisters(registers);
       } catch (err) {
-        const tbody = document.getElementById('register-table');
-        tbody.innerHTML = '<tr><td colspan="3">Unable to load registers.json: ' + err.message + '</td></tr>';
+        const controlBody = document.getElementById('control-register-table');
+        const monitorBody = document.getElementById('monitor-register-table');
+        const relayBody = document.getElementById('relay-register-table');
+        const errorRow = '<tr><td colspan="3">Unable to load registers.json: ' + err.message + '</td></tr>';
+        controlBody.innerHTML = errorRow;
+        monitorBody.innerHTML = errorRow;
+        relayBody.innerHTML = errorRow;
       }
     }
 
     let powerChart = null;
+    let pvVoltageChart = null;
     let batteryChart = null;
     let adminAuthorized = false;
     let adminSessionId = '';
@@ -137,6 +229,8 @@
     const POWER_TIMEZONE_OFFSET_STORAGE_KEY = 'powerChartTimezoneOffset';
     const POWER_FROM_DAY_STORAGE_KEY = 'powerChartFromDay';
     const POWER_TO_DAY_STORAGE_KEY = 'powerChartToDay';
+    const PVVOLTAGE_FROM_DAY_STORAGE_KEY = 'pvVoltageChartFromDay';
+    const PVVOLTAGE_TO_DAY_STORAGE_KEY = 'pvVoltageChartToDay';
     const BATTERY_FROM_DAY_STORAGE_KEY = 'batteryChartFromDay';
     const BATTERY_TO_DAY_STORAGE_KEY = 'batteryChartToDay';
 
@@ -164,6 +258,16 @@
 
     function getSelectedToDate() {
       const input = document.getElementById('power-to-day');
+      return input.value || null;
+    }
+
+    function getSelectedPVVoltageFromDate() {
+      const input = document.getElementById('pvvoltage-from-day');
+      return input.value || null;
+    }
+
+    function getSelectedPVVoltageToDate() {
+      const input = document.getElementById('pvvoltage-to-day');
       return input.value || null;
     }
 
@@ -210,10 +314,20 @@
       if (toSaved) {
         toInput.value = toSaved;
       }
+      const pvVoltageFromSaved = localStorage.getItem(PVVOLTAGE_FROM_DAY_STORAGE_KEY);
+      const pvVoltageToSaved = localStorage.getItem(PVVOLTAGE_TO_DAY_STORAGE_KEY);
       const batteryFromSaved = localStorage.getItem(BATTERY_FROM_DAY_STORAGE_KEY);
       const batteryToSaved = localStorage.getItem(BATTERY_TO_DAY_STORAGE_KEY);
+      const pvVoltageFromInput = document.getElementById('pvvoltage-from-day');
+      const pvVoltageToInput = document.getElementById('pvvoltage-to-day');
       const batteryFromInput = document.getElementById('battery-from-day');
       const batteryToInput = document.getElementById('battery-to-day');
+      if (pvVoltageFromSaved) {
+        pvVoltageFromInput.value = pvVoltageFromSaved;
+      }
+      if (pvVoltageToSaved) {
+        pvVoltageToInput.value = pvVoltageToSaved;
+      }
       if (batteryFromSaved) {
         batteryFromInput.value = batteryFromSaved;
       }
@@ -238,6 +352,17 @@
       }
       if (toDate) {
         localStorage.setItem(POWER_TO_DAY_STORAGE_KEY, toDate);
+      }
+    }
+
+    function saveSelectedPVVoltageDays() {
+      const fromDate = getSelectedPVVoltageFromDate();
+      const toDate = getSelectedPVVoltageToDate();
+      if (fromDate) {
+        localStorage.setItem(PVVOLTAGE_FROM_DAY_STORAGE_KEY, fromDate);
+      }
+      if (toDate) {
+        localStorage.setItem(PVVOLTAGE_TO_DAY_STORAGE_KEY, toDate);
       }
     }
 
@@ -550,6 +675,161 @@
       }
     }
 
+    async function loadPVVoltageData() {
+      try {
+        const response = await fetch('pvvoltage.dat');
+        if (!response.ok) {
+          throw new Error('Failed to load pvvoltage.dat');
+        }
+        const text = await response.text();
+        const selectedFromDate = getSelectedPVVoltageFromDate();
+        const selectedToDate = getSelectedPVVoltageToDate();
+        const timezoneOffset = getTimezoneOffset();
+        const points = [];
+        const dateSet = new Set();
+
+        text.split('\n').forEach(line => {
+          line = line.trim();
+          if (!line) {
+            return;
+          }
+          const parts = line.split(/\s+/);
+          if (parts.length < 2) {
+            return;
+          }
+          const timestamp = parts[0];
+          const value = Number(parts[1]);
+          if (!Number.isFinite(value)) {
+            return;
+          }
+          const dateUtc = new Date(timestamp);
+          if (!Number.isFinite(dateUtc.getTime())) {
+            return;
+          }
+          const offsetMs = Math.round(timezoneOffset * 3600 * 1000);
+          const localMs = dateUtc.getTime() + offsetMs;
+          const localDate = new Date(localMs);
+          const dateOnly = localDate.toISOString().slice(0, 10);
+          const timeOnly = localDate.toISOString().slice(11, 19);
+          dateSet.add(dateOnly);
+          points.push({ timestamp, value, date: dateOnly, label: `${dateOnly} ${timeOnly}` });
+        });
+
+        const allDates = Array.from(dateSet).sort();
+        const fromInput = document.getElementById('pvvoltage-from-day');
+        const toInput = document.getElementById('pvvoltage-to-day');
+        if (allDates.length > 0) {
+          fromInput.min = allDates[0];
+          fromInput.max = allDates[allDates.length - 1];
+          toInput.min = allDates[0];
+          toInput.max = allDates[allDates.length - 1];
+        }
+
+        let fromDate = selectedFromDate;
+        let toDate = selectedToDate;
+        if (fromDate && !dateSet.has(fromDate)) {
+          fromDate = null;
+        }
+        if (toDate && !dateSet.has(toDate)) {
+          toDate = null;
+        }
+        if (!fromDate) {
+          fromDate = allDates.length ? allDates[0] : null;
+        }
+        if (!toDate) {
+          toDate = allDates.length ? allDates[allDates.length - 1] : null;
+        }
+        if (fromDate && toDate && fromDate > toDate) {
+          [fromDate, toDate] = [toDate, fromDate];
+        }
+        fromInput.value = fromDate || '';
+        toInput.value = toDate || '';
+        if (fromInput.value !== selectedFromDate || toInput.value !== selectedToDate) {
+          saveSelectedPVVoltageDays();
+        }
+
+        const visiblePoints = points.filter(point => {
+          if (fromDate && point.date < fromDate) {
+            return false;
+          }
+          if (toDate && point.date > toDate) {
+            return false;
+          }
+          return true;
+        });
+
+        const maxPoints = getShowPoints();
+        const step = Math.max(1, Math.ceil(visiblePoints.length / maxPoints));
+        const timestamps = [];
+        const values = [];
+        visiblePoints.forEach((point, index) => {
+          if (index % step !== 0) {
+            return;
+          }
+          timestamps.push(point.label);
+          values.push(point.value);
+        });
+
+        const timezoneLabel = formatTimezoneLabel(timezoneOffset);
+        const xAxisTitle = 'Timestamp (' + timezoneLabel + ')';
+        const ctx = document.getElementById('pvvoltage-chart').getContext('2d');
+        if (!pvVoltageChart) {
+          pvVoltageChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: timestamps,
+              datasets: [{
+                label: 'PV Voltage',
+                data: values,
+                borderColor: 'rgba(255, 193, 7, 1)',
+                backgroundColor: 'rgba(255, 193, 7, 0.2)',
+                fill: true,
+                tension: 0.25,
+                pointRadius: 2
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              interaction: {
+                mode: 'nearest',
+                intersect: false,
+              },
+              scales: {
+                x: {
+                  display: true,
+                  title: { display: true, text: xAxisTitle }
+                },
+                y: {
+                  display: true,
+                  title: { display: true, text: 'PV Voltage' }
+                }
+              },
+              plugins: {
+                legend: { display: false },
+                tooltip: {
+                  enabled: true,
+                  mode: 'nearest',
+                  intersect: false,
+                  position: 'nearest',
+                  callbacks: {
+                    label: context => context.label + ': ' + context.parsed.y
+                  }
+                }
+              }
+            }
+          });
+        } else {
+          pvVoltageChart.data.labels = timestamps;
+          pvVoltageChart.data.datasets[0].data = values;
+          pvVoltageChart.options.scales.x.title.text = xAxisTitle;
+          pvVoltageChart.update();
+        }
+      } catch (err) {
+        console.warn('Unable to load pvvoltage.dat:', err.message);
+      }
+    }
+
     async function loadBatteryData() {
       try {
         const response = await fetch('battery.dat');
@@ -707,6 +987,7 @@
 
     async function refreshData() {
       await loadRegisters();
+      await loadPVVoltageData();
       await loadPowerData();
       await loadBatteryData();
     }
@@ -728,6 +1009,14 @@
     });
     document.getElementById('power-to-day').addEventListener('change', () => {
       saveSelectedDays();
+      refreshData();
+    });
+    document.getElementById('pvvoltage-from-day').addEventListener('change', () => {
+      saveSelectedPVVoltageDays();
+      refreshData();
+    });
+    document.getElementById('pvvoltage-to-day').addEventListener('change', () => {
+      saveSelectedPVVoltageDays();
       refreshData();
     });
     document.getElementById('battery-from-day').addEventListener('change', () => {

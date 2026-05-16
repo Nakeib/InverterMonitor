@@ -30,6 +30,7 @@ static const int BACKLOG = 5;
 static const size_t RECV_BUFFER_SIZE = 1024;
 
 static const uint16_t PV_POWER_ADDRESS = 15208;
+static const uint16_t PV_VOLTAGE_ADDRESS = 15205;
 static const uint16_t BATTERY_VOLTAGE_ADDRESS = 15206;
 
 std::vector<int> clients;
@@ -596,6 +597,26 @@ static bool appendBatteryValue(uint16_t value) {
   return out.good();
 }
 
+static bool appendPVVoltageValue(uint16_t value) {
+  std::ofstream out("pvvoltage.dat", std::ofstream::app);
+  if (!out) {
+    std::cerr << "Unable to open pvvoltage.dat for appending" << std::endl;
+    return false;
+  }
+
+  auto now = std::chrono::system_clock::now();
+  std::time_t nowTime = std::chrono::system_clock::to_time_t(now);
+  char timestamp[64];
+  if (std::strftime(timestamp, sizeof(timestamp), "%Y-%m-%dT%H:%M:%SZ", std::gmtime(&nowTime)) == 0) {
+    std::cerr << "Unable to format timestamp for pvvoltage.dat" << std::endl;
+    return false;
+  }
+
+  const double scaledValue = getScaledRegisterValue(PV_VOLTAGE_ADDRESS, value);
+  out << timestamp << " " << scaledValue << "\n";
+  return out.good();
+}
+
 static bool processCommandFile() {
   std::ifstream in("command.dat");
   if (!in) {
@@ -734,6 +755,10 @@ void serverLoop(int listenSocket) {
       auto powerIt = lastValues.find(PV_POWER_ADDRESS);
       if (powerIt != lastValues.end()) {
         appendPowerValue(powerIt->second);
+      }
+      auto pvVoltageIt = lastValues.find(PV_VOLTAGE_ADDRESS);
+      if (pvVoltageIt != lastValues.end()) {
+        appendPVVoltageValue(pvVoltageIt->second);
       }
       auto batteryIt = lastValues.find(BATTERY_VOLTAGE_ADDRESS);
       if (batteryIt != lastValues.end()) {
