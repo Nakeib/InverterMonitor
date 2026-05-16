@@ -15,7 +15,11 @@ const int MONITOR_PORT_MAX_LEN = 6;
 const int MONITOR_HOST_EEPROM_OFFSET = WIFI_PASSWORD_EEPROM_OFFSET + WIFI_PASSWORD_MAX_LEN + 1;
 const int MONITOR_PORT_EEPROM_OFFSET = MONITOR_HOST_EEPROM_OFFSET + MONITOR_HOST_MAX_LEN + 1;
 const int SIMULATION_MODE_EEPROM_OFFSET = MONITOR_PORT_EEPROM_OFFSET + MONITOR_PORT_MAX_LEN + 1;
-const int EEPROM_SIZE = SIMULATION_MODE_EEPROM_OFFSET + 1;
+const int TIMING_CONFIG_VALID_OFFSET = SIMULATION_MODE_EEPROM_OFFSET + 1;
+const int CONTROL_SCAN_INTERVAL_EEPROM_OFFSET = TIMING_CONFIG_VALID_OFFSET + 1;
+const int MONITOR_SCAN_INTERVAL_EEPROM_OFFSET = CONTROL_SCAN_INTERVAL_EEPROM_OFFSET + sizeof(uint32_t);
+const int REGISTER_READ_SPACING_EEPROM_OFFSET = MONITOR_SCAN_INTERVAL_EEPROM_OFFSET + sizeof(uint32_t);
+const int EEPROM_SIZE = REGISTER_READ_SPACING_EEPROM_OFFSET + sizeof(uint32_t);
 
 char wifiSSID[WIFI_SSID_MAX_LEN + 1];
 char wifiPassword[WIFI_PASSWORD_MAX_LEN + 1];
@@ -38,10 +42,13 @@ String monitorCommandLine;
 String serialCommandLine;
 
 // Scanning intervals and state for control and monitor registers.
-const unsigned long CONTROL_SCAN_INTERVAL_MS = 60000UL;
-const unsigned long MONITOR_SCAN_INTERVAL_MS = 5000UL;
-const unsigned long REGISTER_READ_SPACING_MS = 120UL;
+const unsigned long DEFAULT_CONTROL_SCAN_INTERVAL_MS = 60000UL;
+const unsigned long DEFAULT_MONITOR_SCAN_INTERVAL_MS = 5000UL;
+const unsigned long DEFAULT_REGISTER_READ_SPACING_MS = 300UL;
 const unsigned long MONITOR_CONNECTION_CHECK_INTERVAL_MS = 60000UL;
+unsigned long controlScanIntervalMs = DEFAULT_CONTROL_SCAN_INTERVAL_MS;
+unsigned long monitorScanIntervalMs = DEFAULT_MONITOR_SCAN_INTERVAL_MS;
+unsigned long registerReadSpacingMs = DEFAULT_REGISTER_READ_SPACING_MS;
 unsigned long nextControlScanTime = 0;
 unsigned long nextMonitorScanTime = 0;
 unsigned long nextMonitorConnectionCheckTime = 0;
@@ -254,6 +261,50 @@ bool saveMonitorServerToEEPROM(const char* host, const char* portString) {
   return EEPROM.commit();
 }
 
+uint32_t readEEPROMUint32(int start) {
+  uint32_t value = 0;
+  value |= static_cast<uint32_t>(EEPROM.read(start));
+  value |= static_cast<uint32_t>(EEPROM.read(start + 1)) << 8;
+  value |= static_cast<uint32_t>(EEPROM.read(start + 2)) << 16;
+  value |= static_cast<uint32_t>(EEPROM.read(start + 3)) << 24;
+  return value;
+}
+
+void writeEEPROMUint32(int start, uint32_t value) {
+  EEPROM.write(start, static_cast<uint8_t>(value & 0xFF));
+  EEPROM.write(start + 1, static_cast<uint8_t>((value >> 8) & 0xFF));
+  EEPROM.write(start + 2, static_cast<uint8_t>((value >> 16) & 0xFF));
+  EEPROM.write(start + 3, static_cast<uint8_t>((value >> 24) & 0xFF));
+}
+
+bool loadTimingConfigFromEEPROM() {
+  if (EEPROM.read(TIMING_CONFIG_VALID_OFFSET) != 0xAA) {
+    controlScanIntervalMs = DEFAULT_CONTROL_SCAN_INTERVAL_MS;
+    monitorScanIntervalMs = DEFAULT_MONITOR_SCAN_INTERVAL_MS;
+    registerReadSpacingMs = DEFAULT_REGISTER_READ_SPACING_MS;
+    return false;
+  }
+
+  uint32_t controlValue = readEEPROMUint32(CONTROL_SCAN_INTERVAL_EEPROM_OFFSET);
+  uint32_t monitorValue = readEEPROMUint32(MONITOR_SCAN_INTERVAL_EEPROM_OFFSET);
+  uint32_t spacingValue = readEEPROMUint32(REGISTER_READ_SPACING_EEPROM_OFFSET);
+
+  controlScanIntervalMs = (controlValue == 0) ? DEFAULT_CONTROL_SCAN_INTERVAL_MS : controlValue;
+  monitorScanIntervalMs = (monitorValue == 0) ? DEFAULT_MONITOR_SCAN_INTERVAL_MS : monitorValue;
+  registerReadSpacingMs = (spacingValue == 0) ? DEFAULT_REGISTER_READ_SPACING_MS : spacingValue;
+  return true;
+}
+
+bool saveTimingConfigToEEPROM(uint32_t controlInterval,
+                              uint32_t monitorInterval,
+                              uint32_t spacingInterval) {
+  EEPROM.write(TIMING_CONFIG_VALID_OFFSET, 0xAA);
+  writeEEPROMUint32(CONTROL_SCAN_INTERVAL_EEPROM_OFFSET, controlInterval);
+  writeEEPROMUint32(MONITOR_SCAN_INTERVAL_EEPROM_OFFSET, monitorInterval);
+  writeEEPROMUint32(REGISTER_READ_SPACING_EEPROM_OFFSET, spacingInterval);
+  return EEPROM.commit();
+}
+
 bool saveSimulationModeToEEPROM(bool enabled) {
   EEPROM.write(SIMULATION_MODE_EEPROM_OFFSET, enabled ? 1 : 0);
   return EEPROM.commit();
@@ -382,15 +433,16 @@ void readMonitorRegisters(size_t index) {
         break;
     }
     value = rawValue > 0 ? static_cast<uint16_t>(rawValue) : 0;
+    printRegisterResult(reg, value);
   } else {
     result = modbus.readHoldingRegisters(reg.address, 1);
     if (result == modbus.ku8MBSuccess) {
       value = modbus.getResponseBuffer(0);
+      printRegisterResult(reg, value);
     } else {
       printMessage("%5u %-36s => READ ERROR 0x%02X", reg.address, reg.name, result);
     }
   }
-  printRegisterResult(reg, value);
 }
 
 const RegItem* findRegister(uint16_t address) {
@@ -542,6 +594,81 @@ void handleCommand(const String& rawLine) {
     }
 
     printMessage("TCP CMD: SIM %s", simulationMode ? "ON" : "OFF");
+    return;
+  }
+
+  if (line.startsWith("CTRL_SCAN_MS")) {
+    String valueText = line.substring(12);
+    valueText.trim();
+    if (valueText.length() == 0) {
+      printMessage("TCP CMD: invalid CTRL_SCAN_MS format, expected 'CTRL_SCAN_MS [value]' ");
+      return;
+    }
+
+    char* endPtr;
+    unsigned long rawValue = strtoul(valueText.c_str(), &endPtr, 10);
+    if (endPtr == valueText.c_str() || rawValue == 0) {
+      printMessage("TCP CMD: invalid CTRL_SCAN_MS value");
+      return;
+    }
+
+    controlScanIntervalMs = rawValue;
+    if (!saveTimingConfigToEEPROM(controlScanIntervalMs, monitorScanIntervalMs, registerReadSpacingMs)) {
+      printMessage("TCP CMD: failed to save timing config to EEPROM");
+      return;
+    }
+
+    printMessage("TCP CMD: CTRL_SCAN_MS %lu", controlScanIntervalMs);
+    return;
+  }
+
+  if (line.startsWith("MON_SCAN_MS")) {
+    String valueText = line.substring(11);
+    valueText.trim();
+    if (valueText.length() == 0) {
+      printMessage("TCP CMD: invalid MON_SCAN_MS format, expected 'MON_SCAN_MS [value]' ");
+      return;
+    }
+
+    char* endPtr;
+    unsigned long rawValue = strtoul(valueText.c_str(), &endPtr, 10);
+    if (endPtr == valueText.c_str() || rawValue == 0) {
+      printMessage("TCP CMD: invalid MON_SCAN_MS value");
+      return;
+    }
+
+    monitorScanIntervalMs = rawValue;
+    if (!saveTimingConfigToEEPROM(controlScanIntervalMs, monitorScanIntervalMs, registerReadSpacingMs)) {
+      printMessage("TCP CMD: failed to save timing config to EEPROM");
+      return;
+    }
+
+    printMessage("TCP CMD: MON_SCAN_MS %lu", monitorScanIntervalMs);
+    return;
+  }
+
+  if (line.startsWith("REG_SPACING_MS")) {
+    String valueText = line.substring(14);
+    valueText.trim();
+    if (valueText.length() == 0) {
+      printMessage("TCP CMD: invalid REG_SPACING_MS format, expected 'REG_SPACING_MS [value]' ");
+      return;
+    }
+
+    char* endPtr;
+    unsigned long rawValue = strtoul(valueText.c_str(), &endPtr, 10);
+    if (endPtr == valueText.c_str() || rawValue == 0) {
+      printMessage("TCP CMD: invalid REG_SPACING_MS value");
+      return;
+    }
+
+    registerReadSpacingMs = rawValue;
+    if (!saveTimingConfigToEEPROM(controlScanIntervalMs, monitorScanIntervalMs, registerReadSpacingMs)) {
+      printMessage("TCP CMD: failed to save timing config to EEPROM");
+      return;
+    }
+
+    printMessage("TCP CMD: REG_SPACING_MS %lu", registerReadSpacingMs);
     return;
   }
 
@@ -730,6 +857,14 @@ void setup() {
     Serial.printf("No simulation mode configured in EEPROM, defaulting to %s.\n", simulationMode ? "ON" : "OFF");
   }
 
+  if (loadTimingConfigFromEEPROM()) {
+    Serial.printf("Loaded timing config from EEPROM: control=%lu ms, monitor=%lu ms, spacing=%lu ms\n",
+                  controlScanIntervalMs, monitorScanIntervalMs, registerReadSpacingMs);
+  } else {
+    Serial.printf("No timing config in EEPROM, using defaults: control=%lu ms, monitor=%lu ms, spacing=%lu ms\n",
+                  controlScanIntervalMs, monitorScanIntervalMs, registerReadSpacingMs);
+  }
+
   connectToWiFi();
 
   if (simulationMode) {
@@ -789,31 +924,29 @@ void loop() {
     nextControlScanTime = now;
   }
 
-  if (controlScanIndex < controlRegisterCount && now >= nextControlScanTime) {
-    readControlRegisters(controlScanIndex);
-    controlScanIndex++;
-    if (controlScanIndex < controlRegisterCount) {
-      nextControlScanTime = now + REGISTER_READ_SPACING_MS;
-    } else {
-      nextControlScanTime = now + CONTROL_SCAN_INTERVAL_MS;
-    }
-  }
-
   if (monitorScanIndex >= monitorRegisterCount && (nextMonitorScanTime == 0 || now >= nextMonitorScanTime)) {
     printMessage("Reading monitor registers...");
     monitorScanIndex = 0;
     nextMonitorScanTime = now;
   }
 
+  // Prioritize monitor register reads over control register reads since they are more time-sensitive for real-time monitoring.
   if (monitorScanIndex < monitorRegisterCount && now >= nextMonitorScanTime) {
-    printRelaysState();
-
     readMonitorRegisters(monitorScanIndex);
     monitorScanIndex++;
     if (monitorScanIndex < monitorRegisterCount) {
-      nextMonitorScanTime = now + REGISTER_READ_SPACING_MS;
+      nextMonitorScanTime = now + registerReadSpacingMs;
     } else {
-      nextMonitorScanTime = now + MONITOR_SCAN_INTERVAL_MS;
+      nextMonitorScanTime = now + monitorScanIntervalMs;
+    }
+  } else if (controlScanIndex < controlRegisterCount && now >= nextControlScanTime) {
+    readControlRegisters(controlScanIndex);
+    controlScanIndex++;
+    if (controlScanIndex < controlRegisterCount) {
+      nextControlScanTime = now + registerReadSpacingMs;
+    } else {
+      nextControlScanTime = now + controlScanIntervalMs;
+      printRelaysState();
     }
   }
 }
