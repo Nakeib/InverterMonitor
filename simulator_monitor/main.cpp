@@ -72,8 +72,8 @@ static const RegItem monitorRegisters[] = {
   {15206, "Battery voltage", "0.1V"},
   {15207, "PV charger current", "0.1A"},
   {15208, "PV charger power", "W"},
-  {25210, "Inverter current", "0.1A"},
-  {25274, "Battery current", "A"}
+  {25212, "Load current", "0.1A"},
+  {25274, "Battery current (negative for charging)", "A"}
 };
 
 struct EEPROMFile {
@@ -405,7 +405,7 @@ uint16_t simulateValue(uint16_t address, unsigned long timestampMs) {
       baseValue = 500 + (std::sin(6.28 * timestampMs / 86400000.0) * 120);
       maxNoise = 18.0;
       break;
-    case 25210:
+    case 25212:
       baseValue = 800 + (std::sin(timestampMs / 6000.0) * 100);
       maxNoise = 12.0;
       break;

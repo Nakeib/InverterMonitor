@@ -222,7 +222,7 @@ std::map<uint16_t, RegisterInfo> makeRegisterMap() {
     {15206, {265, false}},
     {15207, {150, false}},
     {15208, {500, false}},
-    {25210, {800, false}},
+    {25212, {800, false}},
     {25274, {15, false}},
   };
   return registers;
@@ -248,7 +248,7 @@ uint16_t generateMonitorValue(uint16_t address) {
       double value = 500 + std::sin(6.28 * now / 86400000.0) * 120 + (std::rand() % 41 - 20);
       return static_cast<uint16_t>(value < 0 ? 0 : value);
     }
-    case 25210: {
+    case 25212: {
       double value = 800 + std::sin(now / 6000.0) * 100 + (std::rand() % 21 - 10);
       return static_cast<uint16_t>(value < 0 ? 0 : value);
     }

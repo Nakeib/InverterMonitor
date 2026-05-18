@@ -17,7 +17,7 @@
     tbody tr:nth-child(odd) { background: #fafafa; }
     .missing { color: #888; }
     .chart-container { position: relative; width: 100%; max-width: 100%; height: 360px; margin-bottom: 24px; }
-    #power-chart, #pvvoltage-chart { width: 100% !important; height: 100% !important; }
+    #pv-power-chart, #pv-voltage-chart, #battery-voltage-chart, #battery-current-chart, #load-current-chart { width: 100% !important; height: 100% !important; }
   </style>
 </head>
 <body>
@@ -114,17 +114,6 @@
     <span>GMT</span>
   </div>
 
-  <h2>PV Voltage History</h2>
-  <div style="margin-bottom: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px;">
-    <label for="pvvoltage-from-day" style="margin-left: 16px;">From day</label>
-    <input id="pvvoltage-from-day" type="date" style="width: 160px;" />
-    <label for="pvvoltage-to-day">To day</label>
-    <input id="pvvoltage-to-day" type="date" style="width: 160px;" />
-  </div>
-  <div class="chart-container">
-    <canvas id="pvvoltage-chart"></canvas>
-  </div>
-
   <h2>PV Power History</h2>
   <div style="margin-bottom: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px;">
     <label for="power-from-day" style="margin-left: 16px;">From day</label>
@@ -133,7 +122,18 @@
     <input id="power-to-day" type="date" style="width: 160px;" />
   </div>
   <div class="chart-container">
-    <canvas id="power-chart"></canvas>
+    <canvas id="pv-power-chart"></canvas>
+  </div>
+
+  <h2>PV Voltage History</h2>
+  <div style="margin-bottom: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px;">
+    <label for="pvvoltage-from-day" style="margin-left: 16px;">From day</label>
+    <input id="pvvoltage-from-day" type="date" style="width: 160px;" />
+    <label for="pvvoltage-to-day">To day</label>
+    <input id="pvvoltage-to-day" type="date" style="width: 160px;" />
+  </div>
+  <div class="chart-container">
+    <canvas id="pv-voltage-chart"></canvas>
   </div>
   <h2>Battery Voltage History</h2>
   <div style="margin-bottom: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px;">
@@ -143,7 +143,29 @@
     <input id="battery-to-day" type="date" style="width: 160px;" />
   </div>
   <div class="chart-container">
-    <canvas id="battery-chart"></canvas>
+    <canvas id="battery-voltage-chart"></canvas>
+  </div>
+
+  <h2>Battery Current History</h2>
+  <div style="margin-bottom: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px;">
+    <label for="battery-current-from-day">From day</label>
+    <input id="battery-current-from-day" type="date" style="width: 160px;" />
+    <label for="battery-current-to-day">To day</label>
+    <input id="battery-current-to-day" type="date" style="width: 160px;" />
+  </div>
+  <div class="chart-container">
+    <canvas id="battery-current-chart"></canvas>
+  </div>
+
+  <h2>Load Current History</h2>
+  <div style="margin-bottom: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px;">
+    <label for="load-current-from-day">From day</label>
+    <input id="load-current-from-day" type="date" style="width: 160px;" />
+    <label for="load-current-to-day">To day</label>
+    <input id="load-current-to-day" type="date" style="width: 160px;" />
+  </div>
+  <div class="chart-container">
+    <canvas id="load-current-chart"></canvas>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -219,6 +241,8 @@
     let powerChart = null;
     let pvVoltageChart = null;
     let batteryChart = null;
+    let batteryCurrentChart = null;
+    let loadCurrentChart = null;
     let adminAuthorized = false;
     let adminSessionId = '';
     let adminSessionTimeoutId = null;
@@ -233,6 +257,10 @@
     const PVVOLTAGE_TO_DAY_STORAGE_KEY = 'pvVoltageChartToDay';
     const BATTERY_FROM_DAY_STORAGE_KEY = 'batteryChartFromDay';
     const BATTERY_TO_DAY_STORAGE_KEY = 'batteryChartToDay';
+    const BATTERY_CURRENT_FROM_DAY_STORAGE_KEY = 'batteryCurrentChartFromDay';
+    const BATTERY_CURRENT_TO_DAY_STORAGE_KEY = 'batteryCurrentChartToDay';
+    const LOAD_CURRENT_FROM_DAY_STORAGE_KEY = 'loadCurrentChartFromDay';
+    const LOAD_CURRENT_TO_DAY_STORAGE_KEY = 'loadCurrentChartToDay';
 
     function getShowPoints() {
       const input = document.getElementById('show-points');
@@ -281,6 +309,26 @@
       return input.value || null;
     }
 
+    function getSelectedBatteryCurrentFromDate() {
+      const input = document.getElementById('battery-current-from-day');
+      return input.value || null;
+    }
+
+    function getSelectedBatteryCurrentToDate() {
+      const input = document.getElementById('battery-current-to-day');
+      return input.value || null;
+    }
+
+    function getSelectedLoadCurrentFromDate() {
+      const input = document.getElementById('load-current-from-day');
+      return input.value || null;
+    }
+
+    function getSelectedLoadCurrentToDate() {
+      const input = document.getElementById('load-current-to-day');
+      return input.value || null;
+    }
+
     function loadSavedShowPoints() {
       const saved = localStorage.getItem(POWER_SHOW_POINTS_STORAGE_KEY);
       const input = document.getElementById('show-points');
@@ -318,10 +366,18 @@
       const pvVoltageToSaved = localStorage.getItem(PVVOLTAGE_TO_DAY_STORAGE_KEY);
       const batteryFromSaved = localStorage.getItem(BATTERY_FROM_DAY_STORAGE_KEY);
       const batteryToSaved = localStorage.getItem(BATTERY_TO_DAY_STORAGE_KEY);
+      const batteryCurrentFromSaved = localStorage.getItem(BATTERY_CURRENT_FROM_DAY_STORAGE_KEY);
+      const batteryCurrentToSaved = localStorage.getItem(BATTERY_CURRENT_TO_DAY_STORAGE_KEY);
+      const loadCurrentFromSaved = localStorage.getItem(LOAD_CURRENT_FROM_DAY_STORAGE_KEY);
+      const loadCurrentToSaved = localStorage.getItem(LOAD_CURRENT_TO_DAY_STORAGE_KEY);
       const pvVoltageFromInput = document.getElementById('pvvoltage-from-day');
       const pvVoltageToInput = document.getElementById('pvvoltage-to-day');
       const batteryFromInput = document.getElementById('battery-from-day');
       const batteryToInput = document.getElementById('battery-to-day');
+      const batteryCurrentFromInput = document.getElementById('battery-current-from-day');
+      const batteryCurrentToInput = document.getElementById('battery-current-to-day');
+      const loadCurrentFromInput = document.getElementById('load-current-from-day');
+      const loadCurrentToInput = document.getElementById('load-current-to-day');
       if (pvVoltageFromSaved) {
         pvVoltageFromInput.value = pvVoltageFromSaved;
       }
@@ -333,6 +389,18 @@
       }
       if (batteryToSaved) {
         batteryToInput.value = batteryToSaved;
+      }
+      if (batteryCurrentFromSaved) {
+        batteryCurrentFromInput.value = batteryCurrentFromSaved;
+      }
+      if (batteryCurrentToSaved) {
+        batteryCurrentToInput.value = batteryCurrentToSaved;
+      }
+      if (loadCurrentFromSaved) {
+        loadCurrentFromInput.value = loadCurrentFromSaved;
+      }
+      if (loadCurrentToSaved) {
+        loadCurrentToInput.value = loadCurrentToSaved;
       }
     }
 
@@ -374,6 +442,28 @@
       }
       if (toDate) {
         localStorage.setItem(BATTERY_TO_DAY_STORAGE_KEY, toDate);
+      }
+    }
+
+    function saveSelectedBatteryCurrentDays() {
+      const fromDate = getSelectedBatteryCurrentFromDate();
+      const toDate = getSelectedBatteryCurrentToDate();
+      if (fromDate) {
+        localStorage.setItem(BATTERY_CURRENT_FROM_DAY_STORAGE_KEY, fromDate);
+      }
+      if (toDate) {
+        localStorage.setItem(BATTERY_CURRENT_TO_DAY_STORAGE_KEY, toDate);
+      }
+    }
+
+    function saveSelectedLoadCurrentDays() {
+      const fromDate = getSelectedLoadCurrentFromDate();
+      const toDate = getSelectedLoadCurrentToDate();
+      if (fromDate) {
+        localStorage.setItem(LOAD_CURRENT_FROM_DAY_STORAGE_KEY, fromDate);
+      }
+      if (toDate) {
+        localStorage.setItem(LOAD_CURRENT_TO_DAY_STORAGE_KEY, toDate);
       }
     }
 
@@ -616,7 +706,7 @@
 
         const timezoneLabel = formatTimezoneLabel(timezoneOffset);
         const xAxisTitle = 'Timestamp (' + timezoneLabel + ')';
-        const ctx = document.getElementById('power-chart').getContext('2d');
+        const ctx = document.getElementById('pv-power-chart').getContext('2d');
         if (!powerChart) {
           powerChart = new Chart(ctx, {
             type: 'line',
@@ -772,7 +862,7 @@
 
         const timezoneLabel = formatTimezoneLabel(timezoneOffset);
         const xAxisTitle = 'Timestamp (' + timezoneLabel + ')';
-        const ctx = document.getElementById('pvvoltage-chart').getContext('2d');
+        const ctx = document.getElementById('pv-voltage-chart').getContext('2d');
         if (!pvVoltageChart) {
           pvVoltageChart = new Chart(ctx, {
             type: 'line',
@@ -927,7 +1017,7 @@
 
         const timezoneLabel = formatTimezoneLabel(timezoneOffset);
         const xAxisTitle = 'Timestamp (' + timezoneLabel + ')';
-        const ctx = document.getElementById('battery-chart').getContext('2d');
+        const ctx = document.getElementById('battery-voltage-chart').getContext('2d');
         if (!batteryChart) {
           batteryChart = new Chart(ctx, {
             type: 'line',
@@ -985,11 +1075,324 @@
       }
     }
 
+    async function loadBatteryCurrentData() {
+      try {
+        const response = await fetch('batterycurr.dat');
+        if (!response.ok) {
+          throw new Error('Failed to load batterycurr.dat');
+        }
+        const text = await response.text();
+        const selectedFromDate = getSelectedBatteryCurrentFromDate();
+        const selectedToDate = getSelectedBatteryCurrentToDate();
+        const timezoneOffset = getTimezoneOffset();
+        const points = [];
+        const dateSet = new Set();
+
+        text.split('\n').forEach(line => {
+          line = line.trim();
+          if (!line) {
+            return;
+          }
+          const parts = line.split(/\s+/);
+          if (parts.length < 2) {
+            return;
+          }
+          const timestamp = parts[0];
+          const value = Number(parts[1]);
+          if (!Number.isFinite(value)) {
+            return;
+          }
+          const dateUtc = new Date(timestamp);
+          if (!Number.isFinite(dateUtc.getTime())) {
+            return;
+          }
+          const offsetMs = Math.round(timezoneOffset * 3600 * 1000);
+          const localMs = dateUtc.getTime() + offsetMs;
+          const localDate = new Date(localMs);
+          const dateOnly = localDate.toISOString().slice(0, 10);
+          const timeOnly = localDate.toISOString().slice(11, 19);
+          dateSet.add(dateOnly);
+          points.push({ timestamp, value, date: dateOnly, label: `${dateOnly} ${timeOnly}` });
+        });
+
+        const allDates = Array.from(dateSet).sort();
+        const fromInput = document.getElementById('battery-current-from-day');
+        const toInput = document.getElementById('battery-current-to-day');
+        if (allDates.length > 0) {
+          fromInput.min = allDates[0];
+          fromInput.max = allDates[allDates.length - 1];
+          toInput.min = allDates[0];
+          toInput.max = allDates[allDates.length - 1];
+        }
+
+        let fromDate = selectedFromDate;
+        let toDate = selectedToDate;
+        if (fromDate && !dateSet.has(fromDate)) {
+          fromDate = null;
+        }
+        if (toDate && !dateSet.has(toDate)) {
+          toDate = null;
+        }
+        if (!fromDate) {
+          fromDate = allDates.length ? allDates[0] : null;
+        }
+        if (!toDate) {
+          toDate = allDates.length ? allDates[allDates.length - 1] : null;
+        }
+        if (fromDate && toDate && fromDate > toDate) {
+          [fromDate, toDate] = [toDate, fromDate];
+        }
+        fromInput.value = fromDate || '';
+        toInput.value = toDate || '';
+        if (fromInput.value !== selectedFromDate || toInput.value !== selectedToDate) {
+          saveSelectedBatteryCurrentDays();
+        }
+
+        const visiblePoints = points.filter(point => {
+          if (fromDate && point.date < fromDate) {
+            return false;
+          }
+          if (toDate && point.date > toDate) {
+            return false;
+          }
+          return true;
+        });
+
+        const maxPoints = getShowPoints();
+        const step = Math.max(1, Math.ceil(visiblePoints.length / maxPoints));
+        const timestamps = [];
+        const values = [];
+        visiblePoints.forEach((point, index) => {
+          if (index % step !== 0) {
+            return;
+          }
+          timestamps.push(point.label);
+          values.push(point.value);
+        });
+
+        const timezoneLabel = formatTimezoneLabel(timezoneOffset);
+        const xAxisTitle = 'Timestamp (' + timezoneLabel + ')';
+        const ctx = document.getElementById('battery-current-chart').getContext('2d');
+        if (!batteryCurrentChart) {
+          batteryCurrentChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: timestamps,
+              datasets: [{
+                label: 'Battery Current',
+                data: values,
+                borderColor: 'rgba(255, 87, 34, 1)',
+                backgroundColor: 'rgba(255, 87, 34, 0.2)',
+                fill: true,
+                tension: 0.25,
+                pointRadius: 2
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              interaction: {
+                mode: 'nearest',
+                intersect: false,
+              },
+              scales: {
+                x: {
+                  display: true,
+                  title: { display: true, text: xAxisTitle }
+                },
+                y: {
+                  display: true,
+                  beginAtZero: true,
+                  title: { display: true, text: 'Battery current (A)' }
+                }
+              },
+              plugins: {
+                legend: { display: false },
+                tooltip: {
+                  enabled: true,
+                  mode: 'nearest',
+                  intersect: false,
+                  position: 'nearest',
+                  callbacks: {
+                    label: context => context.label + ': ' + context.parsed.y
+                  }
+                }
+              }
+            }
+          });
+        } else {
+          batteryCurrentChart.data.labels = timestamps;
+          batteryCurrentChart.data.datasets[0].data = values;
+          batteryCurrentChart.options.scales.x.title.text = xAxisTitle;
+          batteryCurrentChart.update();
+        }
+      } catch (err) {
+        console.warn('Unable to load batterycurr.dat:', err.message);
+      }
+    }
+
+    async function loadLoadCurrentData() {
+      try {
+        const response = await fetch('loadcurr.dat');
+        if (!response.ok) {
+          throw new Error('Failed to load loadcurr.dat');
+        }
+        const text = await response.text();
+        const selectedFromDate = getSelectedLoadCurrentFromDate();
+        const selectedToDate = getSelectedLoadCurrentToDate();
+        const timezoneOffset = getTimezoneOffset();
+        const points = [];
+        const dateSet = new Set();
+
+        text.split('\n').forEach(line => {
+          line = line.trim();
+          if (!line) {
+            return;
+          }
+          const parts = line.split(/\s+/);
+          if (parts.length < 2) {
+            return;
+          }
+          const timestamp = parts[0];
+          const value = Number(parts[1]);
+          if (!Number.isFinite(value)) {
+            return;
+          }
+          const dateUtc = new Date(timestamp);
+          if (!Number.isFinite(dateUtc.getTime())) {
+            return;
+          }
+          const offsetMs = Math.round(timezoneOffset * 3600 * 1000);
+          const localMs = dateUtc.getTime() + offsetMs;
+          const localDate = new Date(localMs);
+          const dateOnly = localDate.toISOString().slice(0, 10);
+          const timeOnly = localDate.toISOString().slice(11, 19);
+          dateSet.add(dateOnly);
+          points.push({ timestamp, value, date: dateOnly, label: `${dateOnly} ${timeOnly}` });
+        });
+
+        const allDates = Array.from(dateSet).sort();
+        const fromInput = document.getElementById('load-current-from-day');
+        const toInput = document.getElementById('load-current-to-day');
+        if (allDates.length > 0) {
+          fromInput.min = allDates[0];
+          fromInput.max = allDates[allDates.length - 1];
+          toInput.min = allDates[0];
+          toInput.max = allDates[allDates.length - 1];
+        }
+
+        let fromDate = selectedFromDate;
+        let toDate = selectedToDate;
+        if (fromDate && !dateSet.has(fromDate)) {
+          fromDate = null;
+        }
+        if (toDate && !dateSet.has(toDate)) {
+          toDate = null;
+        }
+        if (!fromDate) {
+          fromDate = allDates.length ? allDates[0] : null;
+        }
+        if (!toDate) {
+          toDate = allDates.length ? allDates[allDates.length - 1] : null;
+        }
+        if (fromDate && toDate && fromDate > toDate) {
+          [fromDate, toDate] = [toDate, fromDate];
+        }
+        fromInput.value = fromDate || '';
+        toInput.value = toDate || '';
+        if (fromInput.value !== selectedFromDate || toInput.value !== selectedToDate) {
+          saveSelectedLoadCurrentDays();
+        }
+
+        const visiblePoints = points.filter(point => {
+          if (fromDate && point.date < fromDate) {
+            return false;
+          }
+          if (toDate && point.date > toDate) {
+            return false;
+          }
+          return true;
+        });
+
+        const maxPoints = getShowPoints();
+        const step = Math.max(1, Math.ceil(visiblePoints.length / maxPoints));
+        const timestamps = [];
+        const values = [];
+        visiblePoints.forEach((point, index) => {
+          if (index % step !== 0) {
+            return;
+          }
+          timestamps.push(point.label);
+          values.push(point.value);
+        });
+
+        const timezoneLabel = formatTimezoneLabel(timezoneOffset);
+        const xAxisTitle = 'Timestamp (' + timezoneLabel + ')';
+        const ctx = document.getElementById('load-current-chart').getContext('2d');
+        if (!loadCurrentChart) {
+          loadCurrentChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: timestamps,
+              datasets: [{
+                label: 'Load Current',
+                data: values,
+                borderColor: 'rgba(63, 81, 181, 1)',
+                backgroundColor: 'rgba(63, 81, 181, 0.2)',
+                fill: true,
+                tension: 0.25,
+                pointRadius: 2
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              interaction: {
+                mode: 'nearest',
+                intersect: false,
+              },
+              scales: {
+                x: {
+                  display: true,
+                  title: { display: true, text: xAxisTitle }
+                },
+                y: {
+                  display: true,
+                  title: { display: true, text: 'Load current (A)' }
+                }
+              },
+              plugins: {
+                legend: { display: false },
+                tooltip: {
+                  enabled: true,
+                  mode: 'nearest',
+                  intersect: false,
+                  position: 'nearest',
+                  callbacks: {
+                    label: context => context.label + ': ' + context.parsed.y
+                  }
+                }
+              }
+            }
+          });
+        } else {
+          loadCurrentChart.data.labels = timestamps;
+          loadCurrentChart.data.datasets[0].data = values;
+          loadCurrentChart.options.scales.x.title.text = xAxisTitle;
+          loadCurrentChart.update();
+        }
+      } catch (err) {
+        console.warn('Unable to load loadcurr.dat:', err.message);
+      }
+    }
+
     async function refreshData() {
       await loadRegisters();
       await loadPVVoltageData();
       await loadPowerData();
       await loadBatteryData();
+      await loadBatteryCurrentData();
+      await loadLoadCurrentData();
     }
 
     loadSavedShowPoints();
@@ -1025,6 +1428,22 @@
     });
     document.getElementById('battery-to-day').addEventListener('change', () => {
       saveSelectedBatteryDays();
+      refreshData();
+    });
+    document.getElementById('battery-current-from-day').addEventListener('change', () => {
+      saveSelectedBatteryCurrentDays();
+      refreshData();
+    });
+    document.getElementById('battery-current-to-day').addEventListener('change', () => {
+      saveSelectedBatteryCurrentDays();
+      refreshData();
+    });
+    document.getElementById('load-current-from-day').addEventListener('change', () => {
+      saveSelectedLoadCurrentDays();
+      refreshData();
+    });
+    document.getElementById('load-current-to-day').addEventListener('change', () => {
+      saveSelectedLoadCurrentDays();
       refreshData();
     });
     document.getElementById('admin-authorize').addEventListener('click', authorizeAdmin);
