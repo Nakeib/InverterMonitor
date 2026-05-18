@@ -73,6 +73,12 @@ Users can connect to the device over serial or to the TCP log server and send ne
   - Set the delay between individual register reads.
 - `RELAY [number] [ON|OFF|1|0]`
   - Turn relay output 1-4 on or off.
+- `SETIP [relayNumber] [ip]`
+  - Configure a relay’s target HTTP IP address.
+- `SETIP [relayNumber]`
+  - Clear a relay’s configured IP.
+- `READ [address]`
+  - Read a single monitored register value by address.
 - `[register] [uintValue]`
   - Write a raw Modbus register value by register address.
 
