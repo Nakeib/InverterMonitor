@@ -32,6 +32,8 @@ static const size_t RECV_BUFFER_SIZE = 1024;
 static const uint16_t PV_POWER_ADDRESS = 15208;
 static const uint16_t PV_VOLTAGE_ADDRESS = 15205;
 static const uint16_t BATTERY_VOLTAGE_ADDRESS = 15206;
+static const uint16_t BATTERY_CURRENT_ADDRESS = 25274;
+static const uint16_t LOAD_CURRENT_ADDRESS = 25212;
 
 std::vector<int> clients;
 std::mutex clientsMutex;
@@ -45,11 +47,19 @@ struct RegisterMetadata {
   double multiplier;
 };
 
+struct RelayMetadata {
+  const char* name;
+  std::string ipAddress;
+};
+
+static std::map<uint8_t, RelayMetadata> relayMetadata = {
+  {1, {"Relay 1", ""}},
+  {2, {"Relay 2", ""}},
+  {3, {"Relay 3", ""}},
+  {4, {"Relay 4", ""}}
+};
+
 static const std::map<uint16_t, RegisterMetadata> registerMetadata = {
-  {1, {"Relay 1", "", 1.0}},
-  {2, {"Relay 2", "", 1.0}},
-  {3, {"Relay 3", "", 1.0}},
-  {4, {"Relay 4", "", 1.0}},
   {20101, {"Inverter offgrid work enable", "", 1.0}},
   {20102, {"Inverter output voltage set", "0.1V", 0.1}},
   {20103, {"Inverter output frequency set", "0.01Hz", 0.01}},
@@ -76,8 +86,8 @@ static const std::map<uint16_t, RegisterMetadata> registerMetadata = {
   {15206, {"Battery voltage", "0.1V", 0.1}},
   {15207, {"PV charger current", "0.1A", 0.1}},
   {15208, {"PV charger power", "W", 1.0}},
-  {25210, {"Inverter current", "0.1A", 0.1}},
-  {25274, {"Battery current", "A", 1.0}}
+  {25212, {"Load current", "0.1A", 0.1}},
+  {25274, {"Battery current (negative for charging)", "A", 1.0}}
 };
 
 int createListeningSocket(uint16_t port) {
@@ -526,13 +536,22 @@ static std::string jsonEscape(const std::string& input) {
   return output;
 }
 
-static double getScaledRegisterValue(uint16_t address, uint16_t value) {
+static const RelayMetadata* getRelayMetadata(uint16_t address) {
+  auto it = relayMetadata.find(static_cast<uint8_t>(address));
+  return it != relayMetadata.end() ? &it->second : nullptr;
+}
+
+static double getScaledRegisterValue(uint16_t address, int16_t value) {
+  const RelayMetadata* relayInfo = getRelayMetadata(address);
+  if (relayInfo) {
+    return static_cast<double>(value);
+  }
   auto metadataIt = registerMetadata.find(address);
   const double multiplier = metadataIt != registerMetadata.end() ? metadataIt->second.multiplier : 1.0;
   return static_cast<double>(value) * multiplier;
 }
 
-static bool saveRegisterValues(const std::map<uint16_t, uint16_t>& lastValues) {
+static bool saveRegisterValues(const std::map<uint16_t, int16_t>& lastValues) {
   std::ofstream out("registers.json", std::ofstream::trunc);
   if (!out) {
     std::cerr << "Unable to write registers.json" << std::endl;
@@ -546,8 +565,19 @@ static bool saveRegisterValues(const std::map<uint16_t, uint16_t>& lastValues) {
       out << ",\n";
     }
     firstEntry = false;
+    const RelayMetadata* relayInfo = getRelayMetadata(address);
     auto metadataIt = registerMetadata.find(address);
-    const std::string name = metadataIt != registerMetadata.end() ? jsonEscape(metadataIt->second.name) : "";
+    std::string name;
+    if (relayInfo) {
+      name = jsonEscape(relayInfo->name);
+      if (!relayInfo->ipAddress.empty()) {
+        name += " (";
+        name += jsonEscape(relayInfo->ipAddress);
+        name += ")";
+      }
+    } else {
+      name = metadataIt != registerMetadata.end() ? jsonEscape(metadataIt->second.name) : "";
+    }
     const double adjustedValue = getScaledRegisterValue(address, value);
     out << "  {\"address\":" << address
         << ",\"name\":\"" << name << "\""
@@ -557,7 +587,7 @@ static bool saveRegisterValues(const std::map<uint16_t, uint16_t>& lastValues) {
   return out.good();
 }
 
-static bool appendPowerValue(uint16_t value) {
+static bool appendPowerValue(int16_t value) {
   std::ofstream out("power.dat", std::ofstream::app);
   if (!out) {
     std::cerr << "Unable to open power.dat for appending" << std::endl;
@@ -577,7 +607,7 @@ static bool appendPowerValue(uint16_t value) {
   return out.good();
 }
 
-static bool appendBatteryValue(uint16_t value) {
+static bool appendBatteryValue(int16_t value) {
   std::ofstream out("battery.dat", std::ofstream::app);
   if (!out) {
     std::cerr << "Unable to open battery.dat for appending" << std::endl;
@@ -597,7 +627,47 @@ static bool appendBatteryValue(uint16_t value) {
   return out.good();
 }
 
-static bool appendPVVoltageValue(uint16_t value) {
+static bool appendBatteryCurrentValue(int16_t value) {
+  std::ofstream out("batterycurr.dat", std::ofstream::app);
+  if (!out) {
+    std::cerr << "Unable to open batterycurr.dat for appending" << std::endl;
+    return false;
+  }
+
+  auto now = std::chrono::system_clock::now();
+  std::time_t nowTime = std::chrono::system_clock::to_time_t(now);
+  char timestamp[64];
+  if (std::strftime(timestamp, sizeof(timestamp), "%Y-%m-%dT%H:%M:%SZ", std::gmtime(&nowTime)) == 0) {
+    std::cerr << "Unable to format timestamp for batterycurr.dat" << std::endl;
+    return false;
+  }
+
+  const double scaledValue = getScaledRegisterValue(BATTERY_CURRENT_ADDRESS, value);
+  out << timestamp << " " << scaledValue << "\n";
+  return out.good();
+}
+
+static bool appendLoadCurrentValue(int16_t value) {
+  std::ofstream out("loadcurr.dat", std::ofstream::app);
+  if (!out) {
+    std::cerr << "Unable to open loadcurr.dat for appending" << std::endl;
+    return false;
+  }
+
+  auto now = std::chrono::system_clock::now();
+  std::time_t nowTime = std::chrono::system_clock::to_time_t(now);
+  char timestamp[64];
+  if (std::strftime(timestamp, sizeof(timestamp), "%Y-%m-%dT%H:%M:%SZ", std::gmtime(&nowTime)) == 0) {
+    std::cerr << "Unable to format timestamp for loadcurr.dat" << std::endl;
+    return false;
+  }
+
+  const double scaledValue = getScaledRegisterValue(LOAD_CURRENT_ADDRESS, value);
+  out << timestamp << " " << scaledValue << "\n";
+  return out.good();
+}
+
+static bool appendPVVoltageValue(int16_t value) {
   std::ofstream out("pvvoltage.dat", std::ofstream::app);
   if (!out) {
     std::cerr << "Unable to open pvvoltage.dat for appending" << std::endl;
@@ -643,7 +713,41 @@ static bool processCommandFile() {
   return sentAny;
 }
 
-bool updateAddressValue(const std::string& line, std::map<uint16_t, uint16_t>& lastValues) {
+static bool updateRelayStateWithIp(const std::string& line,
+                                   std::map<uint16_t, int16_t>& lastValues) {
+  if (line.empty() || line[0] != 'R') {
+    return false;
+  }
+
+  std::istringstream iss(line.substr(1));
+  unsigned long relayNumber = 0;
+  unsigned long stateValue = 0;
+  std::string ipAddress;
+  if (!(iss >> relayNumber >> stateValue >> ipAddress)) {
+    return false;
+  }
+  if (relayNumber == 0 || relayNumber > 4 || stateValue > 1) {
+    return false;
+  }
+
+  uint8_t relayIndex = static_cast<uint8_t>(relayNumber);
+  uint16_t address = static_cast<uint16_t>(relayIndex);
+  int16_t value = static_cast<int16_t>(stateValue);
+  auto it = lastValues.find(address);
+  if (it == lastValues.end() || it->second != value) {
+    lastValues[address] = value;
+    std::cout << "Relay state changed: " << relayIndex << " = " << value << std::endl;
+  }
+
+  auto relayIt = relayMetadata.find(relayIndex);
+  if (relayIt != relayMetadata.end() && relayIt->second.ipAddress != ipAddress) {
+    relayIt->second.ipAddress = ipAddress;
+    std::cout << "Relay " << relayIndex << " IP updated: " << ipAddress << std::endl;
+  }
+  return true;
+}
+
+bool updateAddressValue(const std::string& line, std::map<uint16_t, int16_t>& lastValues) {
   std::istringstream iss(line);
   unsigned long rawAddr = 0;
   unsigned long rawValue = 0;
@@ -655,7 +759,7 @@ bool updateAddressValue(const std::string& line, std::map<uint16_t, uint16_t>& l
   }
 
   uint16_t address = static_cast<uint16_t>(rawAddr);
-  uint16_t value = static_cast<uint16_t>(rawValue);
+  int16_t value = static_cast<int16_t>(rawValue);
   auto it = lastValues.find(address);
   if (it == lastValues.end() || it->second != value) {
     lastValues[address] = value;
@@ -666,7 +770,7 @@ bool updateAddressValue(const std::string& line, std::map<uint16_t, uint16_t>& l
 
 void serverLoop(int listenSocket) {
   std::map<int, std::string> partialLines;
-  std::map<uint16_t, uint16_t> lastValues;
+  std::map<uint16_t, int16_t> lastValues;
   auto lastSaveTime = std::chrono::steady_clock::now();
 
   while (running.load()) {
@@ -734,7 +838,9 @@ void serverLoop(int listenSocket) {
               line.pop_back();
             }
             if (!line.empty()) {
-              updateAddressValue(line, lastValues);
+              if (!updateRelayStateWithIp(line, lastValues)) {
+                updateAddressValue(line, lastValues);
+              }
             }
             pending.erase(0, newlinePos + 1);
           }
@@ -763,6 +869,14 @@ void serverLoop(int listenSocket) {
       auto batteryIt = lastValues.find(BATTERY_VOLTAGE_ADDRESS);
       if (batteryIt != lastValues.end()) {
         appendBatteryValue(batteryIt->second);
+      }
+      auto batteryCurrentIt = lastValues.find(BATTERY_CURRENT_ADDRESS);
+      if (batteryCurrentIt != lastValues.end()) {
+        appendBatteryCurrentValue(batteryCurrentIt->second);
+      }
+      auto loadCurrentIt = lastValues.find(LOAD_CURRENT_ADDRESS);
+      if (loadCurrentIt != lastValues.end()) {
+        appendLoadCurrentValue(loadCurrentIt->second);
       }
       lastSaveTime = now;
     }

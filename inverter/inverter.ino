@@ -5,13 +5,17 @@
 #include <SoftwareSerial.h>
 #include <ModbusMaster.h>
 
+const uint8_t RELAY_PIN_COUNT = 4;
+
 // EEPROM layout constants
 const int WIFI_SSID_MAX_LEN = 32;
 const int WIFI_PASSWORD_MAX_LEN = 64;
-const int WIFI_SSID_EEPROM_OFFSET = 0;
-const int WIFI_PASSWORD_EEPROM_OFFSET = WIFI_SSID_EEPROM_OFFSET + WIFI_SSID_MAX_LEN + 1;
 const int MONITOR_HOST_MAX_LEN = 64;
 const int MONITOR_PORT_MAX_LEN = 6;
+const int RELAY_IP_ADDRESS_MAX_LEN = 15;
+const int RELAY_IP_EEPROM_STRIDE = RELAY_IP_ADDRESS_MAX_LEN + 1;
+const int WIFI_SSID_EEPROM_OFFSET = 0;
+const int WIFI_PASSWORD_EEPROM_OFFSET = WIFI_SSID_EEPROM_OFFSET + WIFI_SSID_MAX_LEN + 1;
 const int MONITOR_HOST_EEPROM_OFFSET = WIFI_PASSWORD_EEPROM_OFFSET + WIFI_PASSWORD_MAX_LEN + 1;
 const int MONITOR_PORT_EEPROM_OFFSET = MONITOR_HOST_EEPROM_OFFSET + MONITOR_HOST_MAX_LEN + 1;
 const int SIMULATION_MODE_EEPROM_OFFSET = MONITOR_PORT_EEPROM_OFFSET + MONITOR_PORT_MAX_LEN + 1;
@@ -19,7 +23,9 @@ const int TIMING_CONFIG_VALID_OFFSET = SIMULATION_MODE_EEPROM_OFFSET + 1;
 const int CONTROL_SCAN_INTERVAL_EEPROM_OFFSET = TIMING_CONFIG_VALID_OFFSET + 1;
 const int MONITOR_SCAN_INTERVAL_EEPROM_OFFSET = CONTROL_SCAN_INTERVAL_EEPROM_OFFSET + sizeof(uint32_t);
 const int REGISTER_READ_SPACING_EEPROM_OFFSET = MONITOR_SCAN_INTERVAL_EEPROM_OFFSET + sizeof(uint32_t);
-const int EEPROM_SIZE = REGISTER_READ_SPACING_EEPROM_OFFSET + sizeof(uint32_t);
+const int RELAY_IP_EEPROM_OFFSET = REGISTER_READ_SPACING_EEPROM_OFFSET + sizeof(uint32_t);
+const int EEPROM_SIZE = RELAY_IP_EEPROM_OFFSET + RELAY_PIN_COUNT * RELAY_IP_EEPROM_STRIDE;
+// Relay IP address storage follows timing config.
 
 char wifiSSID[WIFI_SSID_MAX_LEN + 1];
 char wifiPassword[WIFI_PASSWORD_MAX_LEN + 1];
@@ -29,10 +35,9 @@ uint16_t monitorPort = 16670;
 bool simulationMode = true;
 
 // Relay configuration
-const uint8_t RELAY_PIN_COUNT = 4;
 const uint8_t relayPins[RELAY_PIN_COUNT] = {D1, D2, D3, D4};
-
 bool relayStates[RELAY_PIN_COUNT] = {false, false, false, false};
+char relayIpAddresses[RELAY_PIN_COUNT][RELAY_IP_ADDRESS_MAX_LEN + 1];
 
 // Command line buffers for TCP and serial input.
 const uint16_t MAX_COMMAND_LINE_LENGTH = 64;
@@ -126,8 +131,8 @@ RegItem monitorRegisters[] = {
   {15206, "Battery voltage", "0.1V", ACCESS_RO}, // 0.0-80.0 V
   {15207, "PV charger current", "0.1A", ACCESS_RO}, // 0.0-90.0 A
   {15208, "PV charger power", "W", ACCESS_RO}, // 0-5000 W
-  {25210, "Inverter current", "0.1A", ACCESS_RO}, // 0.0-?? A
-  {25274, "Battery current", "A", ACCESS_RO}     // raw amps
+  {25212, "Load current", "0.1A", ACCESS_RO}, // 0.0-?? A
+  {25274, "Battery current (negative for charging)", "A", ACCESS_RO}     // raw amps
 };
 
 // ===== Modbus transport callbacks =====
@@ -229,6 +234,18 @@ bool loadSimulationModeFromEEPROM() {
   return true;
 }
 
+bool loadRelayIpAddressesFromEEPROM() {
+  bool anyLoaded = false;
+  for (uint8_t i = 0; i < RELAY_PIN_COUNT; ++i) {
+    int offset = RELAY_IP_EEPROM_OFFSET + i * RELAY_IP_EEPROM_STRIDE;
+    readEEPROMString(offset, RELAY_IP_EEPROM_STRIDE, relayIpAddresses[i]);
+    if (relayIpAddresses[i][0] != '\0') {
+      anyLoaded = true;
+    }
+  }
+  return anyLoaded;
+}
+
 void writeEEPROMString(int start, int maxLen, const char* src) {
   int i = 0;
   while (i < maxLen && src[i] != '\0') {
@@ -259,6 +276,64 @@ bool saveMonitorServerToEEPROM(const char* host, const char* portString) {
   writeEEPROMString(MONITOR_HOST_EEPROM_OFFSET, MONITOR_HOST_MAX_LEN, host);
   writeEEPROMString(MONITOR_PORT_EEPROM_OFFSET, MONITOR_PORT_MAX_LEN, portString);
   return EEPROM.commit();
+}
+
+bool saveRelayIpAddressToEEPROM(uint8_t relayIndex, const char* ip) {
+  if (relayIndex >= RELAY_PIN_COUNT || strlen(ip) > RELAY_IP_ADDRESS_MAX_LEN) {
+    return false;
+  }
+  int offset = RELAY_IP_EEPROM_OFFSET + relayIndex * RELAY_IP_EEPROM_STRIDE;
+  writeEEPROMString(offset, RELAY_IP_ADDRESS_MAX_LEN, ip);
+  return EEPROM.commit();
+}
+
+bool parseIpAddress(const String& ipText, char* dest, int maxLen) {
+  if (ipText.length() == 0 || ipText.length() > maxLen) {
+    return false;
+  }
+
+  int parts[4] = {0, 0, 0, 0};
+  int partIndex = 0;
+  unsigned long value = 0;
+  bool hasDigit = false;
+
+  for (unsigned int i = 0; i < ipText.length(); ++i) {
+    char c = ipText[i];
+    if (c >= '0' && c <= '9') {
+      value = value * 10 + (c - '0');
+      if (value > 255) {
+        return false;
+      }
+      hasDigit = true;
+    } else if (c == '.') {
+      if (!hasDigit || partIndex >= 3) {
+        return false;
+      }
+      parts[partIndex++] = static_cast<int>(value);
+      value = 0;
+      hasDigit = false;
+    } else {
+      return false;
+    }
+  }
+
+  if (!hasDigit || partIndex != 3) {
+    return false;
+  }
+  parts[3] = static_cast<int>(value);
+
+  int len = snprintf(dest, maxLen + 1, "%u.%u.%u.%u", parts[0], parts[1], parts[2], parts[3]);
+  return len > 0 && len <= maxLen;
+}
+
+void printRelayIpAddresses() {
+  for (uint8_t i = 0; i < RELAY_PIN_COUNT; ++i) {
+    if (relayIpAddresses[i][0] != '\0') {
+      printMessage("Relay %u IP = %s", static_cast<unsigned int>(i + 1), relayIpAddresses[i]);
+    } else {
+      printMessage("Relay %u IP = <unset>", static_cast<unsigned int>(i + 1));
+    }
+  }
 }
 
 uint32_t readEEPROMUint32(int start) {
@@ -455,16 +530,65 @@ const RegItem* findRegister(uint16_t address) {
       return &reg;
     }
   }
+  for (const RegItem& reg : monitorRegisters) {
+    if (reg.address == address) {
+      return &reg;
+    }
+  }
   return nullptr;
 }
 
 // ===== Relay helpers =====
+bool sendRelayPowerCommand(uint8_t relayIndex, bool active) {
+  const char* relayIp = relayIpAddresses[relayIndex];
+  if (relayIp[0] == '\0') {
+    return false;
+  }
+
+  WiFiClient client;
+  if (!client.connect(relayIp, 80)) {
+    printMessage("Relay HTTP connect failed to %s", relayIp);
+    return false;
+  }
+
+  String stateText = active ? "On" : "Off";
+  String requestPath = "/cm?cmnd=Power%20" + stateText;
+  client.print("GET " + requestPath + " HTTP/1.1\r\n");
+  client.print("Host: ");
+  client.print(relayIp);
+  client.print("\r\nConnection: close\r\n\r\n");
+
+  unsigned long timeout = millis() + 2000;
+  while (client.connected() && millis() < timeout) {
+    while (client.available()) {
+      client.read();
+    }
+  }
+  client.stop();
+  printMessage("Relay HTTP command sent to %s: %s", relayIp, stateText.c_str());
+  return true;
+}
+
+void sendPowerCommandToAllRelays() {
+  for (uint8_t i = 0; i < RELAY_PIN_COUNT; ++i) {
+    if (relayIpAddresses[i][0] != '\0') {
+      bool sent = sendRelayPowerCommand(i, relayStates[i]);
+      if (!sent) {
+        printMessage("Relay HTTP command failed for %s when broadcasting all relays", relayIpAddresses[i]);
+      }
+    }
+  }
+}
+
 bool setRelayState(uint8_t relayIndex, bool active) {
   if (relayIndex >= RELAY_PIN_COUNT) {
     return false;
   }
   digitalWrite(relayPins[relayIndex], active ? HIGH : LOW);
   relayStates[relayIndex] = active;
+  if (relayIpAddresses[relayIndex][0] != '\0') {
+    sendRelayPowerCommand(relayIndex, active);
+  }
   return true;
 }
 
@@ -476,9 +600,9 @@ void printRelaysState() {
   char buffer[32];
 
   for (uint8_t i = 0; i < RELAY_PIN_COUNT; ++i) {
-    printMessage("R%u: %s", static_cast<unsigned int>(i + 1), relayStateText(relayStates[i]).c_str());
+    printMessage("R%u: %s [%s]", static_cast<unsigned int>(i + 1), relayStateText(relayStates[i]).c_str(), relayIpAddresses[i][0] != '\0' ? relayIpAddresses[i] : "no IP");
     if (monitorClient && monitorClient.connected()) {
-      int len = snprintf(buffer, sizeof(buffer), "%u %u\n", i + 1, relayStates[i] ? 1 : 0);
+      int len = snprintf(buffer, sizeof(buffer), "R%u %u %s\n", i + 1, relayStates[i] ? 1 : 0, relayIpAddresses[i][0] != '\0' ? relayIpAddresses[i] : "no_ip");
       if (len > 0) {
         monitorClient.write(reinterpret_cast<const uint8_t*>(buffer), len);
       }
@@ -722,6 +846,96 @@ void handleCommand(const String& rawLine) {
     return;
   }
 
+  if (line.startsWith("SETIP ")) {
+    String remainder = line.substring(6);
+    remainder.trim();
+    if (remainder.length() == 0) {
+      printMessage("TCP CMD: invalid SETIP format, expected 'SETIP [relayNumber]' or 'SETIP [relayNumber] [ip]' ");
+      return;
+    }
+
+    int splitIndex = remainder.indexOf(' ');
+    String relayText = (splitIndex < 0) ? remainder : remainder.substring(0, splitIndex);
+    String ipText = (splitIndex < 0) ? String() : remainder.substring(splitIndex + 1);
+    relayText.trim();
+    ipText.trim();
+
+    if (relayText.length() == 0) {
+      printMessage("TCP CMD: invalid SETIP format, expected 'SETIP [relayNumber]' or 'SETIP [relayNumber] [ip]' ");
+      return;
+    }
+
+    char* endPtr;
+    unsigned long relayNumber = strtoul(relayText.c_str(), &endPtr, 10);
+    if (endPtr == relayText.c_str() || relayNumber < 1 || relayNumber > RELAY_PIN_COUNT) {
+      printMessage("TCP CMD: invalid relay number, expected 1-%u", RELAY_PIN_COUNT);
+      return;
+    }
+
+    uint8_t relayIndex = static_cast<uint8_t>(relayNumber - 1);
+    if (ipText.length() == 0) {
+      relayIpAddresses[relayIndex][0] = '\0';
+      if (!saveRelayIpAddressToEEPROM(relayIndex, "")) {
+        printMessage("TCP CMD: failed to clear relay IP in EEPROM");
+        return;
+      }
+      printMessage("TCP CMD: SETIP %u cleared", relayNumber);
+      return;
+    }
+
+    char ipBuffer[RELAY_IP_ADDRESS_MAX_LEN + 1];
+    if (!parseIpAddress(ipText, ipBuffer, RELAY_IP_ADDRESS_MAX_LEN)) {
+      printMessage("TCP CMD: invalid IP address format, expected IPv4 like 192.168.1.100");
+      return;
+    }
+
+    strcpy(relayIpAddresses[relayIndex], ipBuffer);
+    if (!saveRelayIpAddressToEEPROM(relayIndex, ipBuffer)) {
+      printMessage("TCP CMD: failed to save relay IP to EEPROM");
+      return;
+    }
+
+    printMessage("TCP CMD: SETIP %u %s", relayNumber, ipBuffer);
+    return;
+  }
+
+  if (line.startsWith("READ ")) {
+    String addrText = line.substring(5);
+    addrText.trim();
+    if (addrText.length() == 0) {
+      printMessage("TCP CMD: invalid READ format, expected 'READ [address]'");
+      return;
+    }
+
+    char* endPtr;
+    unsigned long rawAddr = strtoul(addrText.c_str(), &endPtr, 10);
+    if (endPtr == addrText.c_str() || rawAddr > 0xFFFF) {
+      printMessage("TCP CMD: invalid register address");
+      return;
+    }
+
+    uint16_t address = static_cast<uint16_t>(rawAddr);
+    const RegItem* reg = findRegister(address);
+    if (!reg) {
+      printMessage("TCP CMD: unknown register " + String(address));
+      return;
+    }
+
+    if (simulationMode) {
+      printRegisterResult(*reg, 0);
+      return;
+    }
+
+    uint8_t result = modbus.readHoldingRegisters(address, 1);
+    if (result == modbus.ku8MBSuccess) {
+      uint16_t value = modbus.getResponseBuffer(0);
+      printRegisterResult(*reg, value);
+    } else {
+      printMessage("%5u %-36s => READ ERROR 0x%02X", reg->address, reg->name, result);
+    }
+    return;
+  }
+
   int splitIndex = line.indexOf(' ');
   if (splitIndex < 0) {
     printMessage("TCP CMD: invalid format, expected '[regAddr] [uintValue]'");
@@ -869,6 +1083,12 @@ void setup() {
                   controlScanIntervalMs, monitorScanIntervalMs, registerReadSpacingMs);
   }
 
+  if (loadRelayIpAddressesFromEEPROM()) {
+    printRelayIpAddresses();
+  } else {
+    Serial.println("No relay IP addresses configured in EEPROM.");
+  }
+
   connectToWiFi();
 
   if (simulationMode) {
@@ -958,6 +1178,7 @@ void loop() {
       } else {
         nextControlScanTime = now + controlScanIntervalMs;
         printRelaysState();
+        sendPowerCommandToAllRelays();
       }
     }
   }
