@@ -93,8 +93,10 @@
         <li><code>CTRL_SCAN_MS [value]</code></li>
         <li><code>MON_SCAN_MS [value]</code></li>
         <li><code>REG_SPACING_MS [value]</code></li>
-        <li><code>RELAY [number] [state]</code></li>
-        <li><code>[regAddr] [uintValue]</code> (write a writable register)</li>
+        <li><code>RELAY [number] [ON|OFF|1|0]</code></li>
+        <li><code>SETIP [relayNumber] [ip]</code></li>
+        <li><code>READ [address]</code></li>
+        <li><code>[regAddr] [uintValue]</code></li>
       </ul>
     </div>
     <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
@@ -176,7 +178,7 @@
       20143, 20144
     ];
 
-    const monitorRegisterOrder = [15205, 15206, 15207, 15208, 25210, 25274];
+    const monitorRegisterOrder = [15205, 15206, 15207, 15208, 25210, 25212, 25274];
 
     function createRegisterRow(reg, address) {
       const row = document.createElement('tr');

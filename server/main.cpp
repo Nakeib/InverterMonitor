@@ -152,6 +152,37 @@ void broadcastToClients(const std::string& message) {
   }
 }
 
+static void parseCommand(const std::string& command) {
+  std::string trimmed = command;
+  if (!trimmed.empty() && trimmed.back() == '\n') {
+    trimmed.pop_back();
+  }
+
+  std::istringstream iss(trimmed);
+  std::string token;
+  if (iss >> token && token == "RELAY") {
+    unsigned relayIndex;
+    std::string state;
+    if (iss >> relayIndex >> state) {
+      std::cout << "Relay switch command received: index=" << relayIndex
+                << " state=" << state << "\n";
+      std::string systemCommand = "python3 plug_switch.py --index " + std::to_string(relayIndex) +
+                                  " --state " + state;
+      int rc = std::system(systemCommand.c_str());
+      if (rc != 0) {
+        std::cerr << "Failed to execute relay helper command: " << systemCommand
+                  << " (exit=" << rc << ")\n";
+      }
+    }
+  }
+
+  std::string outgoing = command;
+  if (outgoing.empty() || outgoing.back() != '\n') {
+    outgoing.push_back('\n');
+  }
+  broadcastToClients(outgoing);
+}
+
 static std::string trimString(const std::string& value) {
   const std::string whitespace = " \t\r\n";
   const size_t start = value.find_first_not_of(whitespace);
@@ -316,11 +347,7 @@ static void handleCommandRequest(int clientSocket) {
     it->second = std::chrono::steady_clock::now();
   }
 
-  std::string commandToSend = command;
-  if (commandToSend.back() != '\n') {
-    commandToSend.push_back('\n');
-  }
-  broadcastToClients(commandToSend);
+  parseCommand(command);
   std::cout << "Broadcasted HTTP command from session " << sessionId << " to " << clients.size() << " client(s): " << command << "\n";
 
   sendHttpResponse(clientSocket, "200 OK", "OK");
@@ -704,7 +731,7 @@ static bool processCommandFile() {
     }
 
     std::string command = line + "\n";
-    broadcastToClients(command);
+    parseCommand(command);
     std::cout << "Sent command.dat line to " << clients.size() << " client(s): " << line << "\n";
     sentAny = true;
   }
@@ -893,7 +920,7 @@ void consoleLoop() {
 
     if (!line.empty()) {
       std::string command = line + "\n";
-      broadcastToClients(command);
+      parseCommand(command);
       std::cout << "Sent command to " << clients.size() << " client(s): " << line << "\n";
     }
   }

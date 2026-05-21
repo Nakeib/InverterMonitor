@@ -1,0 +1,11 @@
+{
+	"apiRegion":"eu",
+	"apiKey":"xxxxxxxxxxxxxxxxxxxx",
+	"apiSecret":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+	"relays":[
+		{ "index":1, "id":"xxxxxxxxxxxxxxxxxxxxxx" },
+		{ "index":2, "id":"xxxxxxxxxxxxxxxxxxxxxx" },
+		{ "index":3, "id":"xxxxxxxxxxxxxxxxxxxxxx" },
+		{ "index":4, "id":"xxxxxxxxxxxxxxxxxxxxxx" }
+	]
+}
