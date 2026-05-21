@@ -5,6 +5,8 @@
 #include <SoftwareSerial.h>
 #include <ModbusMaster.h>
 
+#define DEVICE_ID "InverterMonitor v0.1\n"
+
 const uint8_t RELAY_PIN_COUNT = 4;
 
 // EEPROM layout constants
@@ -40,13 +42,14 @@ bool relayStates[RELAY_PIN_COUNT] = {false, false, false, false};
 char relayIpAddresses[RELAY_PIN_COUNT][RELAY_IP_ADDRESS_MAX_LEN + 1];
 
 // Command line buffers for TCP and serial input.
-const uint16_t MAX_COMMAND_LINE_LENGTH = 64;
+const uint16_t MAX_COMMAND_LINE_LENGTH = 256;
 
 String logCommandLine;
 String monitorCommandLine;
 String serialCommandLine;
 
 // Scanning intervals and state for control and monitor registers.
+const unsigned long WIFI_STATION_RETRY_INTERVAL_MS = 300000UL;
 const unsigned long DEFAULT_CONTROL_SCAN_INTERVAL_MS = 60000UL;
 const unsigned long DEFAULT_MONITOR_SCAN_INTERVAL_MS = 5000UL;
 const unsigned long DEFAULT_REGISTER_READ_SPACING_MS = 300UL;
@@ -54,6 +57,7 @@ const unsigned long MONITOR_CONNECTION_CHECK_INTERVAL_MS = 60000UL;
 unsigned long controlScanIntervalMs = DEFAULT_CONTROL_SCAN_INTERVAL_MS;
 unsigned long monitorScanIntervalMs = DEFAULT_MONITOR_SCAN_INTERVAL_MS;
 unsigned long registerReadSpacingMs = DEFAULT_REGISTER_READ_SPACING_MS;
+unsigned long nextWifiStationRetryTime = 0;
 unsigned long nextControlScanTime = 0;
 unsigned long nextMonitorScanTime = 0;
 unsigned long nextMonitorConnectionCheckTime = 0;
@@ -158,7 +162,7 @@ void printMessage(const String& message) {
 }
 
 void printMessage(const char* fmt, ...) {
-  char buffer[128];
+  char buffer[256];
   va_list args;
   va_start(args, fmt);
   vsnprintf(buffer, sizeof(buffer), fmt, args);
@@ -420,9 +424,14 @@ bool connectToMonitorServer() {
 }
 
 bool connectToWiFi() {
-  WiFi.disconnect(true);
+  if (logClient && logClient.connected()) {
+    logClient.stop();
+  }
+  if (monitorClient && monitorClient.connected()) {
+    monitorClient.stop();
+  }
 
-  resetScanTime();
+  WiFi.disconnect(true);
 
   if (wifiSSID[0] != '\0') {
     WiFi.mode(WIFI_STA);
@@ -444,6 +453,8 @@ bool connectToWiFi() {
       return true;
     }
   }
+
+  nextWifiStationRetryTime = millis() + WIFI_STATION_RETRY_INTERVAL_MS;
 
   Serial.println();
   Serial.println("WiFi connection failed, starting fallback AP 'InverterComm'");
@@ -538,57 +549,12 @@ const RegItem* findRegister(uint16_t address) {
   return nullptr;
 }
 
-// ===== Relay helpers =====
-bool sendRelayPowerCommand(uint8_t relayIndex, bool active) {
-  const char* relayIp = relayIpAddresses[relayIndex];
-  if (relayIp[0] == '\0') {
-    return false;
-  }
-
-  WiFiClient client;
-  if (!client.connect(relayIp, 80)) {
-    printMessage("Relay HTTP connect failed to %s", relayIp);
-    return false;
-  }
-
-  String stateText = active ? "On" : "Off";
-  String requestPath = "/cm?cmnd=Power%20" + stateText;
-  client.print("GET " + requestPath + " HTTP/1.1\r\n");
-  client.print("Host: ");
-  client.print(relayIp);
-  client.print("\r\nConnection: close\r\n\r\n");
-
-  unsigned long timeout = millis() + 2000;
-  while (client.connected() && millis() < timeout) {
-    while (client.available()) {
-      client.read();
-    }
-  }
-  client.stop();
-  printMessage("Relay HTTP command sent to %s: %s", relayIp, stateText.c_str());
-  return true;
-}
-
-void sendPowerCommandToAllRelays() {
-  for (uint8_t i = 0; i < RELAY_PIN_COUNT; ++i) {
-    if (relayIpAddresses[i][0] != '\0') {
-      bool sent = sendRelayPowerCommand(i, relayStates[i]);
-      if (!sent) {
-        printMessage("Relay HTTP command failed for %s when broadcasting all relays", relayIpAddresses[i]);
-      }
-    }
-  }
-}
-
 bool setRelayState(uint8_t relayIndex, bool active) {
   if (relayIndex >= RELAY_PIN_COUNT) {
     return false;
   }
   digitalWrite(relayPins[relayIndex], active ? HIGH : LOW);
   relayStates[relayIndex] = active;
-  if (relayIpAddresses[relayIndex][0] != '\0') {
-    sendRelayPowerCommand(relayIndex, active);
-  }
   return true;
 }
 
@@ -650,6 +616,7 @@ void handleCommand(const String& rawLine) {
 
     printMessage("TCP CMD: WIFI credentials updated, reconnecting...");
     connectToWiFi();
+    resetScanTime();
     return;
   }
 
@@ -1129,6 +1096,7 @@ void loop() {
     if (client) {
       logClient = client;
       logClient.setNoDelay(true);
+      logClient.printf("%s", DEVICE_ID);
       Serial.println("WiFi log client connected.");
     }
   }
@@ -1179,6 +1147,10 @@ void loop() {
         nextControlScanTime = now + controlScanIntervalMs;
         printRelaysState();
         sendPowerCommandToAllRelays();
+        if (WiFi.getMode() == WIFI_AP && wifiSSID[0] != '\0' && timeHasElapsed(now, nextWifiStationRetryTime)) {
+          printMessage("WiFi in AP mode. Attempting station reconnect...");
+          connectToWiFi();
+        }
       }
     }
   }
