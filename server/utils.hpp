@@ -3,6 +3,7 @@
 #include <atomic>
 #include <cstddef>
 #include <cstdint>
+#include <cmath>
 #include <chrono>
 #include <cstdio>
 #include <fstream>
@@ -63,6 +64,11 @@ bool appendBatteryValue(int16_t value);
 bool appendBatteryCurrentValue(int16_t value);
 bool appendLoadCurrentValue(int16_t value);
 bool appendPVVoltageValue(int16_t value);
+std::vector<std::pair<std::string, double>> readDataFilePointsInRange(
+    const std::string& filename,
+    const std::string& fromTimestamp,
+    const std::string& toTimestamp,
+    std::size_t maxPoints);
 
 inline std::string trimString(const std::string& value) {
   const std::string whitespace = " \t\r\n";
@@ -294,5 +300,67 @@ inline bool appendPVVoltageValue(int16_t value) {
   const double scaledValue = getScaledRegisterValue(PV_VOLTAGE_ADDRESS, value);
   out << timestamp << " " << scaledValue << "\n";
   return out.good();
+}
+
+inline std::vector<std::pair<std::string, double>> readDataFilePointsInRange(
+    const std::string& filename,
+    const std::string& fromTimestamp,
+    const std::string& toTimestamp,
+    std::size_t maxPoints) {
+  std::vector<std::pair<std::string, double>> points;
+  if (filename.empty() || fromTimestamp.empty() || toTimestamp.empty() || maxPoints == 0) {
+    return points;
+  }
+
+  std::ifstream in(filename);
+  if (!in) {
+    std::cerr << "Unable to open " << filename << " for reading" << std::endl;
+    return points;
+  }
+
+  std::vector<std::pair<std::string, double>> filtered;
+  std::string line;
+  while (std::getline(in, line)) {
+    const std::string trimmed = trimString(line);
+    if (trimmed.empty()) {
+      continue;
+    }
+
+    std::istringstream ss(trimmed);
+    std::string timestamp;
+    double value = 0.0;
+    if (!(ss >> timestamp >> value)) {
+      continue;
+    }
+
+    if (timestamp < fromTimestamp || timestamp > toTimestamp) {
+      continue;
+    }
+
+    filtered.emplace_back(timestamp, value);
+  }
+
+  if (filtered.empty()) {
+    return points;
+  }
+  if (filtered.size() <= maxPoints) {
+    return filtered;
+  }
+
+  if (maxPoints == 1) {
+    return { filtered.back() };
+  }
+
+  points.reserve(maxPoints);
+  const double step = static_cast<double>(filtered.size() - 1) / static_cast<double>(maxPoints - 1);
+  for (std::size_t index = 0; index < maxPoints; ++index) {
+    std::size_t selectedIndex = static_cast<std::size_t>(std::round(index * step));
+    if (selectedIndex >= filtered.size()) {
+      selectedIndex = filtered.size() - 1;
+    }
+    points.push_back(filtered[selectedIndex]);
+  }
+
+  return points;
 }
 

@@ -18,6 +18,60 @@
 void handleCommandRequest(int clientSocket);
 void commandServerLoop(int listenSocket);
 
+inline bool handleHttpReqCommand(const std::string& command, std::string& responseBody) {
+  std::string trimmed = command;
+  if (!trimmed.empty() && trimmed.back() == '\n') {
+    trimmed.pop_back();
+  }
+
+  std::istringstream iss(trimmed);
+  std::string token;
+  if (!(iss >> token) || token != "REQ") {
+    return false;
+  }
+
+  unsigned chartNo = 0;
+  std::size_t pointsCount = 0;
+  std::string fromTimestamp;
+  std::string toTimestamp;
+  if (!(iss >> chartNo >> pointsCount >> fromTimestamp >> toTimestamp)) {
+    return false;
+  }
+
+  if (!toTimestamp.empty() && toTimestamp.back() == '|') {
+    toTimestamp.pop_back();
+  }
+
+  const std::string filename = [&]() {
+    switch (chartNo) {
+      case 1: return std::string("power.dat");
+      case 2: return std::string("battery.dat");
+      case 3: return std::string("batterycurr.dat");
+      case 4: return std::string("loadcurr.dat");
+      case 5: return std::string("pvvoltage.dat");
+      default: return std::string();
+    }
+  }();
+
+  if (filename.empty() || pointsCount == 0) {
+    return false;
+  }
+
+  if (fromTimestamp.empty()) {
+    fromTimestamp = "0000-01-01T00:00:00Z";
+  }
+  if (toTimestamp.empty()) {
+    toTimestamp = "9999-12-31T23:59:59Z";
+  }
+
+  auto points = readDataFilePointsInRange(filename, fromTimestamp, toTimestamp, pointsCount);
+  responseBody.clear();
+  for (const auto& point : points) {
+    responseBody += point.first + " " + std::to_string(point.second) + "\n";
+  }
+  return true;
+}
+
 inline void handleCommandRequest(int clientSocket) {
   std::vector<char> buffer;
   buffer.reserve(RECV_BUFFER_SIZE);
@@ -92,6 +146,16 @@ inline void handleCommandRequest(int clientSocket) {
     return;
   }
 
+  std::string responseBody;
+  if (body.rfind("REQ ", 0) == 0 || body == "REQ") {
+    if (handleHttpReqCommand(body, responseBody)) {
+      sendHttpResponse(clientSocket, "200 OK", responseBody);
+      return;
+    }
+    sendHttpResponse(clientSocket, "400 Bad Request", "Invalid REQ command");
+    return;
+  }
+
   const size_t sessionSep = body.find(' ');
   if (sessionSep == std::string::npos) {
     sendHttpResponse(clientSocket, "400 Bad Request", "Missing session id");
@@ -116,6 +180,11 @@ inline void handleCommandRequest(int clientSocket) {
       return;
     }
     it->second = std::chrono::steady_clock::now();
+  }
+
+  if (handleHttpReqCommand(command, responseBody)) {
+    sendHttpResponse(clientSocket, "200 OK", responseBody);
+    return;
   }
 
   parseCommand(command);
