@@ -14,6 +14,9 @@ add_custom_command(TARGET inverter_monitor_server POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
         "${CMAKE_CURRENT_SOURCE_DIR}/relays.json"
         "${CMAKE_CURRENT_BINARY_DIR}/relays.json"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${CMAKE_CURRENT_SOURCE_DIR}/rules.json.example"
+        "${CMAKE_CURRENT_BINARY_DIR}/rules.json.example"
 )
 
 target_compile_options(inverter_monitor_server PRIVATE -Wall -Wextra -Wpedantic)

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "rules.hpp"
 #include "utils.hpp"
 #include <algorithm>
 #include <arpa/inet.h>
@@ -18,7 +19,108 @@
 void handleCommandRequest(int clientSocket);
 void commandServerLoop(int listenSocket);
 
-inline bool handleHttpReqCommand(const std::string& command, std::string& responseBody) {
+inline std::string jsonEscapeLocal(const std::string& input) {
+  std::string output;
+  output.reserve(input.size());
+  for (char c : input) {
+    switch (c) {
+      case '"': output += "\\\""; break;
+      case '\\': output += "\\\\"; break;
+      case '\b': output += "\\b"; break;
+      case '\f': output += "\\f"; break;
+      case '\n': output += "\\n"; break;
+      case '\r': output += "\\r"; break;
+      case '\t': output += "\\t"; break;
+      default: output += c; break;
+    }
+  }
+  return output;
+}
+
+inline std::string rulesToJson(const std::vector<Rule>& rules) {
+  std::ostringstream out;
+  out << "[";
+  for (size_t index = 0; index < rules.size(); ++index) {
+    const Rule& rule = rules[index];
+    out << "{"
+        << "\"id\":" << rule.id << ","
+        << "\"enabled\":" << (rule.enabled ? "true" : "false") << ","
+        << "\"name\":\"" << jsonEscapeLocal(rule.name) << "\",";
+    out << "\"conditions\":[";
+    for (size_t ci = 0; ci < rule.conditions.size(); ++ci) {
+      const RuleCondition& condition = rule.conditions[ci];
+      out << "{";
+      out << "\"inputType\":\"";
+      switch (condition.inputType) {
+        case ConditionInputType::Register: out << "register"; break;
+        case ConditionInputType::Variable: out << "variable"; break;
+        case ConditionInputType::Relay: out << "relay"; break;
+        case ConditionInputType::Time: out << "time"; break;
+        default: out << "unknown"; break;
+      }
+      out << "\",";
+      out << "\"inputAddress\":" << condition.inputAddress << ",";
+      out << "\"operator\":\"";
+      switch (condition.op) {
+        case ConditionOperator::Equal: out << "equal"; break;
+        case ConditionOperator::NotEqual: out << "notEqual"; break;
+        case ConditionOperator::Less: out << "less"; break;
+        case ConditionOperator::LessEqual: out << "lessEqual"; break;
+        case ConditionOperator::Greater: out << "greater"; break;
+        case ConditionOperator::GreaterEqual: out << "greaterEqual"; break;
+        default: out << "unknown"; break;
+      }
+      out << "\",";
+      out << "\"value\":";
+      if (condition.valueIsString) {
+        out << "\"" << jsonEscapeLocal(condition.valueString) << "\"";
+      } else {
+        out << condition.valueNumber;
+      }
+      out << "}";
+      if (ci + 1 < rule.conditions.size()) {
+        out << ",";
+      }
+    }
+    out << "],";
+    out << "\"commands\":[";
+    for (size_t ci = 0; ci < rule.commands.size(); ++ci) {
+      const RuleCommand& command = rule.commands[ci];
+      out << "{";
+      out << "\"type\":\"";
+      switch (command.type) {
+        case CommandType::Send: out << "send"; break;
+        case CommandType::Enable: out << "enable"; break;
+        case CommandType::Disable: out << "disable"; break;
+        case CommandType::SetVar: out << "setVar"; break;
+        case CommandType::AddVar: out << "addVar"; break;
+        case CommandType::SubVar: out << "subVar"; break;
+        case CommandType::System: out << "system"; break;
+        default: out << "unknown"; break;
+      }
+      out << "\"";
+      if (!command.data.empty()) {
+        out << ",\"data\":\"" << jsonEscapeLocal(command.data) << "\"";
+      }
+      if (command.address > 0) {
+        out << ",\"address\":" << command.address;
+      }
+      out << "}";
+      if (ci + 1 < rule.commands.size()) {
+        out << ",";
+      }
+    }
+    out << "]";
+    out << "}";
+    if (index + 1 < rules.size()) {
+      out << ",";
+    }
+  }
+  out << "]";
+  return out.str();
+}
+
+inline bool handleHttpReqCommand(const std::string& command, std::string& responseBody, bool authorized = false) {
   std::string trimmed = command;
   if (!trimmed.empty() && trimmed.back() == '\n') {
     trimmed.pop_back();
@@ -26,7 +128,28 @@ inline bool handleHttpReqCommand(const std::string& command, std::string& respon
 
   std::istringstream iss(trimmed);
   std::string token;
-  if (!(iss >> token) || token != "REQ") {
+  if (!(iss >> token)) {
+    return false;
+  }
+
+  if (token == "GETRULES") {
+    responseBody = rulesToJson(getRulesSnapshot());
+    return true;
+  }
+
+  if (token == "RELOADRULES") {
+    if (!authorized) {
+      return false;
+    }
+    if (loadRules()) {
+      responseBody = "OK";
+      return true;
+    }
+    responseBody = "Failed to reload rules";
+    return false;
+  }
+
+  if (token != "REQ") {
     return false;
   }
 
@@ -147,12 +270,21 @@ inline void handleCommandRequest(int clientSocket) {
   }
 
   std::string responseBody;
-  if (body.rfind("REQ ", 0) == 0 || body == "REQ") {
-    if (handleHttpReqCommand(body, responseBody)) {
+  if (body.rfind("REQ", 0) == 0 || body == "REQ")
+  {
+    if (handleHttpReqCommand(body, responseBody, false)) {
       sendHttpResponse(clientSocket, "200 OK", responseBody);
       return;
     }
     sendHttpResponse(clientSocket, "400 Bad Request", "Invalid REQ command");
+    return;
+  }
+  else if (body == "GETRULES") {
+    if (handleHttpReqCommand(body, responseBody, false)) {
+      sendHttpResponse(clientSocket, "200 OK", responseBody);
+      return;
+    }
+    sendHttpResponse(clientSocket, "400 Bad Request", "Invalid GETRULES command");
     return;
   }
 
@@ -182,7 +314,7 @@ inline void handleCommandRequest(int clientSocket) {
     it->second = std::chrono::steady_clock::now();
   }
 
-  if (handleHttpReqCommand(command, responseBody)) {
+  if (handleHttpReqCommand(command, responseBody, true)) {
     sendHttpResponse(clientSocket, "200 OK", responseBody);
     return;
   }

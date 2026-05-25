@@ -107,6 +107,42 @@ It also supports direct console input and a file-based command queue.
    - `<sessionId> <command>`
    - The server validates the session token and broadcasts the command to connected monitor clients.
 
+#### Rules engine
+
+The server also supports a rules system defined in `server/rules.json`.
+
+- Rules are loaded from `rules.json` at startup and when `RELOADRULES` is called.
+- A rule contains:
+  - `id` — unique rule identifier.
+  - `enabled` — whether the rule is active.
+  - `name` — human-readable rule name.
+  - `conditions` — a list of input checks that must all be true.
+  - `commands` — a list of actions to execute when the rule triggers.
+
+Conditions support these input types:
+- `register` — compare against a Modbus register address.
+- `variable` — compare against a server-side variable map key.
+- `relay` — compare against a relay index state.
+- `time` — compare against the current time in `HH:MM:SS` format.
+
+Supported operators:
+- `equal`, `notEqual`, `less`, `lessEqual`, `greater`, `greaterEqual`.
+
+Supported rule command types:
+- `send` — sends a text command to devices using the existing command parser.
+- `enable` — enables another rule by id.
+- `disable` — disables another rule by id.
+- `setVar` — stores a numeric variable value.
+- `addVar` — increments a numeric variable.
+- `subVar` — decrements a numeric variable.
+- `system` — executes a shell/system command.
+
+HTTP rule endpoints:
+- `GETRULES` — returns the current rule set and runtime state as JSON. No authorization required.
+- `RELOADRULES` — reloads rules from `server/rules.json`. Authorization is required via a valid session token.
+
+The dashboard uses `GETRULES` to display rules in the UI, and the server uses `RELOADRULES` when rules must be reloaded dynamically.
+
 #### Command broadcast
 
 Commands sent from console, `command.dat`, or the HTTP API are forwarded to all connected clients. The server logs the command and counts connected monitor clients.

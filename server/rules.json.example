@@ -1,0 +1,28 @@
+[
+    {
+        "id":1,
+        "enabled":true,
+        "name":"pool pump disabler",
+        "conditions": [
+            { "inputType":"register", "inputAddress":15206, "operator":"lessEqual", "value":24.5 }
+        ],
+        "commands": [
+            { "type":"send", "data":"RELAY 3 OFF" },
+            { "type":"disable", "data":1 },
+            { "type":"enable", "data":2 }
+        ]
+    },
+    {
+        "id":2,
+        "enabled":false,
+        "name":"pool pump enabler",
+        "conditions": [
+            { "inputType":"register", "inputAddress":15206, "operator":"greaterEqual", "value":27.0 }
+        ],
+        "commands": [
+            { "type":"send", "data":"RELAY 3 ON" },
+            { "type":"disable", "data":2 },
+            { "type":"enable", "data":1 }
+        ]
+    }
+]

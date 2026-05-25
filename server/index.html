@@ -14,6 +14,15 @@
     .register-table th:nth-child(2) { width: 54%; }
     .register-table th:nth-child(3) { width: 30%; }
     .register-table td { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .rules-table { table-layout: auto; width: 100%; }
+    .rules-table th, .rules-table td { padding: 10px; border: 1px solid #ccc; text-align: left; vertical-align: top; }
+    .rules-table th { background: #f0f0f0; }
+    .rules-table td { white-space: normal; word-break: break-word; }
+    .rules-table th:nth-child(1) { width: 5%; }
+    .rules-table th:nth-child(2) { width: 25%; }
+    .rules-table th:nth-child(3) { width: 10%; }
+    .rules-table th:nth-child(4) { width: 30%; }
+    .rules-table th:nth-child(5) { width: 30%; }
     tbody tr:nth-child(odd) { background: #fafafa; }
     .missing { color: #888; }
     .chart-container { position: relative; width: 100%; max-width: 100%; height: 360px; margin-bottom: 24px; }
@@ -96,6 +105,7 @@
         <li><code>RELAY [number] [ON|OFF|1|0]</code></li>
         <li><code>SETIP [relayNumber] [ip]</code></li>
         <li><code>READ [address]</code></li>
+        <li><code>RELOADRULES</code></li>
         <li><code>[regAddr] [uintValue]</code></li>
       </ul>
     </div>
@@ -149,6 +159,21 @@
   <div class="chart-container">
     <canvas id="load-current-chart"></canvas>
   </div>
+
+  <h2>Rules</h2>
+  <div id="rules-status" style="margin-bottom: 12px; color: #333;"></div>
+  <table class="rules-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Enabled</th>
+        <th>Conditions</th>
+        <th>Commands</th>
+      </tr>
+    </thead>
+    <tbody id="rules-table-body"></tbody>
+  </table>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
@@ -437,32 +462,15 @@
           }
         }
 
-        let fromDate = selectedFromDate;
-        let toDate = selectedToDate;
-        if (fromDate && !dateSet.has(fromDate)) {
-          fromDate = null;
+        let fromDate = selectedFromDate || (allDates.length ? allDates[0] : null);
+        let toDate = selectedToDate || (allDates.length ? allDates[allDates.length - 1] : null);
+        if (!selectedFromDate) {
+          fromInput.value = fromDate || '';
         }
-        if (toDate && !dateSet.has(toDate)) {
-          toDate = null;
+        if (!selectedToDate) {
+          toInput.value = toDate || '';
         }
-        if (!fromDate) {
-          fromDate = allDates.length ? allDates[0] : null;
-        }
-        if (!toDate) {
-          toDate = allDates.length ? allDates[allDates.length - 1] : null;
-        }
-        if (fromDate && toDate && fromDate > toDate) {
-          [fromDate, toDate] = [toDate, fromDate];
-        }
-        fromInput.value = fromDate || '';
-        toInput.value = toDate || '';
-        if (!selectedFromDate && fromDate) {
-          fromInput.value = fromDate;
-        }
-        if (!selectedToDate && toDate) {
-          toInput.value = toDate;
-        }
-        if (fromInput.value !== selectedFromDate || toInput.value !== selectedToDate) {
+        if (!selectedFromDate || !selectedToDate) {
           saveSelectedDays();
         }
 
@@ -622,6 +630,104 @@
       );
     }
 
+    function formatRuleCondition(condition) {
+      const inputType = condition.inputType || 'unknown';
+      const op = condition.operator || 'unknown';
+      const value = condition.value !== undefined ? condition.value : '';
+      const address = condition.inputAddress !== undefined ? condition.inputAddress : '';
+      return `${inputType}(${address}) ${op} ${value}`;
+    }
+
+    function formatRuleCommand(command) {
+      const type = command.type || 'unknown';
+      const address = command.address !== undefined ? command.address : null;
+      const data = command.data !== undefined ? command.data : '';
+      const parts = [`type=${type}`];
+      if (address !== null) {
+        parts.push(`address=${address}`);
+      }
+      if (data !== '') {
+        parts.push(`data=${data}`);
+      }
+      return parts.join(' ');
+    }
+
+    function renderRules(rules) {
+      const tbody = document.getElementById('rules-table-body');
+      tbody.innerHTML = '';
+      if (!Array.isArray(rules) || rules.length === 0) {
+        const emptyRow = document.createElement('tr');
+        const emptyCell = document.createElement('td');
+        emptyCell.colSpan = 5;
+        emptyCell.textContent = 'No rules configured.';
+        emptyCell.style.color = '#666';
+        emptyRow.appendChild(emptyCell);
+        tbody.appendChild(emptyRow);
+        return;
+      }
+      rules.forEach(rule => {
+        const row = document.createElement('tr');
+        const idCell = document.createElement('td');
+        const nameCell = document.createElement('td');
+        const enabledCell = document.createElement('td');
+        const conditionsCell = document.createElement('td');
+        const commandsCell = document.createElement('td');
+
+        idCell.textContent = rule.id ?? '';
+        nameCell.textContent = rule.name ?? '';
+        enabledCell.textContent = rule.enabled ? 'true' : 'false';
+        enabledCell.style.color = rule.enabled ? '#0a0' : '#a00';
+        conditionsCell.textContent = Array.isArray(rule.conditions)
+          ? rule.conditions.map(formatRuleCondition).join('\n')
+          : '';
+        commandsCell.textContent = Array.isArray(rule.commands)
+          ? rule.commands.map(formatRuleCommand).join('\n')
+          : '';
+
+        conditionsCell.style.whiteSpace = 'pre-wrap';
+        commandsCell.style.whiteSpace = 'pre-wrap';
+        row.appendChild(idCell);
+        row.appendChild(nameCell);
+        row.appendChild(enabledCell);
+        row.appendChild(conditionsCell);
+        row.appendChild(commandsCell);
+        tbody.appendChild(row);
+      });
+    }
+
+    async function requestRules() {
+      const serverHost = window.location.hostname;
+      const serverUrl = `${window.location.protocol}//${serverHost}:16671/command`;
+      const response = await fetch(serverUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: 'GETRULES'
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          document.getElementById('rules-status').textContent = 'Unauthorized request for rules.';
+        }
+        throw new Error(`${response.status} ${response.statusText}`);
+      }
+      const text = await response.text();
+      return JSON.parse(text);
+    }
+
+    async function loadRulesData() {
+      const status = document.getElementById('rules-status');
+      status.textContent = 'Loading rules...';
+      try {
+        const rules = await requestRules();
+        renderRules(rules);
+        status.textContent = `Loaded ${Array.isArray(rules) ? rules.length : 0} rule(s).`;
+      } catch (err) {
+        status.textContent = 'Unable to load rules: ' + err.message;
+        const tbody = document.getElementById('rules-table-body');
+        tbody.innerHTML = '';
+      }
+    }
+
     function formatTimeRemaining(ms) {
       const totalSeconds = Math.max(0, Math.ceil(ms / 1000));
       const minutes = Math.floor(totalSeconds / 60);
@@ -771,6 +877,7 @@
       await loadBatteryData();
       await loadBatteryCurrentData();
       await loadLoadCurrentData();
+      await loadRulesData();
     }
 
     loadSavedShowPoints();

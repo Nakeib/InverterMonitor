@@ -1,5 +1,7 @@
 #pragma once
 
+#include "registers.hpp"
+#include "rules.hpp"
 #include "utils.hpp"
 #include <algorithm>
 #include <chrono>
@@ -178,6 +180,7 @@ inline void serverLoop(int listenSocket) {
   std::map<int, std::string> partialLines;
   std::map<uint16_t, int16_t> lastValues;
   auto lastSaveTime = std::chrono::steady_clock::now();
+  loadRules();
 
   while (running.load()) {
     fd_set readSet;
@@ -222,6 +225,7 @@ inline void serverLoop(int listenSocket) {
     }
 
     std::vector<int> staleClients;
+    bool valuesChanged = false;
     {
       std::lock_guard<std::mutex> lock(clientsMutex);
       for (int clientSocket : clients) {
@@ -245,8 +249,10 @@ inline void serverLoop(int listenSocket) {
               line.pop_back();
             }
             if (!line.empty()) {
-              if (!updateRelayStateWithIp(line, lastValues)) {
-                updateAddressValue(line, lastValues);
+              if (updateRelayStateWithIp(line, lastValues)) {
+                valuesChanged = true;
+              } else if (updateAddressValue(line, lastValues)) {
+                valuesChanged = true;
               }
             }
             pending.erase(0, newlinePos + 1);
@@ -258,6 +264,10 @@ inline void serverLoop(int listenSocket) {
     for (int clientSocket : staleClients) {
       std::cout << "Client " << clientSocket << " disconnected." << std::endl;
       removeClient(clientSocket);
+    }
+
+    if (valuesChanged) {
+      evaluateRules(lastValues);
     }
 
     auto now = std::chrono::steady_clock::now();
