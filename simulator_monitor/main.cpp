@@ -32,7 +32,7 @@ static const int MONITOR_HOST_EEPROM_OFFSET = WIFI_PASSWORD_EEPROM_OFFSET + WIFI
 static const int MONITOR_PORT_EEPROM_OFFSET = MONITOR_HOST_EEPROM_OFFSET + MONITOR_HOST_MAX_LEN + 1;
 static const int EEPROM_SIZE = MONITOR_PORT_EEPROM_OFFSET + MONITOR_PORT_MAX_LEN + 1;
 
-static const uint16_t DEFAULT_MONITOR_PORT = 12345;
+static const uint16_t DEFAULT_MONITOR_PORT = 16670;
 static const char DEFAULT_MONITOR_HOST[] = "127.0.0.1";
 static const unsigned long UPDATE_INTERVAL_MS = 2000;
 
@@ -394,8 +394,8 @@ uint16_t simulateValue(uint16_t address, unsigned long timestampMs) {
       maxNoise = 8.0;
       break;
     case 15206:
-      baseValue = 520 + (std::sin(timestampMs / 7000.0) * 20);
-      maxNoise = 4.0;
+      baseValue = 250 + (std::sin(timestampMs / 7000.0) * 20);
+      maxNoise = 2.0;
       break;
     case 15207:
       baseValue = 150 + (std::sin(timestampMs / 3000.0) * 40);
