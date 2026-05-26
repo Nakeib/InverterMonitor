@@ -149,6 +149,40 @@ inline bool handleHttpReqCommand(const std::string& command, std::string& respon
     return false;
   }
 
+  if (token == "ENABLERULE" || token == "DISABLERULE") {
+    if (!authorized) {
+      return false;
+    }
+    unsigned long ruleNo = 0;
+    if (!(iss >> ruleNo) || ruleNo == 0) {
+      return false;
+    }
+    const bool result = (token == "ENABLERULE") ? enableRule(static_cast<uint32_t>(ruleNo))
+                                                  : disableRule(static_cast<uint32_t>(ruleNo));
+    if (result) {
+      responseBody = "OK";
+      return true;
+    }
+    responseBody = std::string("Failed to ") + (token == "ENABLERULE" ? "enable" : "disable") + " rule";
+    return false;
+  }
+
+  if (token == "EXECUTERULE") {
+    if (!authorized) {
+      return false;
+    }
+    unsigned long ruleNo = 0;
+    if (!(iss >> ruleNo) || ruleNo == 0) {
+      return false;
+    }
+    if (executeRuleCommands(static_cast<uint32_t>(ruleNo))) {
+      responseBody = "OK";
+      return true;
+    }
+    responseBody = "Failed to execute rule";
+    return false;
+  }
+
   if (token != "REQ") {
     return false;
   }

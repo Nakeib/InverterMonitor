@@ -954,6 +954,23 @@ inline bool disableRule(uint32_t ruleId) {
   return setRuleEnabled(ruleId, false);
 }
 
+inline bool executeRuleCommands(uint32_t ruleId) {
+  std::lock_guard<std::mutex> lock(rulesMutex);
+  for (const auto& rule : rules) {
+    if (rule.id == ruleId) {
+      bool rulesModified = false;
+      for (const auto& command : rule.commands) {
+        executeRuleCommand(command, rulesModified);
+      }
+      if (rulesModified) {
+        return saveRules(rules);
+      }
+      return true;
+    }
+  }
+  return false;
+}
+
 inline std::vector<Rule> getRulesSnapshot() {
   std::lock_guard<std::mutex> lock(rulesMutex);
   return rules;
