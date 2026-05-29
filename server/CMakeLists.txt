@@ -12,8 +12,8 @@ add_custom_command(TARGET inverter_monitor_server POST_BUILD
         "${CMAKE_CURRENT_SOURCE_DIR}/plug_switch.py"
         "${CMAKE_CURRENT_BINARY_DIR}/plug_switch.py"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${CMAKE_CURRENT_SOURCE_DIR}/relays.json"
-        "${CMAKE_CURRENT_BINARY_DIR}/relays.json"
+        "${CMAKE_CURRENT_SOURCE_DIR}/relays.json.example"
+        "${CMAKE_CURRENT_BINARY_DIR}/relays.json.example"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
         "${CMAKE_CURRENT_SOURCE_DIR}/rules.json.example"
         "${CMAKE_CURRENT_BINARY_DIR}/rules.json.example"
