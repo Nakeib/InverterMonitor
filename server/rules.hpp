@@ -211,12 +211,12 @@ inline int parseTimeStringToSeconds(const std::string& value) {
   return hours * 3600 + minutes * 60 + seconds;
 }
 
-inline std::tm utcTimeFromTimeT(std::time_t value) {
+inline std::tm localTimeFromTimeT(std::time_t value) {
   std::tm result{};
 #ifdef _WIN32
-  gmtime_s(&result, &value);
+  localtime_s(&result, &value);
 #else
-  gmtime_r(&value, &result);
+  localtime_r(&value, &result);
 #endif
   return result;
 }
@@ -792,8 +792,8 @@ inline bool getConditionInputValue(const RuleCondition& condition,
     case ConditionInputType::Time: {
       auto now = std::chrono::system_clock::now();
       std::time_t nowTime = std::chrono::system_clock::to_time_t(now);
-      std::tm utcTime = utcTimeFromTimeT(nowTime);
-      outValue = utcTime.tm_hour * 3600 + utcTime.tm_min * 60 + utcTime.tm_sec;
+      std::tm localTime = localTimeFromTimeT(nowTime);
+      outValue = localTime.tm_hour * 3600 + localTime.tm_min * 60 + localTime.tm_sec;
       return true;
     }
     default:

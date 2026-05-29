@@ -90,6 +90,18 @@ inline void broadcastToClients(const std::string& message) {
   }
 }
 
+inline void executeRelaySwitch(uint8_t relayIndex, int16_t value) {
+  const std::string state = (value == 0 ? "OFF" : "ON");
+  std::cout << "Relay switch: index=" << relayIndex << " state=" << state << "\n";
+  std::string systemCommand = "python3 plug_switch.py --index " + std::to_string(relayIndex) +
+                              " --state " + state;
+  int rc = std::system(systemCommand.c_str());
+  if (rc != 0) {
+    std::cerr << "Failed to execute relay helper command: " << systemCommand
+              << " (exit=" << rc << ")\n";
+  }
+}
+
 inline void parseCommand(const std::string& command) {
   std::string trimmed = command;
   if (!trimmed.empty() && trimmed.back() == '\n') {
@@ -102,15 +114,8 @@ inline void parseCommand(const std::string& command) {
     unsigned relayIndex;
     std::string state;
     if (iss >> relayIndex >> state) {
-      std::cout << "Relay switch command received: index=" << relayIndex
-                << " state=" << state << "\n";
-      std::string systemCommand = "python3 plug_switch.py --index " + std::to_string(relayIndex) +
-                                  " --state " + state;
-      int rc = std::system(systemCommand.c_str());
-      if (rc != 0) {
-        std::cerr << "Failed to execute relay helper command: " << systemCommand
-                  << " (exit=" << rc << ")\n";
-      }
+      int16_t value = (state == "OFF" || state == "0" || state == "FALSE" || state == "false") ? 0 : 1;
+      executeRelaySwitch(static_cast<uint8_t>(relayIndex), value);
     }
   }
 
@@ -180,6 +185,8 @@ inline void serverLoop(int listenSocket) {
   std::map<int, std::string> partialLines;
   std::map<uint16_t, int16_t> lastValues;
   auto lastSaveTime = std::chrono::steady_clock::now();
+  auto lastEvaluateTime = std::chrono::steady_clock::now();
+  auto lastRelayReplayTime = std::chrono::steady_clock::now();
   loadRules();
 
   while (running.load()) {
@@ -266,11 +273,23 @@ inline void serverLoop(int listenSocket) {
       removeClient(clientSocket);
     }
 
-    if (valuesChanged) {
+    auto now = std::chrono::steady_clock::now();
+    bool shouldEvaluateRules = valuesChanged || (now - lastEvaluateTime >= std::chrono::seconds(5));
+    if (shouldEvaluateRules) {
       evaluateRules(lastValues);
+      lastEvaluateTime = now;
     }
 
-    auto now = std::chrono::steady_clock::now();
+    if (now - lastRelayReplayTime >= std::chrono::minutes(5)) {
+      for (uint8_t relayIndex = 1; relayIndex <= 4; ++relayIndex) {
+        auto it = lastValues.find(relayIndex);
+        if (it != lastValues.end()) {
+          executeRelaySwitch(relayIndex, it->second);
+        }
+      }
+      lastRelayReplayTime = now;
+    }
+
     if (now - lastSaveTime >= std::chrono::seconds(5)) {
       saveRegisterValues(lastValues);
       auto powerIt = lastValues.find(PV_POWER_ADDRESS);
