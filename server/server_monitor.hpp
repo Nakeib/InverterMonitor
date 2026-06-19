@@ -22,8 +22,8 @@ void removeClient(int clientSocket);
 void broadcastToClients(const std::string& message);
 void parseCommand(const std::string& command);
 
-bool updateRelayStateWithIp(const std::string& line, std::map<uint16_t, int16_t>& lastValues);
-bool updateAddressValue(const std::string& line, std::map<uint16_t, int16_t>& lastValues);
+bool updateRelayStateWithIp(const std::string& line, std::map<uint16_t, float>& lastValues);
+bool updateAddressValue(const std::string& line, std::map<uint16_t, float>& lastValues);
 
 void serverLoop(int listenSocket);
 void consoleLoop();
@@ -127,7 +127,7 @@ inline void parseCommand(const std::string& command) {
 }
 
 inline bool updateRelayStateWithIp(const std::string& line,
-                                   std::map<uint16_t, int16_t>& lastValues) {
+                                   std::map<uint16_t, float>& lastValues) {
   if (line.empty() || line[0] != 'R') {
     return false;
   }
@@ -147,7 +147,7 @@ inline bool updateRelayStateWithIp(const std::string& line,
   uint16_t address = static_cast<uint16_t>(relayIndex);
   int16_t value = static_cast<int16_t>(stateValue);
   auto it = lastValues.find(address);
-  if (it == lastValues.end() || it->second != value) {
+  if (it == lastValues.end() || static_cast<int16_t>(it->second) != value) {
     lastValues[address] = value;
     std::cout << "Relay state changed: " << relayIndex << " = " << value << std::endl;
   }
@@ -160,10 +160,10 @@ inline bool updateRelayStateWithIp(const std::string& line,
   return true;
 }
 
-inline bool updateAddressValue(const std::string& line, std::map<uint16_t, int16_t>& lastValues) {
+inline bool updateAddressValue(const std::string& line, std::map<uint16_t, float>& lastValues) {
   std::istringstream iss(line);
   unsigned long rawAddr = 0;
-  unsigned long rawValue = 0;
+  float rawValue = 0;
   if (!(iss >> rawAddr >> rawValue)) {
     return false;
   }
@@ -172,18 +172,18 @@ inline bool updateAddressValue(const std::string& line, std::map<uint16_t, int16
   }
 
   uint16_t address = static_cast<uint16_t>(rawAddr);
-  int16_t value = static_cast<int16_t>(rawValue);
+  float value = static_cast<float>(rawValue);
   auto it = lastValues.find(address);
   if (it == lastValues.end() || it->second != value) {
     lastValues[address] = value;
-    std::cout << "Value changed: " << address << " = " << value << std::endl;
+    std::cout << "Value changed: " << address << " = " << std::fixed << std::setprecision(1) << value << std::endl;
   }
   return true;
 }
 
 inline void serverLoop(int listenSocket) {
   std::map<int, std::string> partialLines;
-  std::map<uint16_t, int16_t> lastValues;
+  std::map<uint16_t, float> lastValues;
   auto lastSaveTime = std::chrono::steady_clock::now();
   auto lastEvaluateTime = std::chrono::steady_clock::now();
   auto lastRelayReplayTime = std::chrono::steady_clock::now();
@@ -304,13 +304,15 @@ inline void serverLoop(int listenSocket) {
       if (batteryIt != lastValues.end()) {
         appendBatteryValue(batteryIt->second);
       }
-      auto batteryCurrentIt = lastValues.find(BATTERY_CURRENT_ADDRESS);
-      if (batteryCurrentIt != lastValues.end()) {
-        appendBatteryCurrentValue(batteryCurrentIt->second);
+      auto batteryChargeCurrentIt = lastValues.find(BATTERY_CHARGE_CURRENT_ADDRESS);
+      auto batteryDischargeCurrentIt = lastValues.find(BATTERY_DISCHARGE_CURRENT_ADDRESS);
+      if (batteryChargeCurrentIt != lastValues.end() && batteryDischargeCurrentIt != lastValues.end()) {
+        int16_t netBatteryCurrent = batteryDischargeCurrentIt->second - batteryChargeCurrentIt->second;
+        appendBatteryCurrentValue(netBatteryCurrent);
       }
-      auto loadCurrentIt = lastValues.find(LOAD_CURRENT_ADDRESS);
-      if (loadCurrentIt != lastValues.end()) {
-        appendLoadCurrentValue(loadCurrentIt->second);
+      auto loadPowerIt = lastValues.find(LOAD_POWER_ADDRESS);
+      if (loadPowerIt != lastValues.end()) {
+        appendLoadPowerValue(loadPowerIt->second);
       }
       lastSaveTime = now;
     }

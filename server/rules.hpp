@@ -766,7 +766,7 @@ inline bool setRuleEnabled(uint32_t ruleId, bool enabled) {
 }
 
 inline bool getConditionInputValue(const RuleCondition& condition,
-                                   const std::map<uint16_t, int16_t>& lastValues,
+                                   const std::map<uint16_t, float>& lastValues,
                                    double& outValue) {
   switch (condition.inputType) {
     case ConditionInputType::Register: {
@@ -805,9 +805,9 @@ inline bool evaluateConditionValue(double inputValue, const RuleCondition& condi
   const double compareValue = condition.valueNumber;
   switch (condition.op) {
     case ConditionOperator::Equal:
-      return std::abs(inputValue - compareValue) < 1e-6;
+      return std::abs(inputValue - compareValue) < 0.01f;
     case ConditionOperator::NotEqual:
-      return std::abs(inputValue - compareValue) >= 1e-6;
+      return std::abs(inputValue - compareValue) >= 0.01f;
     case ConditionOperator::Less:
       return inputValue < compareValue;
     case ConditionOperator::LessEqual:
@@ -913,7 +913,7 @@ inline void executeRuleCommand(const RuleCommand& command, bool& modifiedRules) 
   }
 }
 
-inline void evaluateRules(const std::map<uint16_t, int16_t>& lastValues) {
+inline void evaluateRules(const std::map<uint16_t, float>& lastValues) {
   std::lock_guard<std::mutex> lock(rulesMutex);
   bool rulesModified = false;
   for (auto& rule : rules) {

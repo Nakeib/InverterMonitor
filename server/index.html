@@ -26,7 +26,7 @@
     tbody tr:nth-child(odd) { background: #fafafa; }
     .missing { color: #888; }
     .chart-container { position: relative; width: 100%; max-width: 100%; height: 360px; margin-bottom: 24px; }
-    #pv-power-chart, #pv-voltage-chart, #battery-voltage-chart, #battery-current-chart, #load-current-chart { width: 100% !important; height: 100% !important; }
+    #pv-power-chart, #pv-voltage-chart, #battery-voltage-chart, #battery-current-chart, #load-power-chart { width: 100% !important; height: 100% !important; }
   </style>
 </head>
 <body>
@@ -157,10 +157,10 @@
     <canvas id="battery-current-chart"></canvas>
   </div>
 
-  <h2>Load Current History</h2>
+  <h2>Load Power History</h2>
   <div id="load-current-summary" style="margin-bottom: 8px; font-weight: 600;">Sum(value × hours): 0</div>
   <div class="chart-container">
-    <canvas id="load-current-chart"></canvas>
+    <canvas id="load-power-chart"></canvas>
   </div>
 
   <h2>Rules</h2>
@@ -180,13 +180,9 @@
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    const controlRegisterOrder = [
-      20101, 20102, 20103, 20104, 20108, 20109, 20111, 20112, 20113, 20118,
-      20119, 10103, 10104, 10105, 10107, 20125, 20127, 20128, 20132, 20142,
-      20143, 20144
-    ];
+    const controlRegisterOrder = [ 100, 101, 102, 103, 104, 105 ];
 
-    const monitorRegisterOrder = [15205, 15206, 15207, 15208, 25210, 25212, 25274];
+    const monitorRegisterOrder = [ 200, 201, 202, 203, 204, 205 ];
 
     function createRegisterRow(reg, address) {
       const row = document.createElement('tr');
@@ -619,11 +615,11 @@
       );
     }
 
-    async function loadLoadCurrentData() {
+    async function loadLoadPowerData() {
       loadCurrentChart = await loadChartData(
         4,
         loadCurrentChart,
-        'load-current-chart',
+        'load-power-chart',
         'load-current-summary',
         'Load Current',
         'Load current (A)',
@@ -879,7 +875,7 @@
       await loadPowerData();
       await loadBatteryData();
       await loadBatteryCurrentData();
-      await loadLoadCurrentData();
+      await loadLoadPowerData();
       await loadRulesData();
     }
 

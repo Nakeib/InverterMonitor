@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <map>
 #include <random>
@@ -21,11 +22,12 @@ struct RelayMetadata {
   std::string ipAddress;
 };
 
-inline const uint16_t PV_POWER_ADDRESS = 15208;
-inline const uint16_t PV_VOLTAGE_ADDRESS = 15205;
-inline const uint16_t BATTERY_VOLTAGE_ADDRESS = 15206;
-inline const uint16_t BATTERY_CURRENT_ADDRESS = 25274;
-inline const uint16_t LOAD_CURRENT_ADDRESS = 25212;
+inline const uint16_t PV_POWER_ADDRESS = 204;
+inline const uint16_t PV_VOLTAGE_ADDRESS = 203;
+inline const uint16_t BATTERY_VOLTAGE_ADDRESS = 200;
+inline const uint16_t BATTERY_CHARGE_CURRENT_ADDRESS = 201;
+inline const uint16_t BATTERY_DISCHARGE_CURRENT_ADDRESS = 202;
+inline const uint16_t LOAD_POWER_ADDRESS = 205;
 
 inline std::map<uint8_t, RelayMetadata> relayMetadata = {
   {1, {"Relay 1", ""}},
@@ -35,34 +37,18 @@ inline std::map<uint8_t, RelayMetadata> relayMetadata = {
 };
 
 inline const std::map<uint16_t, RegisterMetadata> registerMetadata = {
-  {20101, {"Inverter offgrid work enable", "", 1.0}},
-  {20102, {"Inverter output voltage set", "0.1V", 0.1}},
-  {20103, {"Inverter output frequency set", "0.01Hz", 0.01}},
-  {20104, {"Inverter search mode enable", "", 1.0}},
-  {20108, {"Inverter discharge to grid enable", "", 1.0}},
-  {20109, {"Energy use mode", "", 1.0}},
-  {20111, {"Grid protect standard", "", 1.0}},
-  {20112, {"SolarUse Aim", "", 1.0}},
-  {20113, {"Inverter max discharger current", "0.1A", 0.1}},
-  {20118, {"Battery stop discharging voltage", "0.1V", 0.1}},
-  {20119, {"Battery stop charging voltage", "0.1V", 0.1}},
-  {10103, {"Float voltage", "0.1V", 0.1}},
-  {10104, {"Absorption voltage", "0.1V", 0.1}},
-  {10105, {"Battery low voltage (PV/PH)", "0.1V", 0.1}},
-  {10107, {"Battery high voltage (PV/PH)", "0.1V", 0.1}},
-  {20125, {"Grid max charger current set", "0.1A", 0.1}},
-  {20127, {"Battery low voltage", "0.1V", 0.1}},
-  {20128, {"Battery high voltage", "0.1V", 0.1}},
-  {20132, {"Max Combine charger current", "0.1A", 0.1}},
-  {20142, {"System setting", "", 1.0}},
-  {20143, {"Charger source priority", "", 1.0}},
-  {20144, {"Solar power balance", "", 1.0}},
-  {15205, {"PV voltage", "0.1V", 0.1}},
-  {15206, {"Battery voltage", "0.1V", 0.1}},
-  {15207, {"PV charger current", "0.1A", 0.1}},
-  {15208, {"PV charger power", "W", 1.0}},
-  {25212, {"Load current", "0.1A", 0.1}},
-  {25274, {"Battery current (negative for charging)", "A", 1.0}}
+  {100, {"Battery type", "", 1.0}},
+  {101, {"Battery recharge voltage", "V", 1.0}},
+  {102, {"Battery redischarge voltage", "V", 1.0}},
+  {103, {"Battery under voltage", "V", 1.0}},
+  {104, {"Battery bulk voltage", "V", 1.0}},
+  {105, {"Battery float voltage", "V", 1.0}},
+  {200, {"Battery voltage", "V", 1.0}},
+  {201, {"Battery charging current", "A", 1.0}},
+  {202, {"Battery discharging current", "A", 1.0}},
+  {203, {"PV voltage", "V", 1.0}},
+  {204, {"PV input power", "W", 1.0}},
+  {205, {"Load power", "W", 1.0}},
 };
 
 inline std::string jsonEscape(const std::string& input) {
@@ -88,7 +74,7 @@ inline const RelayMetadata* getRelayMetadata(uint16_t address) {
   return it != relayMetadata.end() ? &it->second : nullptr;
 }
 
-inline double getScaledRegisterValue(uint16_t address, int16_t value) {
+inline double getScaledRegisterValue(uint16_t address, float value) {
   const RelayMetadata* relayInfo = getRelayMetadata(address);
   if (relayInfo) {
     return static_cast<double>(value);
@@ -98,7 +84,7 @@ inline double getScaledRegisterValue(uint16_t address, int16_t value) {
   return static_cast<double>(value) * multiplier;
 }
 
-inline bool saveRegisterValues(const std::map<uint16_t, int16_t>& lastValues) {
+inline bool saveRegisterValues(const std::map<uint16_t, float>& lastValues) {
   std::ofstream out("registers.json", std::ofstream::trunc);
   if (!out) {
     std::cerr << "Unable to write registers.json" << std::endl;
@@ -154,7 +140,7 @@ inline bool appendPowerValue(int16_t value) {
   return out.good();
 }
 
-inline bool appendBatteryValue(int16_t value) {
+inline bool appendBatteryValue(float value) {
   std::ofstream out("battery.dat", std::ofstream::app);
   if (!out) {
     std::cerr << "Unable to open battery.dat for appending" << std::endl;
@@ -170,7 +156,7 @@ inline bool appendBatteryValue(int16_t value) {
   }
 
   const double scaledValue = getScaledRegisterValue(BATTERY_VOLTAGE_ADDRESS, value);
-  out << timestamp << " " << scaledValue << "\n";
+  out << timestamp << " " << std::fixed << std::setprecision(1) << scaledValue << "\n";
   return out.good();
 }
 
@@ -189,15 +175,15 @@ inline bool appendBatteryCurrentValue(int16_t value) {
     return false;
   }
 
-  const double scaledValue = getScaledRegisterValue(BATTERY_CURRENT_ADDRESS, value);
+  const double scaledValue = getScaledRegisterValue(BATTERY_CHARGE_CURRENT_ADDRESS, value);
   out << timestamp << " " << scaledValue << "\n";
   return out.good();
 }
 
-inline bool appendLoadCurrentValue(int16_t value) {
-  std::ofstream out("loadcurr.dat", std::ofstream::app);
+inline bool appendLoadPowerValue(int16_t value) {
+  std::ofstream out("loadpower.dat", std::ofstream::app);
   if (!out) {
-    std::cerr << "Unable to open loadcurr.dat for appending" << std::endl;
+    std::cerr << "Unable to open loadpower.dat for appending" << std::endl;
     return false;
   }
 
@@ -209,12 +195,12 @@ inline bool appendLoadCurrentValue(int16_t value) {
     return false;
   }
 
-  const double scaledValue = getScaledRegisterValue(LOAD_CURRENT_ADDRESS, value);
+  const double scaledValue = getScaledRegisterValue(LOAD_POWER_ADDRESS, value);
   out << timestamp << " " << scaledValue << "\n";
   return out.good();
 }
 
-inline bool appendPVVoltageValue(int16_t value) {
+inline bool appendPVVoltageValue(float value) {
   std::ofstream out("pvvoltage.dat", std::ofstream::app);
   if (!out) {
     std::cerr << "Unable to open pvvoltage.dat for appending" << std::endl;
@@ -230,6 +216,6 @@ inline bool appendPVVoltageValue(int16_t value) {
   }
 
   const double scaledValue = getScaledRegisterValue(PV_VOLTAGE_ADDRESS, value);
-  out << timestamp << " " << scaledValue << "\n";
+  out << timestamp << " " << std::fixed << std::setprecision(1) << scaledValue << "\n";
   return out.good();
 }
