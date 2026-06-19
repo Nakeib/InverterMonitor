@@ -191,7 +191,7 @@ inline bool appendLoadPowerValue(int16_t value) {
   std::time_t nowTime = std::chrono::system_clock::to_time_t(now);
   char timestamp[64];
   if (std::strftime(timestamp, sizeof(timestamp), "%Y-%m-%dT%H:%M:%SZ", std::gmtime(&nowTime)) == 0) {
-    std::cerr << "Unable to format timestamp for loadcurr.dat" << std::endl;
+    std::cerr << "Unable to format timestamp for loadpower.dat" << std::endl;
     return false;
   }
 

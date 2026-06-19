@@ -204,7 +204,7 @@ inline bool handleHttpReqCommand(const std::string& command, std::string& respon
       case 1: return std::string("power.dat");
       case 2: return std::string("battery.dat");
       case 3: return std::string("batterycurr.dat");
-      case 4: return std::string("loadcurr.dat");
+      case 4: return std::string("loadpower.dat");
       case 5: return std::string("pvvoltage.dat");
       default: return std::string();
     }

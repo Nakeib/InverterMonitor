@@ -248,7 +248,7 @@
     let pvVoltageChart = null;
     let batteryChart = null;
     let batteryCurrentChart = null;
-    let loadCurrentChart = null;
+    let loadPowerChart = null;
     let adminAuthorized = false;
     let adminSessionId = '';
     let adminSessionTimeoutId = null;
@@ -616,9 +616,9 @@
     }
 
     async function loadLoadPowerData() {
-      loadCurrentChart = await loadChartData(
+      loadPowerChart = await loadChartData(
         4,
-        loadCurrentChart,
+        loadPowerChart,
         'load-power-chart',
         'load-current-summary',
         'Load Current',

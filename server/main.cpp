@@ -42,8 +42,17 @@ std::atomic<bool> running(true);
 
 int main(int argc, char* argv[]) {
   uint16_t port = MONITOR_SERVER_PORT;
+  uint16_t commandPort = COMMAND_SERVER_PORT;
+  uint16_t authPort = AUTHORIZATION_SERVER_PORT;
+
   if (argc > 1) {
     port = static_cast<uint16_t>(std::stoi(argv[1]));
+  }
+  if (argc > 2) {
+    commandPort = static_cast<uint16_t>(std::stoi(argv[2]));
+  }
+  if (argc > 3) {
+    authPort = static_cast<uint16_t>(std::stoi(argv[3]));
   }
 
   int listenSocket = createListeningSocket(port);
@@ -54,18 +63,18 @@ int main(int argc, char* argv[]) {
   std::cout << "TCP monitor server listening on port " << port << "\n";
   std::cout << "Type commands in this console to send them to connected clients. Type 'quit' or 'exit' to stop." << std::endl;
 
-  int commandListenSocket = createListeningSocket(COMMAND_SERVER_PORT);
+  int commandListenSocket = createListeningSocket(commandPort);
   if (commandListenSocket < 0) {
-    std::cerr << "Unable to start HTTP command server on port " << COMMAND_SERVER_PORT << std::endl;
+    std::cerr << "Unable to start HTTP command server on port " << commandPort << std::endl;
   } else {
-    std::cout << "HTTP command server listening on port " << COMMAND_SERVER_PORT << "\n";
+    std::cout << "HTTP command server listening on port " << commandPort << "\n";
   }
 
-  int authListenSocket = createListeningSocket(AUTHORIZATION_SERVER_PORT);
+  int authListenSocket = createListeningSocket(authPort);
   if (authListenSocket < 0) {
-    std::cerr << "Unable to start authorization server on port " << AUTHORIZATION_SERVER_PORT << std::endl;
+    std::cerr << "Unable to start authorization server on port " << authPort << std::endl;
   } else {
-    std::cout << "Authorization server listening on port " << AUTHORIZATION_SERVER_PORT << "\n";
+    std::cout << "Authorization server listening on port " << authPort << "\n";
   }
 
   std::thread serverThread(serverLoop, listenSocket);
