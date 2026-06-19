@@ -26,6 +26,8 @@ struct RuleCondition {
   ConditionInputType inputType = ConditionInputType::Unknown;
   uint32_t inputAddress = 0;
   ConditionOperator op = ConditionOperator::Unknown;
+  ConditionInputType valueInputType = ConditionInputType::Unknown;
+  uint32_t valueInputAddress = 0;
   std::string valueString;
   double valueNumber = 0.0;
   bool valueIsString = false;
@@ -353,6 +355,20 @@ inline bool parseRuleCondition(const std::string& data, size_t& pos, RuleConditi
         return false;
       }
       condition.op = parseConditionOperator(value);
+    } else if (lowerString(key) == "valuetype") {
+      std::string value;
+      bool isString = false;
+      if (!parseJsonValueAsString(data, pos, value, isString)) {
+        return false;
+      }
+      condition.valueInputType = parseConditionInputType(value);
+    } else if (lowerString(key) == "valueaddress") {
+      std::string value;
+      bool isString = false;
+      if (!parseJsonValueAsString(data, pos, value, isString)) {
+        return false;
+      }
+      condition.valueInputAddress = static_cast<uint32_t>(std::stoul(value));
     } else if (lowerString(key) == "value") {
       std::string value;
       bool isString = false;
@@ -637,13 +653,27 @@ inline bool saveRules(const std::vector<Rule>& currentRules) {
           default: return std::string("unknown");
         }
       }()) << "\",\n";
-      out << "        \"value\":";
-      if (condition.valueIsString) {
-        out << "\"" << jsonEscape(condition.valueString) << "\"";
+      if (condition.valueInputType != ConditionInputType::Unknown) {
+        out << "        \"valueType\":\"" << jsonEscape([&]() {
+          switch (condition.valueInputType) {
+            case ConditionInputType::Register: return std::string("register");
+            case ConditionInputType::Variable: return std::string("variable");
+            case ConditionInputType::Relay: return std::string("relay");
+            case ConditionInputType::Time: return std::string("time");
+            default: return std::string("unknown");
+          }
+        }()) << "\"," << "\n";
+        out << "        \"valueAddress\":" << condition.valueInputAddress << "\n";
       } else {
-        out << condition.valueNumber;
+        out << "        \"value\":";
+        if (condition.valueIsString) {
+          out << "\"" << jsonEscape(condition.valueString) << "\"";
+        } else {
+          out << condition.valueNumber;
+        }
+        out << "\n";
       }
-      out << "\n      }";
+      out << "      }";
       if (ci + 1 < rule.conditions.size()) {
         out << ",";
       }
@@ -801,6 +831,19 @@ inline bool getConditionInputValue(const RuleCondition& condition,
   }
 }
 
+inline bool getConditionValue(const RuleCondition& condition,
+                              const std::map<uint16_t, float>& lastValues,
+                              double& outValue) {
+  if (condition.valueInputType == ConditionInputType::Unknown) {
+    outValue = condition.valueNumber;
+    return true;
+  }
+  RuleCondition valueSource;
+  valueSource.inputType = condition.valueInputType;
+  valueSource.inputAddress = condition.valueInputAddress;
+  return getConditionInputValue(valueSource, lastValues, outValue);
+}
+
 inline bool evaluateConditionValue(double inputValue, const RuleCondition& condition) {
   const double compareValue = condition.valueNumber;
   switch (condition.op) {
@@ -928,7 +971,14 @@ inline void evaluateRules(const std::map<uint16_t, float>& lastValues) {
         conditionsMet = false;
         break;
       }
-      if (!evaluateConditionValue(inputValue, condition)) {
+      double compareValue = 0.0;
+      if (!getConditionValue(condition, lastValues, compareValue)) {
+        conditionsMet = false;
+        break;
+      }
+      RuleCondition compareCondition = condition;
+      compareCondition.valueNumber = compareValue;
+      if (!evaluateConditionValue(inputValue, compareCondition)) {
         conditionsMet = false;
         break;
       }

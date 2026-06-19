@@ -860,6 +860,8 @@ size_t readControlRegisters() {
     return count;
   }
 
+  printRelaysState();
+
   String response;
   if (!sendPipsolarCommand(rs232Serial, command.c_str(), response)) {
     for (size_t index = 0; index < controlRegisterCount; ++index) {
