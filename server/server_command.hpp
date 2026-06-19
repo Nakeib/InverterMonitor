@@ -71,11 +71,24 @@ inline std::string rulesToJson(const std::vector<Rule>& rules) {
         default: out << "unknown"; break;
       }
       out << "\",";
-      out << "\"value\":";
-      if (condition.valueIsString) {
-        out << "\"" << jsonEscapeLocal(condition.valueString) << "\"";
+      if (condition.valueInputType != ConditionInputType::Unknown) {
+        out << "\"valueType\":\"";
+        switch (condition.valueInputType) {
+          case ConditionInputType::Register: out << "register"; break;
+          case ConditionInputType::Variable: out << "variable"; break;
+          case ConditionInputType::Relay: out << "relay"; break;
+          case ConditionInputType::Time: out << "time"; break;
+          default: out << "unknown"; break;
+        }
+        out << "\",";
+        out << "\"valueAddress\":" << condition.valueInputAddress;
       } else {
-        out << condition.valueNumber;
+        out << "\"value\":";
+        if (condition.valueIsString) {
+          out << "\"" << jsonEscapeLocal(condition.valueString) << "\"";
+        } else {
+          out << condition.valueNumber;
+        }
       }
       out << "}";
       if (ci + 1 < rule.conditions.size()) {
@@ -181,6 +194,20 @@ inline bool handleHttpReqCommand(const std::string& command, std::string& respon
     }
     responseBody = "Failed to execute rule";
     return false;
+  }
+
+  if (token == "SETVAR") {
+    if (!authorized) {
+      return false;
+    }
+    unsigned long address = 0;
+    double value = 0.0;
+    if (!(iss >> address >> value)) {
+      return false;
+    }
+    setVariable(static_cast<uint32_t>(address), value);
+    responseBody = "OK";
+    return true;
   }
 
   if (token != "REQ") {
