@@ -94,27 +94,38 @@
   <div id="send-command" style="margin-bottom: 24px;">
     <h2>Send Command</h2>
     <div style="margin-bottom: 12px;">
-      <strong>Available commands:</strong>
+      <strong>Server commands:</strong>
       <ul style="margin: 8px 0 0 18px; padding: 0; list-style: disc;">
-        <li><code>WIFI [ssid] [password]</code></li>
-        <li><code>HOST [address] [port]</code></li>
-        <li><code>SIM [ON|OFF|1|0]</code></li>
-        <li><code>CTRL_SCAN_MS [value]</code></li>
-        <li><code>MON_SCAN_MS [value]</code></li>
-        <li><code>REG_SPACING_MS [value]</code></li>
-        <li><code>RELAY [number] [ON|OFF|1|0]</code></li>
-        <li><code>SETIP [relayNumber] [ip]</code></li>
-        <li><code>READ [address]</code></li>
+        <li><code>GETRULES</code></li>
         <li><code>RELOADRULES</code></li>
         <li><code>ENABLERULE [ruleNo]</code></li>
         <li><code>DISABLERULE [ruleNo]</code></li>
         <li><code>EXECUTERULE [ruleNo]</code></li>
-        <li><code>[regAddr] [uintValue]</code></li>
+        <li><code>SETVAR [address] [value]</code></li>
+        <li><code>REQ [chartNo] [pointsCount] [fromTimestamp] [toTimestamp]</code></li>
+      </ul>
+      <br><strong>ESP firmware commands (broadcast to connected inverter client):</strong>
+      <ul style="margin: 8px 0 0 18px; padding: 0; list-style: disc;">
+        <li><code>WIFI [ssid] [password]</code></li>
+        <li><code>HOST [address] [port]</code></li>
+        <li><code>BAUD [baud]</code></li>
+        <li><code>SIM [ON|OFF|1|0]</code></li>
+        <li><code>CTRL_SCAN_MS [value]</code></li>
+        <li><code>MON_SCAN_MS [value]</code></li>
+        <li><code>RELAY [number] [ON|OFF|1|0]</code></li>
+        <li><code>SETIP [relayNumber] [ip]</code></li>
+        <li><code>READPIP [commandStr]</code></li>
+        <li><code>WAKEUPMOD</code></li>
+        <li><code>OTA_URL [url]</code></li>
+        <li><code>READMOD [slaveId] [address]</code></li>
+        <li><code>[regAddr] [uintValue]</code> (relay/register write or broadcast)</li>
       </ul>
     </div>
     <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
       <input id="command-input" type="text" placeholder="RELAY 1 ON" style="flex: 1 1 360px; padding: 8px;" />
       <button id="command-submit" style="padding: 8px 16px;">Submit</button>
+      <button id="firmware-upload" style="padding: 8px 16px;">Upload Firmware</button>
+      <input id="firmware-file-input" type="file" accept=".bin" style="display: none;" />
       <span id="command-status" style="color: #333; min-width: 220px; display: inline-block;"></span>
     </div>
   </div>
@@ -873,6 +884,39 @@
       }
     }
 
+    async function uploadFirmwareFile(file) {
+      const status = document.getElementById('command-status');
+      if (!adminAuthorized) {
+        status.textContent = 'Admin authorization required.';
+        return;
+      }
+
+      const serverHost = window.location.hostname;
+      const uploadUrl = `${window.location.protocol}//${serverHost}:16671/upload_firmware`;
+      const formData = new FormData();
+      formData.append('sessionId', adminSessionId);
+      formData.append('firmware', file);
+
+      status.textContent = `Uploading ${file.name}...`;
+      try {
+        const response = await fetch(uploadUrl, {
+          method: 'POST',
+          body: formData
+        });
+        if (!response.ok) {
+          if (response.status === 401) {
+            expireAdminSession();
+          }
+          throw new Error(response.status + ' ' + response.statusText);
+        }
+        const result = await response.text();
+        status.textContent = `Upload complete: ${result}`;
+        resetAdminSessionTimer();
+      } catch (err) {
+        status.textContent = 'Upload failed: ' + err.message;
+      }
+    }
+
     async function refreshData() {
       await loadRegisters();
       await loadPVVoltageData();
@@ -905,6 +949,18 @@
     document.getElementById('set-today').addEventListener('click', setToday);
     document.getElementById('admin-authorize').addEventListener('click', authorizeAdmin);
     document.getElementById('command-submit').addEventListener('click', sendCommandToServer);
+    document.getElementById('firmware-upload').addEventListener('click', () => {
+      document.getElementById('firmware-file-input').click();
+    });
+    document.getElementById('firmware-file-input').addEventListener('change', async (event) => {
+      const fileInput = event.target;
+      const file = fileInput.files && fileInput.files[0];
+      if (!file) {
+        return;
+      }
+      await uploadFirmwareFile(file);
+      fileInput.value = '';
+    });
     document.getElementById('command-input').addEventListener('keydown', (event) => {
       if (event.key === 'Enter') {
         if (document.activeElement === document.getElementById('command-input')) {

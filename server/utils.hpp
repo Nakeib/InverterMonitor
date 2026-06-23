@@ -31,7 +31,7 @@ extern std::mutex sessionsMutex;
 extern std::atomic<bool> running;
 
 std::string trimString(const std::string& value);
-void sendHttpResponse(int clientSocket, const std::string& status, const std::string& body);
+void sendHttpResponse(int clientSocket, const std::string& status, const std::string& body, const std::string& contentType = std::string("text/plain"));
 std::string generateSessionId();
 void removeExpiredSessions();
 
@@ -51,12 +51,13 @@ inline std::string trimString(const std::string& value) {
   return value.substr(start, end - start + 1);
 }
 
-inline void sendHttpResponse(int clientSocket, const std::string& status, const std::string& body) {
+inline void sendHttpResponse(int clientSocket, const std::string& status, const std::string& body, const std::string& contentType) {
   std::ostringstream response;
   response << "HTTP/1.1 " << status << "\r\n"
            << "Access-Control-Allow-Origin: *\r\n"
-           << "Access-Control-Allow-Methods: POST, OPTIONS\r\n"
+           << "Access-Control-Allow-Methods: GET, POST, OPTIONS\r\n"
            << "Access-Control-Allow-Headers: Content-Type\r\n"
+           << "Content-Type: " << contentType << "\r\n"
            << "Content-Length: " << body.size() << "\r\n"
            << "Connection: close\r\n"
            << "\r\n"

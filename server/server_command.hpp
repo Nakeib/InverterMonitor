@@ -289,12 +289,9 @@ inline void handleCommandRequest(int clientSocket) {
     sendHttpResponse(clientSocket, "204 No Content", "");
     return;
   }
-  if (method != "POST" || path != "/command") {
-    sendHttpResponse(clientSocket, "404 Not Found", "Not found");
-    return;
-  }
 
   size_t contentLength = 0;
+  std::string contentType;
   std::istringstream headerStream(request.substr(request.find("\r\n") + 2, headerEnd));
   std::string headerLine;
   while (std::getline(headerStream, headerLine)) {
@@ -308,8 +305,122 @@ inline void handleCommandRequest(int clientSocket) {
       std::transform(name.begin(), name.end(), name.begin(), ::tolower);
       if (name == "content-length") {
         contentLength = static_cast<size_t>(std::stoul(value));
+      } else if (name == "content-type") {
+        contentType = value;
       }
     }
+  }
+
+  if (method == "POST" && path == "/upload_firmware") {
+    if (contentLength == 0 || contentType.find("multipart/form-data") == std::string::npos) {
+      sendHttpResponse(clientSocket, "400 Bad Request", "Invalid upload request");
+      return;
+    }
+
+    std::string body = request.substr(headerEnd + 4);
+    while (body.size() < contentLength) {
+      bytesRead = recv(clientSocket, buffer.data(), RECV_BUFFER_SIZE - 1, 0);
+      if (bytesRead <= 0) {
+        break;
+      }
+      body.append(buffer.data(), static_cast<size_t>(bytesRead));
+    }
+    if (body.size() > contentLength) {
+      body.resize(contentLength);
+    }
+
+    const std::string boundaryPrefix = "boundary=";
+    const size_t boundaryPos = contentType.find(boundaryPrefix);
+    if (boundaryPos == std::string::npos) {
+      sendHttpResponse(clientSocket, "400 Bad Request", "Missing boundary");
+      return;
+    }
+    std::string boundary = "--" + contentType.substr(boundaryPos + boundaryPrefix.size());
+    if (!boundary.empty() && boundary.back() == '\r') {
+      boundary.pop_back();
+    }
+
+    auto extractPart = [&](const std::string& data, const std::string& fieldName, std::string& outValue, std::string& outFilename) {
+      const std::string fieldSearch = "name=\"" + fieldName + "\"";
+      size_t partPos = data.find(fieldSearch);
+      if (partPos == std::string::npos) {
+        return false;
+      }
+      size_t headerStart = data.rfind(boundary, partPos);
+      if (headerStart == std::string::npos) {
+        return false;
+      }
+      size_t headerEndPos = data.find("\r\n\r\n", partPos);
+      if (headerEndPos == std::string::npos) {
+        return false;
+      }
+      size_t contentStart = headerEndPos + 4;
+      size_t nextBoundary = data.find(boundary, contentStart);
+      if (nextBoundary == std::string::npos) {
+        return false;
+      }
+      outValue = data.substr(contentStart, nextBoundary - contentStart - 2);
+      const std::string filenameSearch = "filename=\"";
+      size_t filenamePos = data.rfind(filenameSearch, partPos);
+      if (filenamePos != std::string::npos && filenamePos < partPos) {
+        size_t filenameEnd = data.find('"', filenamePos + filenameSearch.size());
+        if (filenameEnd != std::string::npos) {
+          outFilename = data.substr(filenamePos + filenameSearch.size(), filenameEnd - (filenamePos + filenameSearch.size()));
+        }
+      }
+      return true;
+    };
+
+    std::string sessionId;
+    std::string fileName;
+    std::string fileContent;
+    if (!extractPart(body, "sessionId", sessionId, fileName)) {
+      sendHttpResponse(clientSocket, "400 Bad Request", "Missing sessionId field");
+      return;
+    }
+    if (!extractPart(body, "firmware", fileContent, fileName)) {
+      sendHttpResponse(clientSocket, "400 Bad Request", "Missing firmware file");
+      return;
+    }
+    sessionId = trimString(sessionId);
+    if (sessionId.empty()) {
+      sendHttpResponse(clientSocket, "400 Bad Request", "Invalid sessionId");
+      return;
+    }
+
+    removeExpiredSessions();
+    {
+      std::lock_guard<std::mutex> lock(sessionsMutex);
+      auto it = validSessions.find(sessionId);
+      if (it == validSessions.end()) {
+        sendHttpResponse(clientSocket, "401 Unauthorized", "Invalid session");
+        std::cout << "Firmware upload rejected: invalid session " << sessionId << "\n";
+        return;
+      }
+      it->second = std::chrono::steady_clock::now();
+    }
+
+    const std::string outputFile = "firmware.bin";
+    std::ofstream out(outputFile, std::ios::binary);
+    if (!out) {
+      sendHttpResponse(clientSocket, "500 Internal Server Error", "Unable to save firmware");
+      return;
+    }
+    out.write(fileContent.data(), static_cast<std::streamsize>(fileContent.size()));
+    if (!out) {
+      sendHttpResponse(clientSocket, "500 Internal Server Error", "Write failed");
+      return;
+    }
+    out.close();
+
+    std::cout << "Firmware uploaded: " << outputFile << " (" << fileContent.size() << " bytes)\n";
+    sendHttpResponse(clientSocket, "200 OK", "Firmware uploaded successfully");
+    return;
+  }
+
+  if (method != "POST" || path != "/command") {
+    sendHttpResponse(clientSocket, "404 Not Found", "Not found");
+    return;
   }
 
   std::string body = request.substr(headerEnd + 4);
