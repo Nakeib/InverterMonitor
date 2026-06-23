@@ -1,6 +1,8 @@
 #include <Arduino.h>
 #include <stdarg.h>
 #include <ESP8266WiFi.h>
+#include <ESP8266HTTPClient.h>
+#include <ESP8266httpUpdate.h>
 #include <EEPROM.h>
 #include <SoftwareSerial.h>
 #include <vector>
@@ -1302,6 +1304,31 @@ void handleCommand(const String& rawLine) {
   if (line == "WAKEUPMOD") {
     sendModbusWakeup(rs232Serial);
     printMessage("TCP CMD: WAKEUPMOD sent");
+    return;
+  }
+
+  if (line.startsWith("OTA_URL ")) {
+    String url = line.substring(8);
+    url.trim();
+    if (url.length() == 0) {
+      printMessage("TCP CMD: invalid OTA_URL format, expected 'OTA_URL [url]'");
+      return;
+    }
+
+    printMessage("TCP CMD: OTA_URL starting update from %s", url.c_str());
+    WiFiClient client;
+    t_httpUpdate_return ret = ESPhttpUpdate.update(client, url);
+    switch (ret) {
+      case HTTP_UPDATE_FAILED:
+        printMessage("TCP CMD: OTA failed - error %d: %s", ESPhttpUpdate.getLastError(), ESPhttpUpdate.getLastErrorString().c_str());
+        break;
+      case HTTP_UPDATE_NO_UPDATES:
+        printMessage("TCP CMD: OTA no update available");
+        break;
+      case HTTP_UPDATE_OK:
+        printMessage("TCP CMD: OTA update successful, rebooting");
+        break;
+    }
     return;
   }
 
