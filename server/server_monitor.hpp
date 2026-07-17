@@ -314,6 +314,13 @@ inline void serverLoop(int listenSocket) {
       if (loadPowerIt != lastValues.end()) {
         appendLoadPowerValue(loadPowerIt->second);
       }
+      for (uint16_t sensorIndex = 0; sensorIndex < 4; ++sensorIndex) {
+        uint16_t address = TEMPERATURE_START_ADDRESS + sensorIndex;
+        auto tempIt = lastValues.find(address);
+        if (tempIt != lastValues.end()) {
+          appendTemperatureValue(sensorIndex, tempIt->second);
+        }
+      }
       lastSaveTime = now;
     }
   }

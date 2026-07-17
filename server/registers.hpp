@@ -28,6 +28,7 @@ inline const uint16_t BATTERY_VOLTAGE_ADDRESS = 200;
 inline const uint16_t BATTERY_CHARGE_CURRENT_ADDRESS = 201;
 inline const uint16_t BATTERY_DISCHARGE_CURRENT_ADDRESS = 202;
 inline const uint16_t LOAD_POWER_ADDRESS = 205;
+inline const uint16_t TEMPERATURE_START_ADDRESS = 10000;
 
 inline std::map<uint8_t, RelayMetadata> relayMetadata = {
   {1, {"Relay 1", ""}},
@@ -49,6 +50,10 @@ inline const std::map<uint16_t, RegisterMetadata> registerMetadata = {
   {203, {"PV voltage", "V", 1.0}},
   {204, {"PV input power", "W", 1.0}},
   {205, {"Load power", "W", 1.0}},
+  {10000, {"Temperature 1", "C", 1.0}},
+  {10001, {"Temperature 2", "C", 1.0}},
+  {10002, {"Temperature 3", "C", 1.0}},
+  {10003, {"Temperature 4", "C", 1.0}},
 };
 
 inline std::string jsonEscape(const std::string& input) {
@@ -217,5 +222,26 @@ inline bool appendPVVoltageValue(float value) {
 
   const double scaledValue = getScaledRegisterValue(PV_VOLTAGE_ADDRESS, value);
   out << timestamp << " " << std::fixed << std::setprecision(1) << scaledValue << "\n";
+  return out.good();
+}
+
+inline bool appendTemperatureValue(uint16_t sensorIndex, float value) {
+  std::ostringstream filename;
+  filename << "temperature" << sensorIndex << ".dat";
+  std::ofstream out(filename.str(), std::ofstream::app);
+  if (!out) {
+    std::cerr << "Unable to open " << filename.str() << " for appending" << std::endl;
+    return false;
+  }
+
+  auto now = std::chrono::system_clock::now();
+  std::time_t nowTime = std::chrono::system_clock::to_time_t(now);
+  char timestamp[64];
+  if (std::strftime(timestamp, sizeof(timestamp), "%Y-%m-%dT%H:%M:%SZ", std::gmtime(&nowTime)) == 0) {
+    std::cerr << "Unable to format timestamp for " << filename.str() << std::endl;
+    return false;
+  }
+
+  out << timestamp << " " << std::fixed << std::setprecision(1) << static_cast<double>(value) << "\n";
   return out.good();
 }
