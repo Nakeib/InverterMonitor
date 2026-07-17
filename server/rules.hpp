@@ -832,7 +832,7 @@ inline bool getConditionInputValue(const RuleCondition& condition,
 }
 
 inline bool getConditionValue(const RuleCondition& condition,
-                              const std::map<uint16_t, float>& lastValues,
+                              const std::map<uint16_t, int16_t>& lastValues,
                               double& outValue) {
   if (condition.valueInputType == ConditionInputType::Unknown) {
     outValue = condition.valueNumber;

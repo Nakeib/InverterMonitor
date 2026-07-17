@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <fstream>
 #include <iostream>
+#include <iomanip>
 #include <map>
 #include <random>
 #include <sstream>
@@ -63,7 +64,7 @@ inline const std::map<uint16_t, RegisterMetadata> registerMetadata = {
   {15207, {"PV charger current", "0.1A", 0.1}},
   {15208, {"PV charger power", "W", 1.0}},
   {25212, {"Load current", "0.1A", 0.1}},
-  {25274, {"Battery current (negative for charging)", "A", 1.0}}
+  {25274, {"Battery current (negative for charging)", "A", 1.0}},
   {10000, {"Temperature 1", "C", 1.0}},
   {10001, {"Temperature 2", "C", 1.0}},
   {10002, {"Temperature 3", "C", 1.0}},
