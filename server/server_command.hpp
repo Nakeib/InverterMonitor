@@ -233,6 +233,10 @@ inline bool handleHttpReqCommand(const std::string& command, std::string& respon
       case 3: return std::string("batterycurr.dat");
       case 4: return std::string("loadcurr.dat");
       case 5: return std::string("pvvoltage.dat");
+      case 10: return std::string("temperature0.dat");
+      case 11: return std::string("temperature1.dat");
+      case 12: return std::string("temperature2.dat");
+      case 13: return std::string("temperature3.dat");
       default: return std::string();
     }
   }();
@@ -441,6 +445,7 @@ inline void handleCommandRequest(int clientSocket) {
     return;
   }
 
+  /* Those request does not need a session */
   std::string responseBody;
   if (body.rfind("REQ", 0) == 0 || body == "REQ")
   {

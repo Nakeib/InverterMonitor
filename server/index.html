@@ -79,6 +79,18 @@
     <tbody id="monitor-register-table"></tbody>
   </table>
 
+  <h2>Temperature Registers</h2>
+  <table class="register-table">
+    <thead>
+      <tr>
+        <th>Address</th>
+        <th>Name</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+    <tbody id="temperature-register-table"></tbody>
+  </table>
+
   <h2>Relay Registers</h2>
   <table class="register-table">
     <thead>
@@ -113,12 +125,10 @@
         <li><code>CTRL_SCAN_MS [value]</code></li>
         <li><code>MON_SCAN_MS [value]</code></li>
         <li><code>RELAY [number] [ON|OFF|1|0]</code></li>
-        <li><code>SETIP [relayNumber] [ip]</code></li>
+        <li><code>SETIP [relayNumber] [ip]</code> or <code>SETIP [relayNumber]</code> to clear</li>
         <li><code>READPIP [commandStr]</code></li>
-        <li><code>WAKEUPMOD</code></li>
         <li><code>OTA_URL [url]</code></li>
-        <li><code>READMOD [slaveId] [address]</code></li>
-        <li><code>[regAddr] [uintValue]</code> (relay/register write or broadcast)</li>
+        <li><code>[relayAddr] [0|1]</code> (sets relay 1-4 state)</li>
       </ul>
     </div>
     <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
@@ -174,6 +184,12 @@
     <canvas id="load-current-chart"></canvas>
   </div>
 
+  <h2>Temperature History</h2>
+  <div id="temperature-summary" style="margin-bottom: 8px; font-weight: 600;">Sum(value × hours): 0</div>
+  <div class="chart-container">
+    <canvas id="temperature-chart"></canvas>
+  </div>
+
   <h2>Rules</h2>
   <div id="rules-status" style="margin-bottom: 12px; color: #333;"></div>
   <table class="rules-table">
@@ -198,6 +214,9 @@
     ];
 
     const monitorRegisterOrder = [15205, 15206, 15207, 15208, 25210, 25212, 25274];
+
+    const temperatureRegisterStart = 10000;
+    const temperatureRegisterCount = 16;
 
     function createRegisterRow(reg, address) {
       const row = document.createElement('tr');
@@ -229,10 +248,25 @@
       });
     }
 
+    function renderTemperatureRegisters(registers) {
+      const tbody = document.getElementById('temperature-register-table');
+      tbody.innerHTML = '';
+      const temperatureRegisters = registers
+        .filter(reg => reg.address >= temperatureRegisterStart && reg.address < temperatureRegisterStart + temperatureRegisterCount)
+        .filter(reg => reg.value !== null && reg.value !== undefined)
+        .sort((a, b) => a.address - b.address);
+
+      temperatureRegisters.forEach(reg => tbody.appendChild(createRegisterRow(reg, reg.address)));
+    }
+
     function renderRelayRegisters(registers) {
       const tbody = document.getElementById('relay-register-table');
       tbody.innerHTML = '';
-      const knownAddresses = new Set([...controlRegisterOrder, ...monitorRegisterOrder]);
+      const knownAddresses = new Set([
+        ...controlRegisterOrder,
+        ...monitorRegisterOrder,
+        ...Array.from({ length: temperatureRegisterCount }, (_, index) => temperatureRegisterStart + index)
+      ]);
       registers
         .filter(reg => !knownAddresses.has(reg.address))
         .forEach(reg => tbody.appendChild(createRegisterRow(reg, reg.address)));
@@ -247,6 +281,7 @@
         const registers = await response.json();
         renderRegisterTable(registers, controlRegisterOrder, 'control-register-table');
         renderRegisterTable(registers, monitorRegisterOrder, 'monitor-register-table');
+        renderTemperatureRegisters(registers);
         renderRelayRegisters(registers);
       } catch (err) {
         const controlBody = document.getElementById('control-register-table');
@@ -264,6 +299,7 @@
     let batteryChart = null;
     let batteryCurrentChart = null;
     let loadCurrentChart = null;
+    let temperatureChart = null;
     let adminAuthorized = false;
     let adminSessionId = '';
     let adminSessionTimeoutId = null;
@@ -644,6 +680,144 @@
       );
     }
 
+    function computeMultiSeriesArea(labels, datasets) {
+      if (!labels || labels.length < 2) {
+        return 0;
+      }
+      let total = 0;
+      for (const dataset of datasets) {
+        for (let i = 1; i < labels.length; i++) {
+          const prev = dataset.data[i - 1];
+          const curr = dataset.data[i];
+          if (!Number.isFinite(prev) || !Number.isFinite(curr)) {
+            continue;
+          }
+          const deltaHours = (Date.parse(labels[i]) - Date.parse(labels[i - 1])) / 3600000;
+          if (deltaHours > 0) {
+            total += prev * deltaHours;
+          }
+        }
+      }
+      return total;
+    }
+
+    async function loadTemperatureData() {
+      try {
+        const timezoneOffset = getTimezoneOffset();
+        const range = getChartRequestRange(timezoneOffset);
+        const pointsCount = getShowPoints();
+        const serverHost = window.location.hostname;
+        const serverUrl = `${window.location.protocol}//${serverHost}:16671/command`;
+
+        const seriesPromises = [];
+        for (let sensorIndex = 0; sensorIndex < 4; sensorIndex++) {
+          const body = `REQ ${10 + sensorIndex} ${pointsCount} ${range.fromTimestamp} ${range.toTimestamp}|`;
+          seriesPromises.push(fetch(serverUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain' },
+            body
+          }).then(async response => {
+            if (!response.ok) {
+              if (response.status === 401) {
+                expireAdminSession();
+              }
+              throw new Error(`${response.status} ${response.statusText}`);
+            }
+            const text = await response.text();
+            return text
+              .trim()
+              .split('\n')
+              .filter(Boolean)
+              .map(line => {
+                const parts = line.trim().split(/\s+/);
+                if (parts.length < 2) {
+                  return null;
+                }
+                const timestamp = parts[0];
+                const value = Number(parts.slice(1).join(' '));
+                return Number.isFinite(value) ? { timestamp, value } : null;
+              })
+              .filter(point => point !== null);
+          }));
+        }
+
+        const seriesList = await Promise.all(seriesPromises);
+        const timestampSet = new Set();
+        const seriesMaps = seriesList.map(series => {
+          const map = new Map();
+          series.forEach(point => {
+            const dateUtc = new Date(point.timestamp);
+            if (!Number.isFinite(dateUtc.getTime())) {
+              return;
+            }
+            const localMs = dateUtc.getTime() + Math.round(timezoneOffset * 3600 * 1000);
+            const localTimestamp = new Date(localMs).toISOString();
+            map.set(localTimestamp, point.value);
+            timestampSet.add(localTimestamp);
+          });
+          return map;
+        });
+
+        const allTimestamps = Array.from(timestampSet).sort();
+        const maxPoints = getShowPoints();
+        const step = Math.max(1, Math.ceil(allTimestamps.length / maxPoints));
+        const sampledTimestamps = allTimestamps.filter((_, index) => index % step === 0);
+        const labels = sampledTimestamps.map(ts => ts.replace('T', ' ').slice(0, 19));
+
+        const colors = [
+          'rgba(244, 67, 54, 1)',
+          'rgba(33, 150, 243, 1)',
+          'rgba(76, 175, 80, 1)',
+          'rgba(255, 193, 7, 1)'
+        ];
+
+        const datasets = seriesMaps.map((seriesMap, sensorIndex) => ({
+          label: `Temperature ${sensorIndex + 1}`,
+          data: sampledTimestamps.map(timestamp => {
+            const value = seriesMap.get(timestamp);
+            return Number.isFinite(value) ? value : null;
+          }),
+          borderColor: colors[sensorIndex],
+          backgroundColor: colors[sensorIndex].replace('1)', '0.2)'),
+          fill: false,
+          tension: 0.25,
+          spanGaps: true,
+          pointRadius: 2
+        }));
+
+        const totalArea = computeMultiSeriesArea(sampledTimestamps, datasets);
+        updateChartSummary('temperature-summary', totalArea);
+
+        const ctx = document.getElementById('temperature-chart').getContext('2d');
+        if (!temperatureChart) {
+          temperatureChart = new Chart(ctx, {
+            type: 'line',
+            data: { labels, datasets },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              interaction: { mode: 'nearest', intersect: false },
+              scales: {
+                x: { display: true, title: { display: true, text: `Timestamp (${formatTimezoneLabel(timezoneOffset)})` } },
+                y: { display: true, title: { display: true, text: 'Temperature (°C)' } }
+              },
+              plugins: {
+                legend: { display: true, position: 'top' },
+                tooltip: { enabled: true, mode: 'nearest', intersect: false }
+              }
+            }
+          });
+        } else {
+          temperatureChart.data.labels = labels;
+          temperatureChart.data.datasets = datasets;
+          temperatureChart.options.scales.x.title.text = `Timestamp (${formatTimezoneLabel(timezoneOffset)})`;
+          temperatureChart.update();
+        }
+      } catch (err) {
+        console.warn('Unable to load temperature chart data from command server:', err.message);
+      }
+    }
+
     function formatRuleCondition(condition) {
       const inputType = condition.inputType || 'unknown';
       const op = condition.operator || 'unknown';
@@ -924,6 +1098,7 @@
       await loadBatteryData();
       await loadBatteryCurrentData();
       await loadLoadCurrentData();
+      await loadTemperatureData();
       await loadRulesData();
     }
 
